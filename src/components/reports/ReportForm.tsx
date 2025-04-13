@@ -1,4 +1,3 @@
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/components/ui/use-toast";
@@ -22,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { z } from "zod";
-import { FileUpload, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import { useState } from "react";
 
 const reportFormSchema = z.object({
@@ -243,7 +242,7 @@ const ReportForm = () => {
                 className="flex justify-center px-6 py-4 border-2 border-dashed border-gray-300 rounded-md cursor-pointer hover:border-secondary transition-colors"
               >
                 <div className="space-y-1 text-center">
-                  <FileUpload className="h-6 w-6 text-muted-foreground mx-auto" />
+                  <Upload className="h-6 w-6 text-muted-foreground mx-auto" />
                   <div className="text-sm text-muted-foreground">
                     Drag & drop files here, or click to select files
                   </div>
