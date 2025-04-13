@@ -191,6 +191,13 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
       return;
     }
     
+    if (!user) {
+      toast.error("Authentication required", {
+        description: "You must be signed in to send an SOS alert"
+      });
+      return;
+    }
+    
     setStatus('sending');
     
     try {
@@ -208,7 +215,7 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
         .from('sos_alerts')
         .insert({
           alert_id: alertId,
-          reported_by: user?.user_metadata?.full_name || 'Anonymous User',
+          reported_by: user.id, // Use the user's authenticated ID to comply with RLS
           contact_info: user?.email || null,
           reported_time: new Date().toISOString(),
           status: 'New',
@@ -391,7 +398,7 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
           <Button 
             onClick={handleSendSOS} 
             className="bg-red-600 hover:bg-red-700 text-white"
-            disabled={status === 'sending' || status === 'sent'}
+            disabled={status === 'sending' || status === 'sent' || !user}
           >
             {status === 'idle' && (
               <>

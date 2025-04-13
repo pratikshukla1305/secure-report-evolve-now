@@ -1,8 +1,19 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import { SOSAlert, KycVerification, Advisory, CriminalProfile, CaseData, CriminalTip, KycDocument } from '@/types/officer';
 
 // SOS Alerts
 export const submitSOSAlert = async (alertData: any): Promise<SOSAlert[]> => {
+  // Ensure the reported_by field is set to the authenticated user's ID for RLS
+  if (!alertData.reported_by) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      alertData.reported_by = user.id;
+    } else {
+      throw new Error('User must be authenticated to submit an SOS alert');
+    }
+  }
+  
   const { data, error } = await supabase
     .from('sos_alerts')
     .insert([alertData])
