@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   Drawer,
@@ -17,7 +18,9 @@ import {
   Phone,
   AlertTriangle,
   Loader2,
-  CheckCircle2
+  CheckCircle2,
+  Play,
+  Pause
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { policeStations } from '@/data/policeStations';
@@ -38,11 +41,13 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [recordedAudio, setRecordedAudio] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [textMessage, setTextMessage] = useState('');
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [nearestStation, setNearestStation] = useState<any | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const audioElementRef = useRef<HTMLAudioElement | null>(null);
 
   // Find nearest police station based on user location
   useEffect(() => {
@@ -73,6 +78,29 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
     }
   }, [userLocation]);
 
+  // Clean up audio resources when modal closes
+  useEffect(() => {
+    if (!open) {
+      // Stop recording if active
+      if (mediaRecorderRef.current && isRecording) {
+        mediaRecorderRef.current.stop();
+        setIsRecording(false);
+      }
+      
+      // Clean up audio URL object
+      if (audioUrl) {
+        URL.revokeObjectURL(audioUrl);
+      }
+      
+      // Reset state when modal closes
+      setRecordedAudio(null);
+      setAudioUrl(null);
+      setTextMessage('');
+      setStatus('idle');
+      audioChunksRef.current = [];
+    }
+  }, [open, isRecording, audioUrl]);
+
   const handleStartRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -89,7 +117,10 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/mp3' });
         setRecordedAudio(audioBlob);
         
-        // Create URL for preview
+        // Create URL for preview and properly clean up previous URL
+        if (audioUrl) {
+          URL.revokeObjectURL(audioUrl);
+        }
         const url = URL.createObjectURL(audioBlob);
         setAudioUrl(url);
         
@@ -120,6 +151,29 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
         description: "Voice message recorded successfully"
       });
     }
+  };
+
+  const handlePlayPauseAudio = () => {
+    if (!audioElementRef.current || !audioUrl) return;
+    
+    if (isPlaying) {
+      audioElementRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioElementRef.current.play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch(err => {
+          console.error("Error playing audio:", err);
+          toast.error("Could not play the recording");
+        });
+    }
+  };
+
+  // Handle audio playback ended
+  const handleAudioEnded = () => {
+    setIsPlaying(false);
   };
 
   const handleSendSOS = async () => {
@@ -184,7 +238,10 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
         setStatus('idle');
         setTextMessage('');
         setRecordedAudio(null);
-        setAudioUrl(null);
+        if (audioUrl) {
+          URL.revokeObjectURL(audioUrl);
+          setAudioUrl(null);
+        }
       }, 3000);
     } catch (error: any) {
       console.error("Error sending SOS alert:", error);
@@ -270,18 +327,43 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
                 <div className="flex-1 bg-green-50 p-2 rounded-lg flex items-center">
                   <CheckCircle2 className="h-4 w-4 text-green-600 mr-2" />
                   <span className="text-sm">Voice message recorded</span>
+                  
                   {audioUrl && (
-                    <audio controls className="ml-2 h-8 w-24">
-                      <source src={audioUrl} type="audio/mpeg" />
-                    </audio>
+                    <>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        className="ml-2"
+                        onClick={handlePlayPauseAudio}
+                      >
+                        {isPlaying ? (
+                          <Pause className="h-4 w-4" />
+                        ) : (
+                          <Play className="h-4 w-4" />
+                        )}
+                      </Button>
+                      
+                      {/* Hidden audio element controlled via the buttons */}
+                      <audio 
+                        ref={audioElementRef}
+                        src={audioUrl}
+                        onEnded={handleAudioEnded}
+                        className="hidden"
+                      />
+                    </>
                   )}
+                  
                   <Button 
                     variant="ghost" 
                     size="sm" 
                     className="ml-auto"
                     onClick={() => {
+                      if (audioUrl) {
+                        URL.revokeObjectURL(audioUrl);
+                      }
                       setRecordedAudio(null);
                       setAudioUrl(null);
+                      setIsPlaying(false);
                     }}
                     disabled={status === 'sending' || status === 'sent'}
                   >
