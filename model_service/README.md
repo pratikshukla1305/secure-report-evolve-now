@@ -24,7 +24,7 @@ The service will be available at http://localhost:8000
 ## API Endpoints
 
 - **POST /analyze-video**: Analyze a video for crime detection
-  - Request body: `{ "video_url": "https://example.com/video.mp4" }`
+  - Request body: `{ "video_url": "https://example.com/video.mp4", "location": "123 Main St, Anytown" }`
   - Response: `{ "crime_type": "assault", "confidence": 0.92, "description": "..." }`
 
 - **GET /health**: Health check
@@ -41,7 +41,7 @@ You can test the service using cURL:
 ```bash
 curl -X POST http://localhost:8000/analyze-video \
   -H "Content-Type: application/json" \
-  -d '{"video_url": "https://example.com/video.mp4"}'
+  -d '{"video_url": "https://example.com/video.mp4", "location": "123 Main St, Anytown"}'
 ```
 
 Or using the Swagger UI by accessing http://localhost:8000/docs
@@ -49,6 +49,11 @@ Or using the Swagger UI by accessing http://localhost:8000/docs
 ## Customization
 
 Edit the `analyze_video_with_model()` function in `main.py` to implement your specific model's inference logic. The current implementation has placeholder code that you should replace with your actual model inference code.
+
+## Environmental Variables
+
+- `PORT`: The port on which to run the service (default: 8000)
+- `MODEL_PATH`: Path to your model weights (optional)
 
 ## Troubleshooting
 
