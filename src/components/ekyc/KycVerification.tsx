@@ -462,33 +462,52 @@ const KycVerification = ({ userId, onComplete, formData }: KycVerificationProps)
         if (formData) {
           const { submitKycVerification } = await import('@/services/userServices');
           
-          await submitKycVerification({
-            fullName: formData.fullName,
-            email: formData.email,
-            idFront: idFrontBase64,
-            idBack: idBackBase64,
-            selfie: selfieBase64,
-            documents: documents
-          });
-        }
-        
-        setIsSubmitting(false);
-        setIsComplete(true);
-        
-        toast({
-          title: "Verification Submitted",
-          description: "Your identity verification has been submitted successfully.",
-        });
-        
-        if (onComplete) {
-          onComplete();
+          try {
+            await submitKycVerification({
+              fullName: formData.fullName,
+              email: formData.email,
+              idFront: idFrontBase64,
+              idBack: idBackBase64,
+              selfie: selfieBase64,
+              documents: documents
+            });
+            
+            setIsSubmitting(false);
+            setIsComplete(true);
+            
+            toast({
+              title: "Verification Submitted",
+              description: "Your identity verification has been submitted successfully.",
+            });
+            
+            if (onComplete) {
+              onComplete();
+            }
+          } catch (error: any) {
+            console.error('Error submitting verification:', error);
+            setIsSubmitting(false);
+            
+            if (error.message?.includes('duplicate key')) {
+              toast({
+                title: "Verification Already Exists",
+                description: "You have already submitted a verification with this email. The existing verification has been updated.",
+                variant: "destructive"
+              });
+            } else {
+              toast({
+                title: "Submission Failed",
+                description: "There was an error submitting your verification: " + (error.message || "Unknown error"),
+                variant: "destructive"
+              });
+            }
+          }
         }
       } catch (error) {
-        console.error('Error submitting verification:', error);
+        console.error('Error processing files:', error);
         setIsSubmitting(false);
         toast({
           title: "Submission Failed",
-          description: "There was an error submitting your verification. Please try again.",
+          description: "There was an error processing your files. Please try again.",
           variant: "destructive"
         });
       }

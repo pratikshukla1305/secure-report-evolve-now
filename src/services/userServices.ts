@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { SOSAlert, KycVerification, Advisory, CriminalProfile, CaseData, CriminalTip, KycDocument } from '@/types/officer';
 
@@ -50,19 +49,72 @@ export const getUserSOSAlerts = async (userId: string): Promise<SOSAlert[]> => {
 // KYC Verification
 export const submitKycVerification = async (verificationData: any): Promise<KycVerification[]> => {
   try {
-    // First insert the main verification data
-    const { data, error } = await supabase
+    // Check if a verification with this email already exists
+    const { data: existingVerification, error: checkError } = await supabase
       .from('kyc_verifications')
-      .insert([{
-        full_name: verificationData.fullName,
-        email: verificationData.email,
-        submission_date: new Date().toISOString(),
-        status: 'Pending',
-        id_front: verificationData.idFront,
-        id_back: verificationData.idBack,
-        selfie: verificationData.selfie
-      }])
-      .select();
+      .select('id, status')
+      .eq('email', verificationData.email)
+      .maybeSingle();
+    
+    if (checkError) {
+      console.error('Error checking existing verification:', checkError);
+      throw checkError;
+    }
+    
+    let data;
+    let error;
+    
+    if (existingVerification) {
+      // If verification exists and is not already approved, update it
+      if (existingVerification.status !== 'Approved') {
+        const updateData = {
+          full_name: verificationData.fullName,
+          submission_date: new Date().toISOString(),
+          status: 'Pending', // Reset to pending for review
+          id_front: verificationData.idFront,
+          id_back: verificationData.idBack,
+          selfie: verificationData.selfie
+        };
+        
+        const result = await supabase
+          .from('kyc_verifications')
+          .update(updateData)
+          .eq('id', existingVerification.id)
+          .select();
+          
+        data = result.data;
+        error = result.error;
+      } else {
+        // If already approved, just return the existing verification
+        return [{
+          ...existingVerification,
+          full_name: verificationData.fullName,
+          email: verificationData.email,
+          id_front: verificationData.idFront,
+          id_back: verificationData.idBack,
+          selfie: verificationData.selfie,
+          status: 'Approved',
+          documents: []
+        }];
+      }
+    } else {
+      // If no existing verification, insert a new one
+      const result = await supabase
+        .from('kyc_verifications')
+        .insert([{
+          full_name: verificationData.fullName,
+          email: verificationData.email,
+          submission_date: new Date().toISOString(),
+          status: 'Pending',
+          id_front: verificationData.idFront,
+          id_back: verificationData.idBack,
+          selfie: verificationData.selfie
+        }])
+        .select();
+      
+      data = result.data;
+      error = result.error;
+    }
     
     if (error) {
       console.error('Error submitting KYC verification:', error);
@@ -77,8 +129,22 @@ export const submitKycVerification = async (verificationData: any): Promise<KycV
     
     // If documents are provided, store them in the kyc_documents table
     if (verificationData.documents && verificationData.documents.length > 0) {
+      // First remove any existing documents for this verification
+      if (existingVerification) {
+        const { error: deleteError } = await supabase
+          .from('kyc_documents')
+          .delete()
+          .eq('verification_id', existingVerification.id);
+          
+        if (deleteError) {
+          console.error("Error removing old KYC documents:", deleteError);
+        }
+      }
+      
+      const verificationId = existingVerification ? existingVerification.id : results[0].id;
+      
       const documentsToInsert = verificationData.documents.map((doc: any) => ({
-        verification_id: data[0].id,
+        verification_id: verificationId,
         document_type: doc.type,
         document_url: doc.url,
         extracted_data: doc.extracted_data || null

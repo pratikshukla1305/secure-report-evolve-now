@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Tabs, 
@@ -12,8 +12,8 @@ import KycVerification from '@/components/ekyc/KycVerification';
 import KycCompleted from '@/components/ekyc/KycCompleted';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { getUserVerificationStatus } from '@/data/kycVerificationsData';
 import { toast } from '@/hooks/use-toast';
+import { getUserKycStatus } from '@/services/userServices';
 
 type KycData = {
   fullName: string;
@@ -39,11 +39,44 @@ const EKycPage = () => {
     phone: "",
     email: ""
   });
+  const [status, setStatus] = useState<"pending" | "approved" | "rejected" | "none">("none");
+  const [isLoading, setIsLoading] = useState(false);
   const [uploadedDocuments, setUploadedDocuments] = useState<{
     idFront?: File;
     idBack?: File;
     selfie?: File;
   }>({});
+
+  // Generate a demo user ID if we don't have one from auth
+  const userId = "user-" + Math.floor(Math.random() * 1000).toString();
+
+  useEffect(() => {
+    // Check if user has existing verification
+    const checkExistingVerification = async () => {
+      if (kycData.email) {
+        setIsLoading(true);
+        try {
+          const verification = await getUserKycStatus(kycData.email);
+          if (verification) {
+            setStatus(verification.status?.toLowerCase() as "pending" | "approved" | "rejected" || "pending");
+            
+            // If already verified, move to completed step
+            if (verification.status === 'Approved') {
+              setCurrentStep("completed");
+            }
+          }
+        } catch (error) {
+          console.error("Error checking KYC status:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+    
+    if (currentStep === "verification" && kycData.email) {
+      checkExistingVerification();
+    }
+  }, [currentStep, kycData.email]);
 
   const handleFormSubmit = (data: KycData) => {
     // Validate if we're using Indian nationality with Aadhaar
@@ -144,17 +177,24 @@ const EKycPage = () => {
               </TabsContent>
               
               <TabsContent value="verification" className="mt-0">
-                <KycVerification 
-                  userId="user-123"
-                  onComplete={handleVerificationComplete}
-                  formData={kycData}
-                />
+                {isLoading ? (
+                  <div className="text-center py-10">
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Checking verification status...</p>
+                  </div>
+                ) : (
+                  <KycVerification 
+                    userId={userId}
+                    onComplete={handleVerificationComplete}
+                    formData={kycData}
+                  />
+                )}
               </TabsContent>
               
               <TabsContent value="completed" className="mt-0">
                 <KycCompleted 
-                  status={getUserVerificationStatus("user-123") as "pending" | "approved" | "rejected"}
-                  userId="user-123"
+                  status={status}
+                  userId={userId}
                   onReset={handleKycReset}
                 />
               </TabsContent>
