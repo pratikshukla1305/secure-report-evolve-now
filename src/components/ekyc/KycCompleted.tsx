@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,7 @@ import { getUserVerificationStatus, VerificationStatus } from '@/data/kycVerific
 interface KycCompletedProps {
   status?: VerificationStatus;
   userId?: string;
-  onReset?: () => void; // Add the missing prop
+  onReset?: () => void;
 }
 
 const KycCompleted = ({ 
@@ -18,7 +17,6 @@ const KycCompleted = ({
 }: KycCompletedProps) => {
   const [status, setStatus] = useState<VerificationStatus>(initialStatus);
   
-  // Poll for status updates (in a real app this would use websockets or a real-time database)
   useEffect(() => {
     const checkStatus = () => {
       const currentStatus = getUserVerificationStatus(userId);
@@ -27,7 +25,6 @@ const KycCompleted = ({
       }
     };
     
-    // Check immediately and then set interval
     checkStatus();
     
     const interval = setInterval(checkStatus, 5000);
@@ -43,7 +40,9 @@ const KycCompleted = ({
             ? 'Your verification is being reviewed by our team'
             : status === 'approved'
               ? 'Your identity has been successfully verified'
-              : 'Your identity verification has been rejected'
+              : status === 'rejected'
+                ? 'Your identity verification has been rejected'
+                : 'Your identity verification status is unknown'
           }
         </CardDescription>
       </CardHeader>
@@ -110,7 +109,7 @@ const KycCompleted = ({
             Return to Home
           </Button>
         )}
-        {status === 'pending' && (
+        {(status === 'pending' || status === 'none') && (
           <Button variant="outline" className="w-full max-w-xs" onClick={() => window.location.href = "/"}>
             Return Later
           </Button>

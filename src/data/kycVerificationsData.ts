@@ -1,8 +1,7 @@
-
 // This file acts as a shared data store for KYC verifications between officer and user portals
 
 // Define the KYC verification status type
-export type VerificationStatus = 'pending' | 'approved' | 'rejected';
+export type VerificationStatus = 'pending' | 'approved' | 'rejected' | 'none';
 
 // Define the KYC verification type
 export interface KycVerification {

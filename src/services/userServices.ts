@@ -94,6 +94,7 @@ export const submitKycVerification = async (verificationData: any): Promise<KycV
           id_back: verificationData.idBack,
           selfie: verificationData.selfie,
           status: 'Approved',
+          submission_date: new Date().toISOString(), // Add the missing field
           documents: []
         }];
       }
@@ -121,7 +122,7 @@ export const submitKycVerification = async (verificationData: any): Promise<KycV
       throw error;
     }
     
-    // Initialize the documents array
+    // Initialize the documents array and ensure submission_date is present
     const results: KycVerification[] = data.map(item => ({
       ...item,
       documents: []
