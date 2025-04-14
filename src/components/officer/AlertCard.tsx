@@ -58,7 +58,7 @@ const AlertCard: React.FC<AlertCardProps> = ({ alert, onStatusUpdate }) => {
   const hasValidVoiceRecording = Boolean(
     alert.voice_recording && 
     typeof alert.voice_recording === 'string' && 
-    alert.voice_recording.startsWith('http')
+    (alert.voice_recording.startsWith('http://') || alert.voice_recording.startsWith('https://'))
   );
   
   return (
@@ -120,7 +120,7 @@ const AlertCard: React.FC<AlertCardProps> = ({ alert, onStatusUpdate }) => {
               <h4 className="text-sm font-medium">Voice Recording</h4>
             </div>
             <VoiceRecordingPlayer 
-              recordingUrl={alert.voice_recording} 
+              recordingUrl={alert.voice_recording as string} 
               label="Emergency Recording"
             />
           </div>
