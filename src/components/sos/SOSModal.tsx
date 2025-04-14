@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   Drawer,
@@ -52,7 +51,6 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
   const recordingTimerRef = useRef<number | null>(null);
 
-  // Find nearest police station based on user location
   useEffect(() => {
     if (userLocation && policeStations.length > 0) {
       let nearest = policeStations[0];
@@ -81,15 +79,12 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
     }
   }, [userLocation]);
 
-  // Clean up audio resources when modal closes
   useEffect(() => {
     if (!open) {
-      // Stop recording if active
       if (mediaRecorderRef.current && isRecording) {
         mediaRecorderRef.current.stop();
         setIsRecording(false);
         
-        // Clear recording timer
         if (recordingTimerRef.current) {
           window.clearInterval(recordingTimerRef.current);
           recordingTimerRef.current = null;
@@ -97,12 +92,10 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
         setRecordingTime(0);
       }
       
-      // Clean up audio URL object
       if (audioUrl) {
         URL.revokeObjectURL(audioUrl);
       }
       
-      // Reset state when modal closes
       setRecordedAudio(null);
       setAudioUrl(null);
       setTextMessage('');
@@ -130,7 +123,6 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
       };
       
       mediaRecorder.onstop = () => {
-        // Clear recording timer
         if (recordingTimerRef.current) {
           window.clearInterval(recordingTimerRef.current);
           recordingTimerRef.current = null;
@@ -139,22 +131,18 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         setRecordedAudio(audioBlob);
         
-        // Create URL for preview and properly clean up previous URL
         if (audioUrl) {
           URL.revokeObjectURL(audioUrl);
         }
         const url = URL.createObjectURL(audioBlob);
         setAudioUrl(url);
         
-        // Stop all tracks
         stream.getTracks().forEach(track => track.stop());
       };
       
-      // Start the recording
-      mediaRecorder.start(1000); // Capture data in 1-second chunks
+      mediaRecorder.start(1000);
       setIsRecording(true);
       
-      // Start the recording timer
       setRecordingTime(0);
       recordingTimerRef.current = window.setInterval(() => {
         setRecordingTime(prev => prev + 1);
@@ -200,7 +188,6 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
     }
   };
 
-  // Handle audio playback ended
   const handleAudioEnded = () => {
     setIsPlaying(false);
   };
@@ -210,7 +197,6 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
       const fileName = `${alertId}.webm`;
       const filePath = `${userId}/${fileName}`;
       
-      // Upload the Blob directly to the sos-audio bucket
       const { error: uploadError } = await supabase.storage
         .from('sos-audio')
         .upload(filePath, blob, {
@@ -223,7 +209,6 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
         throw uploadError;
       }
       
-      // Get public URL
       const { data: publicUrlData } = supabase.storage
         .from('sos-audio')
         .getPublicUrl(filePath);
@@ -268,7 +253,6 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
       const alertId = uuidv4();
       let voiceUrl = null;
       
-      // Upload voice recording if available
       if (recordedAudio && user) {
         voiceUrl = await uploadVoiceRecording(recordedAudio, user.id, alertId);
         
@@ -281,12 +265,11 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
         }
       }
       
-      // Create SOS alert in database with fixed schema (using TEXT types instead of VARCHAR)
       const { error } = await supabase
         .from('sos_alerts')
         .insert({
           alert_id: alertId,
-          reported_by: user.id, // Use the user's authenticated ID to comply with RLS
+          reported_by: user.id,
           contact_info: user?.email || null,
           reported_time: new Date().toISOString(),
           status: 'New',
@@ -298,13 +281,15 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
           urgency_level: 'High',
           contact_user: true
         });
-        
+      
       if (error) {
         console.error("SOS alert error:", error);
+        toast.error("Failed to send SOS alert", {
+          description: error.message
+        });
         throw error;
       }
       
-      // Also store the recording reference in the database
       if (voiceUrl) {
         const { error: recordingError } = await supabase.from('voice_recordings').insert({
           alert_id: alertId,
@@ -313,7 +298,6 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
         
         if (recordingError) {
           console.error("Error saving voice recording reference:", recordingError);
-          // Don't throw here as the alert itself was successful
         }
       }
       
@@ -323,7 +307,6 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
         description: `Your alert has been sent to ${nearestStation?.name || 'the nearest police station'}`
       });
       
-      // Auto-close after showing success
       setTimeout(() => {
         onOpenChange(false);
         setStatus('idle');
@@ -443,7 +426,6 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
                         )}
                       </Button>
                       
-                      {/* Hidden audio element controlled via the buttons */}
                       <audio 
                         ref={audioElementRef}
                         src={audioUrl}
