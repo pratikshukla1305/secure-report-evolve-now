@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Shield, FilePlus, FileText, Clock, ChevronRight, Activity, Eye } from 'lucide-react';
+import { Shield, FilePlus, FileText, Clock, ChevronRight, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
@@ -49,10 +49,10 @@ const Dashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-lightgray flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="flex flex-col items-center">
-          <Shield className="h-12 w-12 text-deepblue animate-pulse" />
-          <p className="mt-4 text-darkslate">Loading...</p>
+          <Shield className="h-12 w-12 text-shield-blue animate-pulse" />
+          <p className="mt-4 text-gray-600">Loading...</p>
         </div>
       </div>
     );
@@ -61,31 +61,31 @@ const Dashboard = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-lightgray">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
       
       <main className="pt-20 pb-16">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2 text-deepblue">Welcome back, {user.user_metadata?.full_name || 'User'}</h1>
-            <p className="text-darkslate">
+            <h1 className="text-3xl font-bold mb-2">Welcome back, {user.user_metadata?.full_name || 'User'}</h1>
+            <p className="text-gray-600">
               Manage your reports, evidence, and profile from your dashboard.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-xl">Create New Report</CardTitle>
                 <CardDescription>Upload evidence and document incidents</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-12 flex items-center justify-center rounded-lg bg-deepblue/10">
-                  <FilePlus className="h-6 w-6 text-deepblue" />
+                <div className="h-12 flex items-center justify-center rounded-lg bg-shield-blue/10">
+                  <FilePlus className="h-6 w-6 text-shield-blue" />
                 </div>
               </CardContent>
               <CardFooter>
-                <Button asChild className="w-full bg-deepblue hover:bg-deepblue/90">
+                <Button asChild className="w-full">
                   <Link to="/continue-report">Start New Report</Link>
                 </Button>
               </CardFooter>
@@ -97,30 +97,13 @@ const Dashboard = () => {
                 <CardDescription>View and manage your submitted reports</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-12 flex items-center justify-center rounded-lg bg-teal/10">
-                  <FileText className="h-6 w-6 text-teal" />
+                <div className="h-12 flex items-center justify-center rounded-lg bg-green-100">
+                  <FileText className="h-6 w-6 text-green-600" />
                 </div>
               </CardContent>
               <CardFooter>
                 <Button asChild variant="outline" className="w-full">
                   <Link to="/my-reports">View All Reports</Link>
-                </Button>
-              </CardFooter>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-xl">Criminal Sightings</CardTitle>
-                <CardDescription>Track your submitted sighting reports</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-12 flex items-center justify-center rounded-lg bg-amber/10">
-                  <Eye className="h-6 w-6 text-amber" />
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button asChild variant="outline" className="w-full">
-                  <Link to="/my-sighting-reports">View Sightings</Link>
                 </Button>
               </CardFooter>
             </Card>
@@ -145,8 +128,8 @@ const Dashboard = () => {
           
           <div className="mb-10">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-deepblue">Recent Reports</h2>
-              <Link to="/my-reports" className="text-teal hover:underline flex items-center">
+              <h2 className="text-xl font-semibold">Recent Reports</h2>
+              <Link to="/my-reports" className="text-shield-blue hover:underline flex items-center">
                 View all <ChevronRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
@@ -163,12 +146,12 @@ const Dashboard = () => {
                     <div key={report.id} className="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="font-medium text-deepblue">{report.title}</h3>
+                          <h3 className="font-medium">{report.title}</h3>
                           <p className="text-sm text-gray-500 mt-1">
                             {new Date(report.report_date).toLocaleDateString()} • 
                             <span className={`ml-2 ${
-                              report.status === 'submitted' ? 'text-teal' : 
-                              report.status === 'processing' ? 'text-amber' : 
+                              report.status === 'submitted' ? 'text-blue-600' : 
+                              report.status === 'processing' ? 'text-orange-600' : 
                               report.status === 'closed' ? 'text-green-600' : 'text-yellow-600'
                             }`}>
                               {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
@@ -188,7 +171,7 @@ const Dashboard = () => {
                 <div className="p-8 text-center">
                   <FileText className="h-8 w-8 text-gray-400 mx-auto mb-4" />
                   <p className="text-gray-500">You haven't created any reports yet.</p>
-                  <Button asChild className="mt-4 bg-teal hover:bg-teal/90">
+                  <Button asChild className="mt-4">
                     <Link to="/continue-report">Create Your First Report</Link>
                   </Button>
                 </div>

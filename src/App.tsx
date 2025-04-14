@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -39,7 +40,6 @@ import OfficerSettings from "./pages/OfficerSettings";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import MyReports from "./pages/MyReports";
-import MySightingReports from './pages/MySightingReports';
 
 const App = () => {
   // Create a new QueryClient instance inside the component function
@@ -98,7 +98,6 @@ const App = () => {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/my-reports" element={<MyReports />} />
-                <Route path="/my-sighting-reports" element={<MySightingReports />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
