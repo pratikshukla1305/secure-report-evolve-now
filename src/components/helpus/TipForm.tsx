@@ -1,20 +1,26 @@
-
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Camera, MapPin } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import * as z from 'zod';
+import { 
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { wantedIndividuals } from '@/data/wantedIndividuals';
+import { submitCriminalTip } from '@/services/userServices';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { v4 as uuidv4 } from 'uuid';
+import { Upload, X, Image, Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
   description: z.string().min(10, 'Please provide at least 10 characters of description'),
@@ -82,7 +88,6 @@ const TipForm = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          // In a real app, you might want to convert coordinates to an address using a geocoding service
           const locationString = `${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`;
           setCurrentLocation(locationString);
           form.setValue('location', locationString);
@@ -101,20 +106,29 @@ const TipForm = () => {
   };
   
   const onSubmit = (data: FormValues) => {
-    // Here you would normally send this to your backend
-    console.log('Form data:', data);
-    console.log('Criminal ID:', criminalId);
-    console.log('Photo file:', photoFile);
-    
-    // For demo purposes, we'll just show a success message
-    toast.success("Report submitted successfully. Thank you for helping make our community safer.", {
-      duration: 5000,
-    });
-    
-    // Navigate back to the help us page
-    setTimeout(() => {
-      navigate('/help-us');
-    }, 2000);
+    const newTip = {
+      id: uuidv4(),
+      description: data.description,
+      location: data.location,
+      dateTime: data.dateTime,
+      isConfident: data.isConfident,
+      contactInfo: data.contactInfo,
+      stayAnonymous: data.stayAnonymous,
+      urgencyLevel: data.urgencyLevel,
+      photoFile: photoFile,
+    };
+
+    submitCriminalTip(newTip)
+      .then(() => {
+        toast.success("Report submitted successfully. Thank you for helping make our community safer.", {
+          duration: 5000,
+        });
+        navigate('/help-us');
+      })
+      .catch((error) => {
+        console.error("Error submitting tip:", error);
+        toast.error("An error occurred while submitting your tip.");
+      });
   };
   
   return (

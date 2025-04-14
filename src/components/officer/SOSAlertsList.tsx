@@ -104,11 +104,39 @@ const SOSAlertsList: React.FC<SOSAlertsListProps> = ({ limit }) => {
         }
       });
 
+    // Subscribe to criminal tips changes
+    const tipsChannel = supabase
+      .channel('criminal-tips-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'criminal_tips'
+        },
+        (payload) => {
+          console.log('Real-time criminal tip change detected:', payload);
+          
+          if (payload.eventType === 'INSERT') {
+            // Show notification for new tips
+            toast({
+              title: "New Criminal Sighting Report",
+              description: "A new criminal sighting has been reported",
+              variant: "default",
+            });
+          }
+        }
+      )
+      .subscribe((status) => {
+        console.log('Criminal tips subscription status:', status);
+      });
+
     // Cleanup subscriptions
     return () => {
       console.log('Cleaning up Supabase channels');
       supabase.removeChannel(sosChannel);
       supabase.removeChannel(voiceChannel);
+      supabase.removeChannel(tipsChannel);
     };
   }, [limit, toast]);
 
