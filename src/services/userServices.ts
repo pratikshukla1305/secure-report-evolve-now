@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { SOSAlert, KycVerification, Advisory, CriminalProfile, CaseData, CriminalTip, KycDocument } from '@/types/officer';
 
@@ -260,15 +259,35 @@ export const getPublicCases = async (): Promise<CaseData[]> => {
 };
 
 // Criminal Tip Submission
-export const submitCriminalTip = async (tipData: any): Promise<CriminalTip[]> => {
-  const { data, error } = await supabase
-    .from('criminal_tips')
-    .insert([tipData])
-    .select();
+export const submitCriminalTip = async (tipData: any): Promise<any> => {
+  try {
+    console.log('Submitting criminal tip with data:', tipData);
+    
+    // Make sure the data matches the database columns exactly
+    const { data, error } = await supabase
+      .from('criminal_tips')
+      .insert([{
+        subject: tipData.subject,
+        description: tipData.description,
+        location: tipData.location,
+        tip_date: tipData.tip_date,
+        is_anonymous: tipData.is_anonymous,
+        submitter_name: tipData.submitter_name,
+        email: tipData.email,
+        phone: tipData.phone,
+        status: tipData.status || 'New',
+        image_url: tipData.image_url
+      }])
+      .select();
   
-  if (error) {
+    if (error) {
+      console.error('Error submitting criminal tip:', error);
+      throw error;
+    }
+    
+    return data || [];
+  } catch (error) {
+    console.error('Error in submitCriminalTip:', error);
     throw error;
   }
-  
-  return data || [];
 };

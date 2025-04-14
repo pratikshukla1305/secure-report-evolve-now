@@ -124,30 +124,35 @@ const TipForm = () => {
     }
   };
   
-  const onSubmit = (data: FormValues) => {
-    const newTip = {
-      id: uuidv4(),
-      description: data.description,
-      location: data.location,
-      dateTime: data.dateTime,
-      isConfident: data.isConfident,
-      contactInfo: data.contactInfo,
-      stayAnonymous: data.stayAnonymous,
-      urgencyLevel: data.urgencyLevel,
-      photoFile: photoFile,
-    };
+  const onSubmit = async (data: FormValues) => {
+    try {
+      // Create a tip object that matches the database column structure
+      const tipData = {
+        subject: criminal ? `Tip about ${criminal.name}` : 'Criminal Sighting',
+        description: data.description,
+        location: data.location,
+        tip_date: data.dateTime,
+        is_anonymous: data.stayAnonymous,
+        // Map our form's contactInfo to the appropriate columns based on stayAnonymous
+        submitter_name: data.stayAnonymous ? null : data.contactInfo.split('@')[0] || null,
+        email: data.stayAnonymous ? null : (data.contactInfo.includes('@') ? data.contactInfo : null),
+        phone: data.stayAnonymous ? null : (!data.contactInfo.includes('@') ? data.contactInfo : null),
+        status: 'New',
+        // If we have image data, we'd handle that separately
+        image_url: photoPreview,
+      };
 
-    submitCriminalTip(newTip)
-      .then(() => {
-        toast.success("Report submitted successfully. Thank you for helping make our community safer.", {
-          duration: 5000,
-        });
-        navigate('/help-us');
-      })
-      .catch((error) => {
-        console.error("Error submitting tip:", error);
-        toast.error("An error occurred while submitting your tip.");
+      // Submit the tip with the correctly mapped data
+      await submitCriminalTip(tipData);
+      
+      toast.success("Report submitted successfully. Thank you for helping make our community safer.", {
+        duration: 5000,
       });
+      navigate('/help-us');
+    } catch (error) {
+      console.error("Error submitting tip:", error);
+      toast.error(`Error submitting tip: ${JSON.stringify(error)}`);
+    }
   };
   
   return (
