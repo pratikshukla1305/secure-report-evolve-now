@@ -4,6 +4,8 @@ import { useToast } from '@/hooks/use-toast';
 import { getSosAlerts, updateSosAlertStatus } from '@/services/officerServices';
 import { SOSAlert } from '@/types/officer';
 import AlertCard from './AlertCard';
+import { supabase } from '@/integrations/supabase/client';
+import { Loader2 } from 'lucide-react';
 
 interface SOSAlertsListProps {
   limit?: number;
@@ -33,9 +35,61 @@ const SOSAlertsList: React.FC<SOSAlertsListProps> = ({ limit }) => {
     }
   };
 
+  // Setup real-time subscriptions for SOS alerts and voice recordings
   useEffect(() => {
     fetchAlerts();
-  }, [limit]);
+    
+    // Subscribe to changes in sos_alerts table
+    const sosChannel = supabase
+      .channel('sos-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*', // Listen for all changes
+          schema: 'public',
+          table: 'sos_alerts'
+        },
+        (payload) => {
+          console.log('Real-time SOS alert change detected:', payload);
+          
+          // Refresh the alerts when any change occurs
+          fetchAlerts();
+          
+          // Show notification for new alerts
+          if (payload.eventType === 'INSERT') {
+            toast({
+              title: "New SOS Alert",
+              description: "A new emergency alert has been received",
+              variant: "destructive", // Make it red for urgency
+            });
+          }
+        }
+      )
+      .subscribe();
+    
+    // Subscribe to changes in voice_recordings table
+    const voiceChannel = supabase
+      .channel('voice-recording-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'voice_recordings'
+        },
+        (payload) => {
+          console.log('Real-time voice recording change detected:', payload);
+          fetchAlerts(); // Refresh to get updated voice recordings
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscriptions
+    return () => {
+      supabase.removeChannel(sosChannel);
+      supabase.removeChannel(voiceChannel);
+    };
+  }, [limit, toast]);
 
   const handleStatusUpdate = async (alertId: string, status: string) => {
     try {
@@ -58,15 +112,19 @@ const SOSAlertsList: React.FC<SOSAlertsListProps> = ({ limit }) => {
   if (isLoading) {
     return (
       <div className="flex justify-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-shield-blue"></div>
+        <div className="flex flex-col items-center">
+          <Loader2 className="h-8 w-8 animate-spin text-shield-blue mb-2" />
+          <p className="text-sm text-gray-500">Loading alerts...</p>
+        </div>
       </div>
     );
   }
 
   if (alerts.length === 0) {
     return (
-      <div className="text-center py-8">
+      <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-300">
         <p className="text-gray-500">No SOS alerts found</p>
+        <p className="text-sm text-gray-400 mt-1">New alerts will appear here automatically</p>
       </div>
     );
   }

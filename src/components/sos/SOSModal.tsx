@@ -20,7 +20,9 @@ import {
   Loader2,
   CheckCircle2,
   Play,
-  Pause
+  Pause,
+  StopCircle,
+  Timer
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { policeStations } from '@/data/policeStations';
@@ -28,7 +30,6 @@ import { calculateDistance } from '@/utils/locationUtils';
 import { useAuth } from '@/contexts/AuthContext';
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '@/integrations/supabase/client';
-import { uploadVoiceMessage } from '@/utils/uploadUtils';
 
 interface SOSModalProps {
   open: boolean;
@@ -45,9 +46,11 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
   const [textMessage, setTextMessage] = useState('');
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [nearestStation, setNearestStation] = useState<any | null>(null);
+  const [recordingTime, setRecordingTime] = useState(0);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
+  const recordingTimerRef = useRef<number | null>(null);
 
   // Find nearest police station based on user location
   useEffect(() => {
@@ -85,6 +88,13 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
       if (mediaRecorderRef.current && isRecording) {
         mediaRecorderRef.current.stop();
         setIsRecording(false);
+        
+        // Clear recording timer
+        if (recordingTimerRef.current) {
+          window.clearInterval(recordingTimerRef.current);
+          recordingTimerRef.current = null;
+        }
+        setRecordingTime(0);
       }
       
       // Clean up audio URL object
@@ -101,11 +111,17 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
     }
   }, [open, isRecording, audioUrl]);
 
+  const formatRecordingTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
+
   const handleStartRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       
-      const mediaRecorder = new MediaRecorder(stream);
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
       
@@ -114,7 +130,13 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
       };
       
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/mp3' });
+        // Clear recording timer
+        if (recordingTimerRef.current) {
+          window.clearInterval(recordingTimerRef.current);
+          recordingTimerRef.current = null;
+        }
+        
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         setRecordedAudio(audioBlob);
         
         // Create URL for preview and properly clean up previous URL
@@ -128,8 +150,15 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
         stream.getTracks().forEach(track => track.stop());
       };
       
-      mediaRecorder.start();
+      // Start the recording
+      mediaRecorder.start(1000); // Capture data in 1-second chunks
       setIsRecording(true);
+      
+      // Start the recording timer
+      setRecordingTime(0);
+      recordingTimerRef.current = window.setInterval(() => {
+        setRecordingTime(prev => prev + 1);
+      }, 1000);
       
       toast.success("Recording started", {
         description: "Speak clearly into your microphone"
@@ -176,6 +205,41 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
     setIsPlaying(false);
   };
 
+  const uploadVoiceRecording = async (blob: Blob, userId: string, alertId: string): Promise<string | null> => {
+    try {
+      const fileName = `${alertId}.webm`;
+      const filePath = `${userId}/${fileName}`;
+      
+      // Upload the Blob directly to the sos-audio bucket
+      const { error: uploadError } = await supabase.storage
+        .from('sos-audio')
+        .upload(filePath, blob, {
+          contentType: 'audio/webm',
+          upsert: true
+        });
+      
+      if (uploadError) {
+        console.error('Error uploading voice recording:', uploadError);
+        throw uploadError;
+      }
+      
+      // Get public URL
+      const { data: publicUrlData } = supabase.storage
+        .from('sos-audio')
+        .getPublicUrl(filePath);
+      
+      if (!publicUrlData || !publicUrlData.publicUrl) {
+        throw new Error('Failed to get public URL for voice recording');
+      }
+      
+      console.log('Voice recording uploaded successfully:', publicUrlData.publicUrl);
+      return publicUrlData.publicUrl;
+    } catch (error) {
+      console.error('Error in uploadVoiceRecording:', error);
+      return null;
+    }
+  };
+
   const handleSendSOS = async () => {
     if (!userLocation) {
       toast.error("Location unavailable", {
@@ -206,8 +270,15 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
       
       // Upload voice recording if available
       if (recordedAudio && user) {
-        voiceUrl = await uploadVoiceMessage(recordedAudio, user.id, alertId);
-        console.log("Voice recording uploaded to:", voiceUrl);
+        voiceUrl = await uploadVoiceRecording(recordedAudio, user.id, alertId);
+        
+        if (!voiceUrl) {
+          toast.error("Failed to upload voice recording", {
+            description: "The alert will be sent without the voice recording"
+          });
+        } else {
+          console.log("Voice recording uploaded to:", voiceUrl);
+        }
       }
       
       // Create SOS alert in database with fixed schema (using TEXT types instead of VARCHAR)
@@ -231,6 +302,19 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
       if (error) {
         console.error("SOS alert error:", error);
         throw error;
+      }
+      
+      // Also store the recording reference in the database
+      if (voiceUrl) {
+        const { error: recordingError } = await supabase.from('voice_recordings').insert({
+          alert_id: alertId,
+          recording_url: voiceUrl
+        });
+        
+        if (recordingError) {
+          console.error("Error saving voice recording reference:", recordingError);
+          // Don't throw here as the alert itself was successful
+        }
       }
       
       setStatus('sent');
@@ -310,25 +394,34 @@ const SOSModal = ({ open, onOpenChange, userLocation }: SOSModalProps) => {
             <div className="flex items-center space-x-2">
               {!recordedAudio ? (
                 <>
-                  <Button 
-                    variant={isRecording ? "destructive" : "outline"}
-                    size="sm"
-                    onClick={isRecording ? handleStopRecording : handleStartRecording}
-                    className="flex-1"
-                    disabled={status === 'sending' || status === 'sent'}
-                  >
-                    {isRecording ? (
-                      <>
-                        <MicOff className="h-4 w-4 mr-2" />
-                        Stop Recording
-                      </>
-                    ) : (
-                      <>
-                        <Mic className="h-4 w-4 mr-2" />
-                        Record Voice Message
-                      </>
-                    )}
-                  </Button>
+                  {isRecording ? (
+                    <div className="flex-1 flex items-center gap-2">
+                      <div className="bg-red-100 p-2 rounded-lg flex items-center flex-1">
+                        <Mic className="h-5 w-5 text-red-600 mr-2 animate-pulse" />
+                        <span className="text-sm text-red-600 font-medium">Recording... {formatRecordingTime(recordingTime)}</span>
+                      </div>
+                      <Button 
+                        variant="destructive"
+                        size="sm"
+                        onClick={handleStopRecording}
+                        className="whitespace-nowrap"
+                      >
+                        <StopCircle className="h-4 w-4 mr-2" />
+                        Stop
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button 
+                      variant="outline"
+                      size="sm"
+                      onClick={handleStartRecording}
+                      className="flex-1"
+                      disabled={status === 'sending' || status === 'sent'}
+                    >
+                      <Mic className="h-4 w-4 mr-2" />
+                      Record Voice Message
+                    </Button>
+                  )}
                 </>
               ) : (
                 <div className="flex-1 bg-green-50 p-2 rounded-lg flex items-center">

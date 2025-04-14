@@ -1,12 +1,13 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { SOSAlert } from '@/types/officer';
-import { AlertTriangle, MapPin, Clock, PhoneCall, MessageSquare } from 'lucide-react';
+import { AlertTriangle, MapPin, Clock, PhoneCall, MessageSquare, Mic, ExternalLink } from 'lucide-react';
 import VoiceRecordingPlayer from './VoiceRecordingPlayer';
 import AlertStatusButtons from './AlertStatusButtons';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AlertCardProps {
   alert: SOSAlert;
@@ -14,6 +15,8 @@ interface AlertCardProps {
 }
 
 const AlertCard: React.FC<AlertCardProps> = ({ alert, onStatusUpdate }) => {
+  const [isMapOpen, setIsMapOpen] = useState(false);
+  
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString();
   };
@@ -44,12 +47,19 @@ const AlertCard: React.FC<AlertCardProps> = ({ alert, onStatusUpdate }) => {
     }
   };
   
+  const openMapLocation = () => {
+    if (alert.latitude && alert.longitude) {
+      const mapUrl = `https://www.google.com/maps/search/?api=1&query=${alert.latitude},${alert.longitude}`;
+      window.open(mapUrl, '_blank');
+    }
+  };
+  
   return (
-    <div className="border rounded-lg p-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
+    <div className="border rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3">
         <div className="flex items-center space-x-2 mb-2 sm:mb-0">
           <AlertTriangle className="h-5 w-5 text-red-500" />
-          <h3 className="font-medium text-lg">{alert.reported_by}</h3>
+          <h3 className="font-medium text-lg">{alert.contact_info || 'Anonymous'}</h3>
           {alert.urgency_level && getUrgencyBadge(alert.urgency_level)}
           {alert.status && getStatusBadge(alert.status)}
         </div>
@@ -59,15 +69,26 @@ const AlertCard: React.FC<AlertCardProps> = ({ alert, onStatusUpdate }) => {
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div className="flex items-start space-x-2">
           <MapPin className="h-5 w-5 text-gray-500 mt-0.5" />
-          <div>
+          <div className="flex-1">
             <div className="font-medium">Location</div>
-            <div className="text-gray-700">{alert.location}</div>
+            <div className="text-gray-700 mb-1">{alert.location}</div>
             {alert.latitude && alert.longitude && (
-              <div className="text-xs text-gray-500">
-                {alert.latitude.toFixed(6)}, {alert.longitude.toFixed(6)}
+              <div className="flex items-center">
+                <div className="text-xs text-gray-500 mr-2">
+                  {alert.latitude.toFixed(6)}, {alert.longitude.toFixed(6)}
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-6 px-2 text-blue-600 hover:text-blue-800"
+                  onClick={openMapLocation}
+                >
+                  <ExternalLink className="h-3 w-3 mr-1" />
+                  <span className="text-xs">Map</span>
+                </Button>
               </div>
             )}
           </div>
@@ -84,32 +105,28 @@ const AlertCard: React.FC<AlertCardProps> = ({ alert, onStatusUpdate }) => {
         )}
       </div>
       
-      <div className="flex flex-wrap gap-2 mb-3">
-        {alert.message && (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="border-blue-500 text-blue-600 hover:bg-blue-50"
-              >
-                <MessageSquare className="h-4 w-4 mr-1" />
-                View Message
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>SOS Message</DialogTitle>
-              </DialogHeader>
-              <div className="p-4 bg-gray-50 rounded-md max-h-96 overflow-y-auto">
-                <p className="whitespace-pre-wrap">{alert.message}</p>
-              </div>
-            </DialogContent>
-          </Dialog>
+      <div className="space-y-3 mb-4">
+        {alert.voice_recording && (
+          <div className="bg-gray-50 rounded-lg p-3">
+            <div className="flex items-center mb-2">
+              <Mic className="h-4 w-4 text-purple-600 mr-2" />
+              <h4 className="text-sm font-medium">Voice Recording</h4>
+            </div>
+            <VoiceRecordingPlayer 
+              recordingUrl={alert.voice_recording} 
+              label="Emergency Recording"
+            />
+          </div>
         )}
         
-        {alert.voice_recording && (
-          <VoiceRecordingPlayer recordingUrl={alert.voice_recording} />
+        {alert.message && (
+          <div className="bg-gray-50 rounded-lg p-3">
+            <div className="flex items-center mb-2">
+              <MessageSquare className="h-4 w-4 text-blue-600 mr-2" />
+              <h4 className="text-sm font-medium">Message</h4>
+            </div>
+            <p className="text-gray-700 text-sm whitespace-pre-wrap">{alert.message}</p>
+          </div>
         )}
       </div>
       
