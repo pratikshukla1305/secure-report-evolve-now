@@ -53,6 +53,13 @@ const AlertCard: React.FC<AlertCardProps> = ({ alert, onStatusUpdate }) => {
       window.open(mapUrl, '_blank');
     }
   };
+
+  // Validate voice recording URL before displaying the player
+  const hasValidVoiceRecording = Boolean(
+    alert.voice_recording && 
+    typeof alert.voice_recording === 'string' && 
+    alert.voice_recording.startsWith('http')
+  );
   
   return (
     <div className="border rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
@@ -106,7 +113,7 @@ const AlertCard: React.FC<AlertCardProps> = ({ alert, onStatusUpdate }) => {
       </div>
       
       <div className="space-y-3 mb-4">
-        {alert.voice_recording && (
+        {hasValidVoiceRecording && (
           <div className="bg-gray-50 rounded-lg p-3">
             <div className="flex items-center mb-2">
               <Mic className="h-4 w-4 text-purple-600 mr-2" />

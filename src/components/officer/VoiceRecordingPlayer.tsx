@@ -29,11 +29,21 @@ const VoiceRecordingPlayer: React.FC<VoiceRecordingPlayerProps> = ({
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
+  const [hasAttemptedLoad, setHasAttemptedLoad] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const { toast } = useToast();
 
+  // Validate the recordingUrl
+  const isValidUrl = recordingUrl && typeof recordingUrl === 'string' && 
+    (recordingUrl.startsWith('http://') || recordingUrl.startsWith('https://'));
+
   // Create audio element when component mounts
   useEffect(() => {
+    if (!isValidUrl) {
+      setError('Invalid recording URL');
+      return () => {};
+    }
+
     const audio = new Audio();
     
     // Add event listeners
@@ -61,6 +71,9 @@ const VoiceRecordingPlayer: React.FC<VoiceRecordingPlayerProps> = ({
       });
     });
     
+    // Set CORS headers
+    audio.crossOrigin = "anonymous";
+    
     audioRef.current = audio;
     
     // Clean up on unmount
@@ -74,17 +87,18 @@ const VoiceRecordingPlayer: React.FC<VoiceRecordingPlayerProps> = ({
         audioRef.current.removeEventListener('error', () => {});
       }
     };
-  }, [toast]);
+  }, [isValidUrl, toast, recordingUrl]);
 
-  // Update audio source when recordingUrl changes
+  // Pre-load the audio when component mounts
   useEffect(() => {
-    if (audioRef.current && recordingUrl) {
-      console.log('Setting audio source to:', recordingUrl);
+    if (audioRef.current && isValidUrl && !hasAttemptedLoad) {
+      console.log('Pre-loading audio source:', recordingUrl);
       audioRef.current.src = recordingUrl;
       audioRef.current.load();
+      setHasAttemptedLoad(true);
       setError(null);
     }
-  }, [recordingUrl]);
+  }, [recordingUrl, isValidUrl, hasAttemptedLoad]);
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
@@ -98,11 +112,11 @@ const VoiceRecordingPlayer: React.FC<VoiceRecordingPlayerProps> = ({
       return;
     }
     
-    if (!recordingUrl) {
-      console.error('No recording URL provided');
+    if (!isValidUrl) {
+      console.error('No valid recording URL provided');
       toast({
         title: "Missing Audio",
-        description: "No voice recording URL was provided.",
+        description: "No valid voice recording URL was provided.",
         variant: "destructive",
       });
       return;
@@ -119,7 +133,10 @@ const VoiceRecordingPlayer: React.FC<VoiceRecordingPlayerProps> = ({
         setError(null);
         
         // Ensure we're using the latest URL
-        audioRef.current.src = recordingUrl;
+        if (audioRef.current.src !== recordingUrl) {
+          audioRef.current.src = recordingUrl;
+          audioRef.current.load();
+        }
         
         const playPromise = audioRef.current.play();
         
@@ -137,6 +154,10 @@ const VoiceRecordingPlayer: React.FC<VoiceRecordingPlayerProps> = ({
               console.error("Error playing audio:", err);
               setError(`Failed to play audio: ${err.message}`);
               setIsLoading(false);
+              
+              // Try to refresh the audio source
+              audioRef.current!.src = recordingUrl;
+              audioRef.current!.load();
               
               toast({
                 title: "Audio Error",
@@ -182,14 +203,14 @@ const VoiceRecordingPlayer: React.FC<VoiceRecordingPlayerProps> = ({
   };
 
   const handleSeek = (value: number[]) => {
-    if (audioRef.current) {
+    if (audioRef.current && !isNaN(value[0])) {
       audioRef.current.currentTime = value[0];
       setCurrentTime(value[0]);
     }
   };
 
-  // If URL is empty, show a different state
-  if (!recordingUrl) {
+  // If URL is invalid, show a different state
+  if (!isValidUrl) {
     return (
       <Button 
         variant="outline" 
@@ -198,7 +219,7 @@ const VoiceRecordingPlayer: React.FC<VoiceRecordingPlayerProps> = ({
         className="border-gray-300 text-gray-400"
       >
         <AlertTriangle className="h-4 w-4 mr-1" />
-        No Recording Available
+        No Valid Recording Available
       </Button>
     );
   }

@@ -65,7 +65,12 @@ const SOSAlertsList: React.FC<SOSAlertsListProps> = ({ limit }) => {
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('SOS alerts subscription status:', status);
+        if (status !== 'SUBSCRIBED') {
+          console.error('Failed to subscribe to SOS alerts channel');
+        }
+      });
     
     // Subscribe to changes in voice_recordings table
     const voiceChannel = supabase
@@ -79,13 +84,29 @@ const SOSAlertsList: React.FC<SOSAlertsListProps> = ({ limit }) => {
         },
         (payload) => {
           console.log('Real-time voice recording change detected:', payload);
+          
+          if (payload.eventType === 'INSERT') {
+            // Show notification for new voice recordings
+            toast({
+              title: "New Voice Recording",
+              description: "A voice recording has been added to an SOS alert",
+              variant: "default",
+            });
+          }
+          
           fetchAlerts(); // Refresh to get updated voice recordings
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('Voice recordings subscription status:', status);
+        if (status !== 'SUBSCRIBED') {
+          console.error('Failed to subscribe to voice recordings channel');
+        }
+      });
 
     // Cleanup subscriptions
     return () => {
+      console.log('Cleaning up Supabase channels');
       supabase.removeChannel(sosChannel);
       supabase.removeChannel(voiceChannel);
     };
