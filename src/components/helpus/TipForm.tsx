@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,19 +9,36 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
+  FormDescription
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { 
+  Avatar, 
+  AvatarImage, 
+  AvatarFallback 
+} from '@/components/ui/avatar';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { submitCriminalTip } from '@/services/userServices';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
-import { Upload, X, Image, Loader2 } from 'lucide-react';
+import { 
+  Upload, 
+  X, 
+  Image, 
+  Loader2, 
+  MapPin, 
+  Camera 
+} from 'lucide-react';
+import { getWantedIndividuals } from '@/data/wantedIndividuals';
 
 const formSchema = z.object({
   description: z.string().min(10, 'Please provide at least 10 characters of description'),
@@ -63,6 +81,7 @@ const TipForm = () => {
   
   useEffect(() => {
     if (criminalId) {
+      const wantedIndividuals = getWantedIndividuals();
       const found = wantedIndividuals.find(c => c.id === criminalId);
       if (found) {
         setCriminal(found);
