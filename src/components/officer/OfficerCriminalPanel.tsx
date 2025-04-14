@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -143,6 +144,10 @@ const OfficerCriminalPanel = () => {
     
     try {
       for (const criminal of mockCriminals) {
+        // Convert danger level to proper case format for the database constraint
+        // Map "low", "medium", "high" to "Low", "Medium", "High"
+        const riskLevel = criminal.dangerLevel.charAt(0).toUpperCase() + criminal.dangerLevel.slice(1).toLowerCase();
+        
         await createCriminalProfile({
           full_name: criminal.name,
           age: parseInt(criminal.age) || null,
@@ -150,7 +155,7 @@ const OfficerCriminalPanel = () => {
           weight: parseFloat(criminal.weight) || null,
           last_known_location: criminal.lastKnownLocation,
           case_number: criminal.caseNumber,
-          risk_level: criminal.dangerLevel.toLowerCase(),
+          risk_level: riskLevel, // Use the properly formatted risk level
           charges: criminal.charges,
           additional_information: criminal.description || '',
           photo_url: criminal.photoUrl
