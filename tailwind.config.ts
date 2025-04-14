@@ -64,12 +64,18 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				shield: {
-					blue: '#007AFF',
+					blue: '#0f172a',
 					light: '#F5F8FF',
 					dark: '#1A1A1A',
 					gray: '#F2F2F7',
 					border: '#E5E5EA'
-				}
+				},
+				// Custom theme colors
+				deepblue: '#0f172a',
+				teal: '#0d9488',
+				amber: '#d97706',
+				lightgray: '#f8fafc',
+				darkslate: '#1e293b'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
