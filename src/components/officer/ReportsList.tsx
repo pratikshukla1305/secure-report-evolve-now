@@ -244,10 +244,44 @@ const ReportsList = ({ limit }: ReportListProps) => {
     return videoExtensions.some(ext => lowerUrl.includes(ext)) || lowerUrl.includes('video');
   };
 
+  const downloadPdfMaterial = (material: any) => {
+    const link = document.createElement('a');
+    link.href = material.pdf_url;
+    link.target = '_blank';
+    link.download = material.pdf_name || 'report.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const downloadReportPdf = (pdf: any, reportId: string) => {
+    const link = document.createElement('a');
+    link.href = pdf.file_url;
+    link.target = '_blank';
+    link.download = pdf.file_name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    fetch('/api/update-officer-materials', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        reportId: reportId,
+        pdfId: pdf.id,
+        pdfName: pdf.file_name,
+        pdfUrl: pdf.file_url,
+        pdfIsOfficial: pdf.is_official || false
+      }),
+    }).catch(err => console.error("Failed to update officer materials:", err));
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin text-shield-blue" />
+        <Loader2 className="h-8 w-8 animate-spin text-stripe-purple" />
       </div>
     );
   }
@@ -263,7 +297,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
   }
 
   return (
-    <div>
+    <div className="stripe-card p-4">
       <Table>
         <TableCaption>A list of citizen-submitted crime reports.</TableCaption>
         <TableHeader>
@@ -297,7 +331,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
               <TableCell className="text-right">
                 <div className="flex justify-end space-x-2">
                   <Button 
-                    variant="outline" 
+                    variant="stripe-outline" 
                     size="sm"
                     title="View Report"
                     onClick={() => handleViewReport(report)}
@@ -305,7 +339,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
                     <Eye className="h-4 w-4" />
                   </Button>
                   <Button 
-                    variant="outline" 
+                    variant="stripe-outline" 
                     size="sm"
                     title="Download PDF"
                     onClick={() => handleDownloadPdf(report)}
@@ -313,7 +347,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
                     <DownloadCloud className="h-4 w-4" />
                   </Button>
                   <Button 
-                    variant="outline" 
+                    variant="stripe-outline" 
                     size="sm"
                     title="Update Status"
                     onClick={() => handleUpdateStatus(report)}
@@ -328,7 +362,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
       </Table>
 
       <Dialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] stripe-card border-0">
           <DialogHeader>
             <DialogTitle>Update Report Status</DialogTitle>
             <DialogDescription>
@@ -342,7 +376,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
                 value={newStatus} 
                 onValueChange={setNewStatus}
               >
-                <SelectTrigger id="status">
+                <SelectTrigger id="status" className="stripe-input">
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -360,15 +394,16 @@ const ReportsList = ({ limit }: ReportListProps) => {
                 value={officerNotes}
                 onChange={(e) => setOfficerNotes(e.target.value)}
                 placeholder="Add notes about this report..."
-                className="min-h-[100px]"
+                className="min-h-[100px] stripe-input"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setStatusDialogOpen(false)}>
+            <Button variant="stripe-outline" onClick={() => setStatusDialogOpen(false)}>
               Cancel
             </Button>
             <Button 
+              variant="stripe"
               onClick={submitStatusUpdate}
               disabled={isSubmitting}
             >
@@ -388,7 +423,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
 
       {selectedVideo && (
         <Dialog open={!!selectedVideo} onOpenChange={(open) => !open && setSelectedVideo(null)}>
-          <DialogContent className="sm:max-w-[800px] max-h-[80vh]">
+          <DialogContent className="sm:max-w-[800px] max-h-[80vh] stripe-card border-0">
             <DialogHeader>
               <DialogTitle>Video Evidence</DialogTitle>
             </DialogHeader>
@@ -407,10 +442,10 @@ const ReportsList = ({ limit }: ReportListProps) => {
               </video>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setSelectedVideo(null)}>
+              <Button variant="stripe-outline" onClick={() => setSelectedVideo(null)}>
                 Close
               </Button>
-              <Button asChild>
+              <Button variant="stripe" asChild>
                 <a href={selectedVideo} download target="_blank" rel="noopener noreferrer">
                   <DownloadCloud className="mr-2 h-4 w-4" /> Download
                 </a>
@@ -422,7 +457,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
 
       {selectedReport && (
         <Dialog open={!!selectedReport} onOpenChange={(open) => !open && setSelectedReport(null)}>
-          <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto stripe-card border-0">
             <DialogHeader>
               <DialogTitle>{selectedReport.title || "Untitled Report"}</DialogTitle>
               <DialogDescription>
@@ -458,7 +493,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
                 {selectedReport.evidence && selectedReport.evidence.length > 0 ? (
                   <div className="grid grid-cols-2 gap-2">
                     {selectedReport.evidence.map((evidence: any, index: number) => (
-                      <div key={index} className="border rounded-md p-2">
+                      <div key={index} className="border rounded-md p-2 stripe-card">
                         <div className="aspect-video bg-gray-100 rounded-md mb-2 relative overflow-hidden">
                           {isVideoUrl(evidence.storage_path) ? (
                             <div 
@@ -528,70 +563,36 @@ const ReportsList = ({ limit }: ReportListProps) => {
                      reportMaterials[selectedReport.id]
                       ?.filter(m => m.pdf_url)
                       .map((material, index) => (
-                        <div key={`material-${index}`} className="flex items-center justify-between border rounded p-2">
+                        <div key={`material-${index}`} className="flex items-center justify-between border rounded p-2 stripe-card">
                           <div className="flex items-center">
                             <FileText className="h-4 w-4 text-stripe-blue mr-2" />
                             <span className="text-sm">{material.pdf_name || `Report PDF ${index + 1}`}</span>
                           </div>
                           <Button 
-                            variant="ghost" 
+                            variant="stripe-outline" 
                             size="sm" 
-                            onClick={() => {
-                              const link = document.createElement('a');
-                              link.href = material.pdf_url;
-                              link.target = '_blank';
-                              link.download = material.pdf_name || 'report.pdf';
-                              document.body.appendChild(link);
-                              link.click();
-                              document.body.removeChild(link);
-                            }}
+                            onClick={() => downloadPdfMaterial(material)}
                           >
                             <DownloadCloud className="h-4 w-4" />
                           </Button>
                         </div>
                       ))}
                     
-                    {selectedReport.report_pdfs && selectedReport.report_pdfs.map((pdf: any, index: number) => {
-                      const downloadPdf = () => {
-                        const link = document.createElement('a');
-                        link.href = pdf.file_url;
-                        link.target = '_blank';
-                        link.download = pdf.file_name;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        
-                        fetch('/api/update-officer-materials', {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json',
-                          },
-                          body: JSON.stringify({
-                            reportId: selectedReport.id,
-                            pdfId: pdf.id,
-                            pdfName: pdf.file_name,
-                            pdfUrl: pdf.file_url,
-                            pdfIsOfficial: pdf.is_official || false
-                          }),
-                        }).catch(err => console.error("Failed to update officer materials:", err));
-                      };
-                      
-                      return (
-                        <div key={`pdf-${index}`} className="flex items-center justify-between border rounded p-2 stripe-card">
-                          <div className="flex items-center">
-                            <FileText className="h-4 w-4 text-stripe-blue mr-2" />
-                            <span className="text-sm">{pdf.file_name || `Report PDF ${index + 1}`}</span>
-                          </div>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            onClick={downloadPdf}
-                          >
-                            <DownloadCloud className="h-4 w-4" />
-                          </Button>
+                    {selectedReport.report_pdfs && selectedReport.report_pdfs.map((pdf: any, index: number) => (
+                      <div key={`pdf-${index}`} className="flex items-center justify-between border rounded p-2 stripe-card">
+                        <div className="flex items-center">
+                          <FileText className="h-4 w-4 text-stripe-blue mr-2" />
+                          <span className="text-sm">{pdf.file_name || `Report PDF ${index + 1}`}</span>
                         </div>
-                      );
-                    })}
+                        <Button 
+                          variant="stripe-outline" 
+                          size="sm" 
+                          onClick={() => downloadReportPdf(pdf, selectedReport.id)}
+                        >
+                          <DownloadCloud className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
                 ) : (
                   <p className="text-sm text-gray-500 italic">No PDFs available</p>
@@ -600,12 +601,13 @@ const ReportsList = ({ limit }: ReportListProps) => {
             </div>
             <DialogFooter>
               <Button
-                variant="outline"
+                variant="stripe-outline"
                 onClick={() => setSelectedReport(null)}
               >
                 <X className="h-4 w-4 mr-2" /> Close
               </Button>
               <Button
+                variant="stripe"
                 onClick={() => {
                   setSelectedReport(null);
                   handleUpdateStatus(selectedReport);
