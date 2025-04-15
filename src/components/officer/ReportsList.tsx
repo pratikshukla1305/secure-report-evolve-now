@@ -302,11 +302,11 @@ const ReportsList = ({ limit }: ReportListProps) => {
   }
 
   return (
-    <div className="stripe-card p-4">
+    <div className="stripe-card p-4 animate-fade-in">
       <Table>
         <TableCaption>A list of citizen-submitted crime reports.</TableCaption>
         <TableHeader>
-          <TableRow>
+          <TableRow className="bg-stripe-gray/30">
             <TableHead>Date</TableHead>
             <TableHead>Report ID</TableHead>
             <TableHead>Title</TableHead>
@@ -316,8 +316,8 @@ const ReportsList = ({ limit }: ReportListProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {reports.map((report) => (
-            <TableRow key={report.id}>
+          {reports.map((report, index) => (
+            <TableRow key={report.id} className={`animate-fade-in transition-all duration-300 hover:bg-stripe-gray/10`} style={{animationDelay: `${index * 0.05}s`}}>
               <TableCell className="font-medium">
                 {format(new Date(report.report_date || report.created_at), 'MMM dd, yyyy')}
               </TableCell>
@@ -340,8 +340,9 @@ const ReportsList = ({ limit }: ReportListProps) => {
                     size="sm"
                     title="View Report"
                     onClick={() => handleViewReport(report)}
+                    className="hover:scale-105"
                   >
-                    <Eye className="h-4 w-4" />
+                    <Eye className="h-4 w-4 text-stripe-purple" />
                   </Button>
                   <Button 
                     variant="stripe-outline" 
@@ -351,16 +352,18 @@ const ReportsList = ({ limit }: ReportListProps) => {
                       handleDownloadPdf(report);
                       return null; // Explicitly return null for React
                     }}
+                    className="hover:scale-105"
                   >
-                    <DownloadCloud className="h-4 w-4" />
+                    <DownloadCloud className="h-4 w-4 text-stripe-blue" />
                   </Button>
                   <Button 
                     variant="stripe-outline" 
                     size="sm"
                     title="Update Status"
                     onClick={() => handleUpdateStatus(report)}
+                    className="hover:scale-105"
                   >
-                    <FileText className="h-4 w-4" />
+                    <FileText className="h-4 w-4 text-stripe-green" />
                   </Button>
                 </div>
               </TableCell>
@@ -370,7 +373,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
       </Table>
 
       <Dialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
-        <DialogContent className="sm:max-w-[425px] stripe-card border-0">
+        <DialogContent className="sm:max-w-[425px] stripe-card border-0 animate-scale-in">
           <DialogHeader>
             <DialogTitle>Update Report Status</DialogTitle>
             <DialogDescription>
@@ -379,15 +382,15 @@ const ReportsList = ({ limit }: ReportListProps) => {
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="status">Status</Label>
+              <Label htmlFor="status" className="text-stripe-slate font-semibold">Status</Label>
               <Select 
                 value={newStatus} 
                 onValueChange={setNewStatus}
               >
-                <SelectTrigger id="status" className="stripe-input">
+                <SelectTrigger id="status" className="stripe-input border-2 shadow-sm">
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="border-2 bg-white shadow-md">
                   <SelectItem value="submitted">Submitted</SelectItem>
                   <SelectItem value="processing">Processing</SelectItem>
                   <SelectItem value="completed">Completed</SelectItem>
@@ -396,13 +399,13 @@ const ReportsList = ({ limit }: ReportListProps) => {
               </Select>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="notes">Officer Notes (visible to citizen)</Label>
+              <Label htmlFor="notes" className="text-stripe-slate font-semibold">Officer Notes (visible to citizen)</Label>
               <Textarea
                 id="notes"
                 value={officerNotes}
                 onChange={(e) => setOfficerNotes(e.target.value)}
                 placeholder="Add notes about this report..."
-                className="min-h-[100px] stripe-input"
+                className="min-h-[100px] stripe-input border-2 shadow-sm"
               />
             </div>
           </div>
@@ -414,6 +417,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
               variant="stripe"
               onClick={submitStatusUpdate}
               disabled={isSubmitting}
+              className="animate-pulse-subtle"
             >
               {isSubmitting ? (
                 <>
@@ -431,11 +435,11 @@ const ReportsList = ({ limit }: ReportListProps) => {
 
       {selectedVideo && (
         <Dialog open={!!selectedVideo} onOpenChange={(open) => !open && setSelectedVideo(null)}>
-          <DialogContent className="sm:max-w-[800px] max-h-[80vh] stripe-card border-0">
+          <DialogContent className="sm:max-w-[800px] max-h-[80vh] stripe-card border-0 animate-fade-in">
             <DialogHeader>
               <DialogTitle>Video Evidence</DialogTitle>
             </DialogHeader>
-            <div className="aspect-video w-full overflow-hidden rounded-md border">
+            <div className="aspect-video w-full overflow-hidden rounded-md border shadow-inner">
               <video 
                 src={selectedVideo}
                 controls
@@ -453,7 +457,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
               <Button variant="stripe-outline" onClick={() => setSelectedVideo(null)}>
                 Close
               </Button>
-              <Button variant="stripe" asChild>
+              <Button variant="stripe" asChild className="hover:scale-105">
                 <a href={selectedVideo} download target="_blank" rel="noopener noreferrer">
                   <DownloadCloud className="mr-2 h-4 w-4" /> Download
                 </a>
@@ -465,52 +469,52 @@ const ReportsList = ({ limit }: ReportListProps) => {
 
       {selectedReport && (
         <Dialog open={!!selectedReport} onOpenChange={(open) => !open && setSelectedReport(null)}>
-          <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto stripe-card border-0">
+          <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto stripe-card border-0 animate-scale-in">
             <DialogHeader>
-              <DialogTitle>{selectedReport.title || "Untitled Report"}</DialogTitle>
+              <DialogTitle className="text-stripe-slate text-xl">{selectedReport.title || "Untitled Report"}</DialogTitle>
               <DialogDescription>
-                Report ID: {selectedReport.id.substring(0, 8)}
+                Report ID: <span className="font-mono text-stripe-purple">{selectedReport.id.substring(0, 8)}</span>
                 {' · '}
                 Submitted: {format(new Date(selectedReport.report_date || selectedReport.created_at), 'MMMM dd, yyyy')}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               {selectedReport.description && (
-                <div>
-                  <h3 className="text-sm font-medium text-gray-500 mb-1">Description</h3>
+                <div className="bg-stripe-gray/10 p-3 rounded-lg shadow-sm">
+                  <h3 className="text-sm font-medium text-stripe-purple mb-1">Description</h3>
                   <p className="text-sm">{selectedReport.description}</p>
                 </div>
               )}
               
               {selectedReport.location && (
-                <div>
-                  <h3 className="text-sm font-medium text-gray-500 mb-1">Location</h3>
+                <div className="bg-stripe-gray/10 p-3 rounded-lg shadow-sm">
+                  <h3 className="text-sm font-medium text-stripe-blue mb-1">Location</h3>
                   <p className="text-sm">{selectedReport.location}</p>
                 </div>
               )}
               
               {selectedReport.detailed_location && (
-                <div>
-                  <h3 className="text-sm font-medium text-gray-500 mb-1">Detailed Location</h3>
+                <div className="bg-stripe-gray/10 p-3 rounded-lg shadow-sm">
+                  <h3 className="text-sm font-medium text-stripe-blue mb-1">Detailed Location</h3>
                   <p className="text-sm">{selectedReport.detailed_location}</p>
                 </div>
               )}
 
               <div>
-                <h3 className="text-sm font-medium text-gray-500 mb-1">Evidence</h3>
+                <h3 className="text-sm font-medium text-stripe-slate-light mb-2">Evidence</h3>
                 {selectedReport.evidence && selectedReport.evidence.length > 0 ? (
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-3">
                     {selectedReport.evidence.map((evidence: any, index: number) => (
-                      <div key={index} className="border rounded-md p-2 stripe-card">
-                        <div className="aspect-video bg-gray-100 rounded-md mb-2 relative overflow-hidden">
+                      <div key={index} className="border-2 rounded-lg p-2 stripe-card hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
+                        <div className="aspect-video bg-gray-100 rounded-md mb-2 relative overflow-hidden shadow-inner">
                           {isVideoUrl(evidence.storage_path) ? (
                             <div 
                               className="w-full h-full bg-gray-200 flex items-center justify-center cursor-pointer"
                               onClick={() => playVideo(evidence.storage_path)}
                             >
-                              <Video className="h-10 w-10 text-gray-500" />
+                              <Video className="h-10 w-10 text-stripe-blue opacity-70" />
                               <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                                <div className="bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+                                <div className="bg-stripe-purple/80 text-white px-3 py-1 rounded-full text-sm">
                                   Click to play
                                 </div>
                               </div>
@@ -519,7 +523,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
                             <img 
                               src={evidence.storage_path} 
                               alt={evidence.title || `Evidence ${index + 1}`}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.onerror = null;
@@ -529,12 +533,12 @@ const ReportsList = ({ limit }: ReportListProps) => {
                           )}
                         </div>
                         <div className="flex justify-between items-center">
-                          <p className="text-xs font-medium truncate">{evidence.title || `Evidence ${index + 1}`}</p>
+                          <p className="text-xs font-medium truncate text-stripe-slate">{evidence.title || `Evidence ${index + 1}`}</p>
                           {isVideoUrl(evidence.storage_path) && (
                             <Button 
                               variant="ghost" 
                               size="sm" 
-                              className="h-6 w-6 p-0"
+                              className="h-6 w-6 p-0 hover:bg-stripe-purple/10 hover:text-stripe-purple"
                               onClick={() => playVideo(evidence.storage_path)}
                             >
                               <Video className="h-4 w-4" />
@@ -545,24 +549,23 @@ const ReportsList = ({ limit }: ReportListProps) => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-500">No evidence attached</p>
+                  <p className="text-sm text-gray-500 italic">No evidence attached</p>
                 )}
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-gray-500 mb-1">Officer Notes</h3>
+                <h3 className="text-sm font-medium text-stripe-slate-light mb-1">Officer Notes</h3>
                 {selectedReport.officer_notes ? (
-                  <p className="text-sm">{selectedReport.officer_notes}</p>
+                  <div className="bg-stripe-gray/10 p-3 rounded-lg shadow-sm">
+                    <p className="text-sm">{selectedReport.officer_notes}</p>
+                  </div>
                 ) : (
                   <p className="text-sm text-gray-500 italic">No notes added</p>
                 )}
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-gray-500 mb-1">Report PDFs</h3>
-                {console.log("Checking PDFs for report:", selectedReport.id)}
-                {console.log("report_pdfs:", selectedReport.report_pdfs)}
-                {console.log("reportMaterials:", reportMaterials[selectedReport.id])}
+                <h3 className="text-sm font-medium text-stripe-slate-light mb-2">Report PDFs</h3>
                 
                 {(selectedReport.report_pdfs && selectedReport.report_pdfs.length > 0) || 
                  (reportMaterials[selectedReport.id] && reportMaterials[selectedReport.id]?.some(m => m.pdf_url)) ? (
@@ -571,10 +574,10 @@ const ReportsList = ({ limit }: ReportListProps) => {
                      reportMaterials[selectedReport.id]
                       ?.filter(m => m.pdf_url)
                       .map((material, index) => (
-                        <div key={`material-${index}`} className="flex items-center justify-between border rounded p-2 stripe-card">
+                        <div key={`material-${index}`} className="flex items-center justify-between border-2 rounded-lg p-3 stripe-card hover:shadow-md transition-all duration-300">
                           <div className="flex items-center">
-                            <FileText className="h-4 w-4 text-stripe-blue mr-2" />
-                            <span className="text-sm">{material.pdf_name || `Report PDF ${index + 1}`}</span>
+                            <FileText className="h-5 w-5 text-stripe-blue mr-2" />
+                            <span className="text-sm font-medium">{material.pdf_name || `Report PDF ${index + 1}`}</span>
                           </div>
                           <Button 
                             variant="stripe-outline" 
@@ -583,17 +586,18 @@ const ReportsList = ({ limit }: ReportListProps) => {
                               downloadPdfMaterial(material);
                               return null; // Explicitly return null for React
                             }}
+                            className="hover:scale-105"
                           >
-                            <DownloadCloud className="h-4 w-4" />
+                            <DownloadCloud className="h-4 w-4 text-stripe-blue" />
                           </Button>
                         </div>
                       ))}
                     
                     {selectedReport.report_pdfs && selectedReport.report_pdfs.map((pdf: any, index: number) => (
-                        <div key={`pdf-${index}`} className="flex items-center justify-between border rounded p-2 stripe-card">
+                        <div key={`pdf-${index}`} className="flex items-center justify-between border-2 rounded-lg p-3 stripe-card hover:shadow-md transition-all duration-300">
                           <div className="flex items-center">
-                            <FileText className="h-4 w-4 text-stripe-blue mr-2" />
-                            <span className="text-sm">{pdf.file_name || `Report PDF ${index + 1}`}</span>
+                            <FileText className="h-5 w-5 text-stripe-blue mr-2" />
+                            <span className="text-sm font-medium">{pdf.file_name || `Report PDF ${index + 1}`}</span>
                           </div>
                           <Button 
                             variant="stripe-outline" 
@@ -602,8 +606,9 @@ const ReportsList = ({ limit }: ReportListProps) => {
                               downloadReportPdf(pdf, selectedReport.id);
                               return null; // Explicitly return null for React
                             }}
+                            className="hover:scale-105"
                           >
-                            <DownloadCloud className="h-4 w-4" />
+                            <DownloadCloud className="h-4 w-4 text-stripe-blue" />
                           </Button>
                         </div>
                     ))}
@@ -617,6 +622,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
               <Button
                 variant="stripe-outline"
                 onClick={() => setSelectedReport(null)}
+                className="hover:scale-105"
               >
                 <X className="h-4 w-4 mr-2" /> Close
               </Button>
@@ -626,6 +632,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
                   setSelectedReport(null);
                   handleUpdateStatus(selectedReport);
                 }}
+                className="hover:scale-105"
               >
                 <FileText className="h-4 w-4 mr-2" /> Update Status
               </Button>
