@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { 
   Table, TableBody, TableCaption, TableCell, 
@@ -99,7 +98,6 @@ const ReportsList = ({ limit }: ReportListProps) => {
     setSelectedReport(report);
   };
 
-  // Modified to return nothing explicitly
   const handleDownloadPdf = async (report: any) => {
     console.log("Attempting to download PDF for report:", report.id);
     console.log("Available materials:", reportMaterials[report.id]);
@@ -134,7 +132,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
         console.error("Error downloading PDF:", error);
         toast.error("Failed to download PDF");
       }
-      return;
+      return null;
     }
     
     if (report.report_pdfs && report.report_pdfs.length > 0) {
@@ -191,6 +189,8 @@ const ReportsList = ({ limit }: ReportListProps) => {
       console.log("No PDFs found in report_pdfs");
       toast.error("No PDF available for this report");
     }
+    
+    return null;
   };
 
   const handleUpdateStatus = (report: any) => {
@@ -246,7 +246,6 @@ const ReportsList = ({ limit }: ReportListProps) => {
     return videoExtensions.some(ext => lowerUrl.includes(ext)) || lowerUrl.includes('video');
   };
 
-  // Fixed: Modified these functions to explicitly return nothing
   const downloadPdfMaterial = (material: any) => {
     const link = document.createElement('a');
     link.href = material.pdf_url;
@@ -255,7 +254,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    // No return statement needed
+    return null;
   };
 
   const downloadReportPdf = (pdf: any, reportId: string) => {
@@ -280,7 +279,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
         pdfIsOfficial: pdf.is_official || false
       }),
     }).catch(err => console.error("Failed to update officer materials:", err));
-    // No return statement needed
+    return null;
   };
 
   if (isLoading) {
@@ -350,7 +349,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
                     title="Download PDF"
                     onClick={() => {
                       handleDownloadPdf(report);
-                      return null; // Explicitly return null for React
+                      return null;
                     }}
                     className="hover:scale-105"
                   >
@@ -584,7 +583,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
                             size="sm" 
                             onClick={() => {
                               downloadPdfMaterial(material);
-                              return null; // Explicitly return null for React
+                              return null;
                             }}
                             className="hover:scale-105"
                           >
@@ -604,7 +603,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
                             size="sm" 
                             onClick={() => {
                               downloadReportPdf(pdf, selectedReport.id);
-                              return null; // Explicitly return null for React
+                              return null;
                             }}
                             className="hover:scale-105"
                           >

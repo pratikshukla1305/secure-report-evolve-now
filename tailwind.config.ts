@@ -70,7 +70,7 @@ export default {
 					gray: '#F2F2F7',
 					border: '#E5E5EA'
 				},
-				// Stripe-inspired colors
+				// Enhanced Stripe-inspired colors
 				stripe: {
 					purple: '#635BFF',
 					'purple-light': '#7A73FF',
