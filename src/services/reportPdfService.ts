@@ -85,6 +85,14 @@ export const saveReportPdf = async (
     
     try {
       // Call the edge function for updating officer materials
+      console.log("Calling update-officer-materials function with:", {
+        reportId,
+        pdfId: pdfData.id,
+        pdfName: fileName,
+        pdfUrl: fileUrl,
+        pdfIsOfficial: isOfficial
+      });
+      
       const { data, error } = await supabase.functions.invoke('update-officer-materials', {
         body: {
           reportId,
@@ -227,6 +235,8 @@ export const shareReportViaEmail = async (
  */
 export const getOfficerReportMaterials = async (reportId: string): Promise<any[]> => {
   try {
+    console.log(`Fetching officer report materials for report: ${reportId}`);
+    
     const { data, error } = await supabase
       .from('officer_report_materials')
       .select('*')
@@ -237,6 +247,7 @@ export const getOfficerReportMaterials = async (reportId: string): Promise<any[]
       throw error;
     }
     
+    console.log(`Found ${data?.length || 0} officer report materials`);
     return data || [];
   } catch (error) {
     console.error("Error in getOfficerReportMaterials:", error);

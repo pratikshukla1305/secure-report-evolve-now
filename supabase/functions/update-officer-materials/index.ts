@@ -74,13 +74,65 @@ serve(async (req) => {
       }
     }
     
-    console.log("Calling RPC function with params:", {
-      p_report_id: reportId,
-      p_pdf_id: pdfId,
-      p_pdf_name: pdfName,
-      p_pdf_url: pdfUrl,
-      p_pdf_is_official: pdfIsOfficial
-    });
+    console.log("Report information retrieved:", { title, status, user_id });
+    
+    // Check if the officer_report_materials table has existing entries for this report
+    const { data: existingMaterials, error: materialsError } = await supabase
+      .from('officer_report_materials')
+      .select('*')
+      .eq('report_id', reportId);
+      
+    if (materialsError) {
+      console.error('Error checking existing materials:', materialsError);
+    }
+    
+    console.log("Existing materials:", existingMaterials);
+    
+    // If there's a PDF update
+    if (pdfId && pdfUrl) {
+      // Check if this PDF already exists in the materials
+      const existingPdf = existingMaterials?.find(m => m.pdf_id === pdfId);
+      
+      if (existingPdf) {
+        // Update existing record
+        console.log(`Updating existing PDF record for ID: ${pdfId}`);
+        const { error: updateError } = await supabase
+          .from('officer_report_materials')
+          .update({
+            pdf_name: pdfName,
+            pdf_url: pdfUrl,
+            pdf_is_official: pdfIsOfficial,
+            report_title: title,
+            report_status: status,
+            user_id: user_id
+          })
+          .eq('pdf_id', pdfId)
+          .eq('report_id', reportId);
+          
+        if (updateError) {
+          console.error('Error updating PDF record:', updateError);
+        }
+      } else {
+        // Insert new record
+        console.log(`Inserting new PDF record for ID: ${pdfId}`);
+        const { error: insertError } = await supabase
+          .from('officer_report_materials')
+          .insert({
+            report_id: reportId,
+            pdf_id: pdfId,
+            pdf_name: pdfName,
+            pdf_url: pdfUrl,
+            pdf_is_official: pdfIsOfficial,
+            report_title: title,
+            report_status: status,
+            user_id: user_id
+          });
+          
+        if (insertError) {
+          console.error('Error inserting PDF record:', insertError);
+        }
+      }
+    }
     
     // Check for video evidence and sync with officer_report_materials
     if (videoUrl === null && pdfId === null) {
@@ -93,6 +145,8 @@ serve(async (req) => {
       if (evidenceError) {
         console.error('Error fetching evidence:', evidenceError);
       } else if (evidenceData && evidenceData.length > 0) {
+        console.log("Found evidence items:", evidenceData.length);
+        
         // Add video evidence to officer materials
         for (const evidence of evidenceData) {
           if (evidence.storage_path && 
@@ -100,22 +154,34 @@ serve(async (req) => {
                evidence.storage_path.includes('.mov') || 
                evidence.storage_path.includes('video'))) {
             
-            // Insert video evidence into officer_report_materials
-            const { data: insertData, error: insertError } = await supabase
-              .from('officer_report_materials')
-              .upsert({
-                report_id: reportId,
-                video_url: evidence.storage_path,
-                video_name: evidence.title || 'Video Evidence',
-                report_title: title,
-                report_status: status,
-                user_id: user_id
-              });
-              
-            if (insertError) {
-              console.error('Error inserting video evidence:', insertError);
+            console.log("Processing video evidence:", evidence);
+            
+            // Check if this video already exists in the materials
+            const existingVideo = existingMaterials?.find(m => 
+              m.video_url === evidence.storage_path
+            );
+            
+            if (!existingVideo) {
+              // Insert video evidence into officer_report_materials
+              console.log("Inserting new video evidence record");
+              const { data: insertData, error: insertError } = await supabase
+                .from('officer_report_materials')
+                .insert({
+                  report_id: reportId,
+                  video_url: evidence.storage_path,
+                  video_name: evidence.title || 'Video Evidence',
+                  report_title: title,
+                  report_status: status,
+                  user_id: user_id
+                });
+                
+              if (insertError) {
+                console.error('Error inserting video evidence:', insertError);
+              } else {
+                console.log('Successfully added video evidence to officer materials');
+              }
             } else {
-              console.log('Successfully added video evidence to officer materials');
+              console.log("Video evidence already exists in materials, skipping");
             }
           }
         }
@@ -123,6 +189,22 @@ serve(async (req) => {
     }
     
     // Call the update_officer_report_materials database function
+    console.log("Calling RPC function with params:", {
+      p_report_id: reportId,
+      p_pdf_id: pdfId,
+      p_pdf_name: pdfName,
+      p_pdf_url: pdfUrl,
+      p_pdf_is_official: pdfIsOfficial,
+      p_video_id: videoId,
+      p_video_name: videoName, 
+      p_video_url: videoUrl,
+      p_video_status: videoStatus,
+      p_video_size: videoSize,
+      p_report_title: title,
+      p_report_status: status,
+      p_user_id: user_id
+    });
+    
     const { data, error } = await supabase.rpc(
       'update_officer_report_materials',
       {
@@ -148,6 +230,53 @@ serve(async (req) => {
         JSON.stringify({ success: false, error: error.message }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
       )
+    }
+    
+    // Also check if we need to sync PDFs from report_pdfs
+    if (!pdfId) {
+      console.log("No PDF ID provided, checking report_pdfs table");
+      
+      const { data: pdfData, error: pdfError } = await supabase
+        .from('report_pdfs')
+        .select('*')
+        .eq('report_id', reportId)
+        .order('created_at', { ascending: false });
+        
+      if (pdfError) {
+        console.error('Error fetching PDFs:', pdfError);
+      } else if (pdfData && pdfData.length > 0) {
+        console.log("Found PDFs in report_pdfs:", pdfData.length);
+        
+        // Check existing officer materials
+        for (const pdf of pdfData) {
+          // Check if this PDF already exists in the materials
+          const pdfExists = existingMaterials?.some(m => m.pdf_id === pdf.id);
+          
+          if (!pdfExists) {
+            console.log(`Adding PDF ${pdf.id} to officer materials`);
+            
+            // Add PDF to officer materials
+            const { error: insertError } = await supabase
+              .from('officer_report_materials')
+              .insert({
+                report_id: reportId,
+                pdf_id: pdf.id,
+                pdf_name: pdf.file_name,
+                pdf_url: pdf.file_url,
+                pdf_is_official: pdf.is_official || false,
+                report_title: title,
+                report_status: status,
+                user_id: user_id
+              });
+              
+            if (insertError) {
+              console.error('Error inserting PDF to officer materials:', insertError);
+            } else {
+              console.log(`Successfully added PDF ${pdf.id} to officer materials`);
+            }
+          }
+        }
+      }
     }
     
     return new Response(

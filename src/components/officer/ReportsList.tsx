@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { 
   Table, TableBody, TableCaption, TableCell, 
@@ -56,12 +55,13 @@ const ReportsList = ({ limit }: ReportListProps) => {
         setReports(fetchedReports);
       }
       
-      // Fetch PDF materials for each report
       const materialsMap: {[key: string]: any[]} = {};
       
       for (const report of fetchedReports.slice(0, limit || fetchedReports.length)) {
         try {
+          console.log(`Fetching materials for report ${report.id}`);
           const materials = await getOfficerReportMaterials(report.id);
+          console.log(`Materials for report ${report.id}:`, materials);
           materialsMap[report.id] = materials;
         } catch (error) {
           console.error(`Error fetching materials for report ${report.id}:`, error);
@@ -99,12 +99,16 @@ const ReportsList = ({ limit }: ReportListProps) => {
   };
 
   const handleDownloadPdf = async (report: any) => {
-    // First check if we have materials for this report
+    console.log("Attempting to download PDF for report:", report.id);
+    console.log("Available materials:", reportMaterials[report.id]);
+    
     const materials = reportMaterials[report.id] || [];
+    console.log("Materials for this report:", materials);
+    
     const pdfMaterial = materials.find(m => m.pdf_url);
     
-    // If we have a PDF in the materials, use that
     if (pdfMaterial && pdfMaterial.pdf_url) {
+      console.log("Found PDF in materials:", pdfMaterial);
       try {
         const link = document.createElement('a');
         link.href = pdfMaterial.pdf_url;
@@ -114,7 +118,6 @@ const ReportsList = ({ limit }: ReportListProps) => {
         link.click();
         document.body.removeChild(link);
         
-        // Log the download
         if (officer && officer.id) {
           await logPdfDownload(
             report.id, 
@@ -132,12 +135,11 @@ const ReportsList = ({ limit }: ReportListProps) => {
       return;
     }
     
-    // Check if there's a PDF in the report_pdfs array
     if (report.report_pdfs && report.report_pdfs.length > 0) {
+      console.log("Found PDFs in report_pdfs:", report.report_pdfs);
       try {
         const pdfFile = report.report_pdfs[0];
         
-        // Create a link and click it to download
         const link = document.createElement('a');
         link.href = pdfFile.file_url;
         link.target = '_blank';
@@ -146,7 +148,29 @@ const ReportsList = ({ limit }: ReportListProps) => {
         link.click();
         document.body.removeChild(link);
         
-        // Log the download
+        try {
+          console.log("Updating officer materials with PDF info");
+          const { data, error } = await fetch('/api/update-officer-materials', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              reportId: report.id,
+              pdfId: pdfFile.id,
+              pdfName: pdfFile.file_name,
+              pdfUrl: pdfFile.file_url,
+              pdfIsOfficial: pdfFile.is_official || false
+            }),
+          }).then(res => res.json());
+          
+          if (error) {
+            console.error("Error updating officer materials:", error);
+          }
+        } catch (updateError) {
+          console.error("Failed to update officer materials:", updateError);
+        }
+        
         if (officer && officer.id) {
           await logPdfDownload(
             report.id, 
@@ -162,6 +186,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
         toast.error("Failed to download PDF");
       }
     } else {
+      console.log("No PDFs found in report_pdfs");
       toast.error("No PDF available for this report");
     }
   };
@@ -179,7 +204,6 @@ const ReportsList = ({ limit }: ReportListProps) => {
     setIsSubmitting(true);
 
     try {
-      // Update the report status
       const response = await fetch(`/api/reports/${selectedReport.id}/status`, {
         method: 'PUT',
         headers: {
@@ -199,7 +223,6 @@ const ReportsList = ({ limit }: ReportListProps) => {
       toast.success(`Report status updated to ${newStatus}`);
       setStatusDialogOpen(false);
       
-      // Refresh reports
       fetchReports();
       
     } catch (error) {
@@ -214,7 +237,6 @@ const ReportsList = ({ limit }: ReportListProps) => {
     setSelectedVideo(url);
   };
 
-  // Helper to determine if a URL is a video
   const isVideoUrl = (url: string): boolean => {
     if (!url) return false;
     const videoExtensions = ['.mp4', '.mov', '.avi', '.webm', '.mkv'];
@@ -305,7 +327,6 @@ const ReportsList = ({ limit }: ReportListProps) => {
         </TableBody>
       </Table>
 
-      {/* Status Update Dialog */}
       <Dialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -365,7 +386,6 @@ const ReportsList = ({ limit }: ReportListProps) => {
         </DialogContent>
       </Dialog>
 
-      {/* Video Player Modal */}
       {selectedVideo && (
         <Dialog open={!!selectedVideo} onOpenChange={(open) => !open && setSelectedVideo(null)}>
           <DialogContent className="sm:max-w-[800px] max-h-[80vh]">
@@ -400,7 +420,6 @@ const ReportsList = ({ limit }: ReportListProps) => {
         </Dialog>
       )}
 
-      {/* Report View Dialog */}
       {selectedReport && (
         <Dialog open={!!selectedReport} onOpenChange={(open) => !open && setSelectedReport(null)}>
           <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
@@ -496,13 +515,15 @@ const ReportsList = ({ limit }: ReportListProps) => {
                 )}
               </div>
 
-              {/* Display PDFs */}
               <div>
                 <h3 className="text-sm font-medium text-gray-500 mb-1">Report PDFs</h3>
+                {console.log("Checking PDFs for report:", selectedReport.id)}
+                {console.log("report_pdfs:", selectedReport.report_pdfs)}
+                {console.log("reportMaterials:", reportMaterials[selectedReport.id])}
+                
                 {(selectedReport.report_pdfs && selectedReport.report_pdfs.length > 0) || 
                  (reportMaterials[selectedReport.id] && reportMaterials[selectedReport.id]?.some(m => m.pdf_url)) ? (
                   <div className="space-y-2">
-                    {/* First check officer materials */}
                     {reportMaterials[selectedReport.id] && 
                      reportMaterials[selectedReport.id]
                       ?.filter(m => m.pdf_url)
@@ -530,7 +551,6 @@ const ReportsList = ({ limit }: ReportListProps) => {
                         </div>
                       ))}
                     
-                    {/* Then check report_pdfs array */}
                     {selectedReport.report_pdfs && selectedReport.report_pdfs.map((pdf: any, index: number) => (
                       <div key={`pdf-${index}`} className="flex items-center justify-between border rounded p-2">
                         <div className="flex items-center">
@@ -545,9 +565,20 @@ const ReportsList = ({ limit }: ReportListProps) => {
                             link.href = pdf.file_url;
                             link.target = '_blank';
                             link.download = pdf.file_name;
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
+                            
+                            fetch('/api/update-officer-materials', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                reportId: selectedReport.id,
+                                pdfId: pdf.id,
+                                pdfName: pdf.file_name,
+                                pdfUrl: pdf.file_url,
+                                pdfIsOfficial: pdf.is_official || false
+                              }),
+                            }).catch(err => console.error("Failed to update officer materials:", err));
                           }}
                         >
                           <DownloadCloud className="h-4 w-4" />
