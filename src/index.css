@@ -139,7 +139,7 @@
   }
   
   .stripe-button {
-    @apply bg-stripe-purple text-white rounded-full px-6 py-3 font-medium transition-all duration-200 hover:bg-stripe-purple-light transform hover:-translate-y-0.5 shadow-stripe-button hover:shadow-stripe-button-hover;
+    @apply bg-stripe-purple text-white rounded-full px-6 py-3 font-medium transition-all duration-300 hover:bg-stripe-purple-light transform hover:-translate-y-0.5 shadow-stripe-button hover:shadow-stripe-button-hover;
   }
   
   .stripe-input {
@@ -216,6 +216,7 @@
   }
 }
 
+/* Advanced Stripe animations */
 .shimmer {
   background: linear-gradient(90deg, #f0f0f0 25%, #f8f8f8 50%, #f0f0f0 75%);
   background-size: 1000px 100%;
@@ -252,7 +253,7 @@
   background: linear-gradient(135deg, #0A2540 0%, #425466 100%);
 }
 
-/* Animations */
+/* Advanced Stripe animations */
 .animate-stripe-fade-up {
   animation: stripeFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -262,11 +263,12 @@
 }
 
 .animate-stripe-scale {
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .animate-stripe-scale:hover {
   transform: scale(1.03);
+  box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.12);
 }
 
 @keyframes stripeFadeUp {
@@ -325,31 +327,106 @@
   @apply appearance-none bg-white border-2 border-stripe-border rounded-lg py-3 px-4 w-full leading-tight focus:outline-none focus:ring-2 focus:ring-stripe-purple focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md;
 }
 
-/* Stripe components */
-.stripe-btn {
-  @apply inline-flex items-center justify-center rounded-full font-medium transition-all duration-300 transform hover:-translate-y-0.5 shadow-sm;
+/* Advanced Stripe animations */
+.stripe-hover-lift {
+  @apply transition-all duration-300;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
 }
 
-.stripe-btn-primary {
-  @apply bg-stripe-purple text-white hover:bg-stripe-purple-light;
+.stripe-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
-.stripe-btn-secondary {
-  @apply bg-white text-stripe-slate border-2 border-stripe-border hover:border-stripe-purple hover:text-stripe-purple;
+.stripe-btn-arrow {
+  @apply inline-flex items-center;
 }
 
-.stripe-btn-slate {
-  @apply bg-stripe-slate text-white hover:bg-stripe-slate-light;
+.stripe-btn-arrow svg {
+  @apply ml-2 transition-transform duration-300;
 }
 
-.stripe-heading {
-  @apply font-semibold tracking-tight text-stripe-slate;
+.stripe-btn-arrow:hover svg {
+  transform: translateX(3px);
 }
 
-.stripe-hero-heading {
-  @apply text-4xl md:text-5xl lg:text-6xl font-bold leading-tight;
+/* Gradient text effect */
+.text-gradient {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(to right, #635BFF, #24B47E);
 }
 
-.stripe-subheading {
-  @apply text-xl text-stripe-text-secondary font-normal leading-relaxed;
+.text-gradient-purple-blue {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(to right, #635BFF, #00D4FF);
+}
+
+/* Stripe code highlights */
+.stripe-code-highlight {
+  @apply bg-stripe-purple/10 text-stripe-purple px-1.5 py-0.5 rounded font-mono text-sm;
+}
+
+/* Hover effect for cards */
+.stripe-hover-border:hover {
+  border-color: #635BFF;
+}
+
+/* Stripe button with arrow animations */
+.btn-with-arrow {
+  @apply inline-flex items-center gap-2 group;
+}
+
+.btn-with-arrow svg {
+  @apply transition-transform duration-300;
+}
+
+.btn-with-arrow:hover svg {
+  @apply translate-x-0.5;
+}
+
+/* Stripe dots pattern */
+.stripe-dots-pattern {
+  background-image: radial-gradient(#635BFF 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Transparent glass effect for cards on gradient backgrounds */
+.stripe-glass {
+  @apply backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl transition-all duration-300;
+}
+
+.stripe-glass:hover {
+  @apply bg-white/20;
+}
+
+/* Utility for making dividing lines */
+.stripe-divider {
+  @apply h-px w-full bg-stripe-border my-6;
+}
+
+/* Animation for transitioning background colors */
+.bg-transition {
+  @apply transition-colors duration-300;
+}
+
+/* Stripe loading animation */
+.stripe-loading {
+  @apply relative overflow-hidden;
+}
+
+.stripe-loading::after {
+  content: "";
+  @apply absolute inset-0 -translate-x-full;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+/* Better form focus states */
+.stripe-form-focus {
+  @apply focus:ring-2 focus:ring-stripe-purple focus:border-transparent transition-all duration-200;
 }

@@ -7,7 +7,7 @@ import { Link } from "react-router-dom"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:transform hover:translate-y-[-2px] shadow-sm",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:transform hover:translate-y-[-2px] shadow-stripe",
   {
     variants: {
       variant: {
@@ -26,14 +26,16 @@ const buttonVariants = cva(
         "stripe-success": "bg-stripe-green text-white hover:bg-stripe-green-light shadow-md",
         "stripe-dark": "bg-stripe-slate-dark text-white hover:bg-stripe-slate shadow-md",
         "stripe-gradient": "bg-stripe-gradient text-white hover:shadow-lg shadow-md",
+        "stripe-blue": "bg-stripe-blue text-white hover:bg-blue-600 shadow-md",
+        "stripe-cyan": "bg-stripe-cyan text-stripe-slate-dark hover:bg-opacity-90 shadow-md",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-full px-3",
-        lg: "h-11 rounded-full px-8",
+        default: "h-10 px-5 py-2",
+        sm: "h-9 rounded-full px-4 text-xs",
+        lg: "h-12 rounded-full px-8 text-base",
         icon: "h-10 w-10",
-        "stripe-md": "h-11 px-5 py-2.5 rounded-full",
-        "stripe-lg": "h-12 px-7 py-3 rounded-full",
+        "stripe-md": "h-11 px-6 py-2.5 rounded-full",
+        "stripe-lg": "h-12 px-8 py-3 rounded-full text-base",
       },
     },
     defaultVariants: {

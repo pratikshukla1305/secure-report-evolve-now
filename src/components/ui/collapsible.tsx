@@ -13,13 +13,13 @@ const CollapsibleTrigger = React.forwardRef<
   <CollapsiblePrimitive.CollapsibleTrigger
     ref={ref}
     className={cn(
-      "flex items-center justify-between w-full px-4 py-3 font-medium text-stripe-slate rounded-lg border border-stripe-border hover:bg-stripe-gray/50 transition-all duration-200",
+      "flex items-center justify-between w-full px-5 py-3.5 font-medium text-stripe-slate rounded-lg border border-stripe-border bg-white hover:bg-stripe-gray/50 transition-all duration-200 shadow-sm",
       className
     )}
     {...props}
   >
     {children}
-    <ChevronDown className="h-4 w-4 transition-transform duration-200 ui-open:rotate-180" />
+    <ChevronDown className="h-4 w-4 transition-transform duration-300 ui-open:rotate-180" />
   </CollapsiblePrimitive.CollapsibleTrigger>
 ))
 CollapsibleTrigger.displayName = "CollapsibleTrigger"
@@ -36,7 +36,7 @@ const CollapsibleContent = React.forwardRef<
     )}
     {...props}
   >
-    <div className="pt-2 pb-4 px-4">{children}</div>
+    <div className="pt-3 pb-5 px-5">{children}</div>
   </CollapsiblePrimitive.CollapsibleContent>
 ))
 CollapsibleContent.displayName = "CollapsibleContent"
