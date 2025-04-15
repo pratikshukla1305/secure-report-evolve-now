@@ -198,3 +198,97 @@
 .enterprise-gradient-bg {
   background: linear-gradient(135deg, #0A2540 0%, #425466 100%);
 }
+
+/* Stripe Button Variants */
+.btn-stripe {
+  @apply rounded-full bg-stripe-purple text-white font-medium py-2 px-6 shadow-sm transition duration-200;
+  @apply hover:bg-stripe-purple-light hover:shadow-md transform hover:-translate-y-1;
+}
+
+.btn-stripe-outline {
+  @apply rounded-full border border-stripe-border bg-white text-stripe-purple font-medium py-2 px-6 shadow-sm transition duration-200;
+  @apply hover:border-stripe-purple hover:shadow-md;
+}
+
+.btn-stripe-ghost {
+  @apply rounded-full bg-transparent text-stripe-purple font-medium py-2 px-6 transition duration-200;
+  @apply hover:bg-stripe-border/20;
+}
+
+/* Stripe Card Variants */
+.card-stripe {
+  @apply rounded-xl bg-white border border-stripe-border shadow-stripe p-6 transition duration-200;
+  @apply hover:shadow-stripe-hover;
+}
+
+.card-stripe-gradient {
+  @apply rounded-xl border border-stripe-border shadow-stripe p-6 transition duration-200;
+  @apply bg-gradient-to-b from-white to-gray-50;
+  @apply hover:shadow-stripe-hover;
+}
+
+.card-stripe-dashboard {
+  @apply rounded-xl bg-white border border-stripe-border shadow-stripe-card p-6;
+}
+
+/* Stripe Animation Classes */
+.animate-stripe-fade-up {
+  animation: stripeFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-stripe-fade-in {
+  animation: stripeFadeIn 0.5s ease-out;
+}
+
+.animate-stripe-scale {
+  transition: transform 0.2s ease;
+}
+
+.animate-stripe-scale:hover {
+  transform: scale(1.03);
+}
+
+@keyframes stripeFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stripeFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Stripe Form Elements */
+.input-stripe {
+  @apply rounded-lg border border-stripe-border px-4 py-3 w-full;
+  @apply focus:outline-none focus:ring-2 focus:ring-stripe-purple focus:border-transparent;
+  @apply transition duration-200;
+}
+
+.label-stripe {
+  @apply text-sm font-medium text-gray-700 mb-2 block;
+}
+
+.select-stripe {
+  @apply rounded-lg border border-stripe-border px-4 py-3 w-full;
+  @apply focus:outline-none focus:ring-2 focus:ring-stripe-purple focus:border-transparent;
+  @apply transition duration-200 bg-white;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}

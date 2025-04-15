@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { 
   Table, TableBody, TableCaption, TableCell, 
@@ -98,6 +99,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
     setSelectedReport(report);
   };
 
+  // Fixed: Extracted download PDF logic to separate function that returns void
   const handleDownloadPdf = async (report: any) => {
     console.log("Attempting to download PDF for report:", report.id);
     console.log("Available materials:", reportMaterials[report.id]);
@@ -244,6 +246,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
     return videoExtensions.some(ext => lowerUrl.includes(ext)) || lowerUrl.includes('video');
   };
 
+  // Fixed: Extracted download functions to separate functions that return void
   const downloadPdfMaterial = (material: any) => {
     const link = document.createElement('a');
     link.href = material.pdf_url;
@@ -579,19 +582,19 @@ const ReportsList = ({ limit }: ReportListProps) => {
                       ))}
                     
                     {selectedReport.report_pdfs && selectedReport.report_pdfs.map((pdf: any, index: number) => (
-                      <div key={`pdf-${index}`} className="flex items-center justify-between border rounded p-2 stripe-card">
-                        <div className="flex items-center">
-                          <FileText className="h-4 w-4 text-stripe-blue mr-2" />
-                          <span className="text-sm">{pdf.file_name || `Report PDF ${index + 1}`}</span>
+                        <div key={`pdf-${index}`} className="flex items-center justify-between border rounded p-2 stripe-card">
+                          <div className="flex items-center">
+                            <FileText className="h-4 w-4 text-stripe-blue mr-2" />
+                            <span className="text-sm">{pdf.file_name || `Report PDF ${index + 1}`}</span>
+                          </div>
+                          <Button 
+                            variant="stripe-outline" 
+                            size="sm" 
+                            onClick={() => downloadReportPdf(pdf, selectedReport.id)}
+                          >
+                            <DownloadCloud className="h-4 w-4" />
+                          </Button>
                         </div>
-                        <Button 
-                          variant="stripe-outline" 
-                          size="sm" 
-                          onClick={() => downloadReportPdf(pdf, selectedReport.id)}
-                        >
-                          <DownloadCloud className="h-4 w-4" />
-                        </Button>
-                      </div>
                     ))}
                   </div>
                 ) : (
