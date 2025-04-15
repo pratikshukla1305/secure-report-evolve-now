@@ -373,7 +373,7 @@
 
 /* Stripe button with arrow animations */
 .btn-with-arrow {
-  @apply inline-flex items-center gap-2 group;
+  @apply inline-flex items-center gap-2;
 }
 
 .btn-with-arrow svg {
