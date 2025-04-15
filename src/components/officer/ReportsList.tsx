@@ -551,40 +551,47 @@ const ReportsList = ({ limit }: ReportListProps) => {
                         </div>
                       ))}
                     
-                    {selectedReport.report_pdfs && selectedReport.report_pdfs.map((pdf: any, index: number) => (
-                      <div key={`pdf-${index}`} className="flex items-center justify-between border rounded p-2">
-                        <div className="flex items-center">
-                          <FileText className="h-4 w-4 text-blue-500 mr-2" />
-                          <span className="text-sm">{pdf.file_name || `Report PDF ${index + 1}`}</span>
+                    {selectedReport.report_pdfs && selectedReport.report_pdfs.map((pdf: any, index: number) => {
+                      const downloadPdf = () => {
+                        const link = document.createElement('a');
+                        link.href = pdf.file_url;
+                        link.target = '_blank';
+                        link.download = pdf.file_name;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        fetch('/api/update-officer-materials', {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                          },
+                          body: JSON.stringify({
+                            reportId: selectedReport.id,
+                            pdfId: pdf.id,
+                            pdfName: pdf.file_name,
+                            pdfUrl: pdf.file_url,
+                            pdfIsOfficial: pdf.is_official || false
+                          }),
+                        }).catch(err => console.error("Failed to update officer materials:", err));
+                      };
+                      
+                      return (
+                        <div key={`pdf-${index}`} className="flex items-center justify-between border rounded p-2">
+                          <div className="flex items-center">
+                            <FileText className="h-4 w-4 text-blue-500 mr-2" />
+                            <span className="text-sm">{pdf.file_name || `Report PDF ${index + 1}`}</span>
+                          </div>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={downloadPdf}
+                          >
+                            <DownloadCloud className="h-4 w-4" />
+                          </Button>
                         </div>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => {
-                            const link = document.createElement('a');
-                            link.href = pdf.file_url;
-                            link.target = '_blank';
-                            link.download = pdf.file_name;
-                            
-                            fetch('/api/update-officer-materials', {
-                              method: 'POST',
-                              headers: {
-                                'Content-Type': 'application/json',
-                              },
-                              body: JSON.stringify({
-                                reportId: selectedReport.id,
-                                pdfId: pdf.id,
-                                pdfName: pdf.file_name,
-                                pdfUrl: pdf.file_url,
-                                pdfIsOfficial: pdf.is_official || false
-                              }),
-                            }).catch(err => console.error("Failed to update officer materials:", err));
-                          }}
-                        >
-                          <DownloadCloud className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <p className="text-sm text-gray-500 italic">No PDFs available</p>
