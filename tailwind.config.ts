@@ -64,27 +64,24 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				shield: {
-					blue: '#007AFF',
+					blue: '#0A2540',
 					light: '#F5F8FF',
 					dark: '#1A1A1A',
 					gray: '#F2F2F7',
 					border: '#E5E5EA'
 				},
-				// Enhanced Stripe-inspired colors
+				// Updated Stripe-inspired colors
 				stripe: {
-					purple: '#635BFF',
-					'purple-light': '#7A73FF',
-					'purple-dark': '#4F46E5',
-					blue: '#00A4EF',
-					'blue-light': '#8BE9FD',
-					'blue-dark': '#0080BD',
-					coral: '#FF6F61',
+					blue: '#3D9CD2',
+					'blue-light': '#A4CDFC',
+					'blue-dark': '#0A2540',
+					coral: '#ED5863',
 					green: '#24B47E',
 					'green-light': '#32D583',
-					yellow: '#FFD33D',
+					yellow: '#F7B32B',
 					slate: '#0A2540',
 					'slate-light': '#425466',
-					'slate-dark': '#02192C',
+					'slate-dark': '#0A2540',
 					gray: '#F6F9FC',
 					border: '#E6EBEF',
 					'border-light': '#F0F5FA',
@@ -93,7 +90,7 @@ export default {
 					'text-secondary': '#425466',
 					'text-muted': '#697386',
 					cyan: '#00D4FF',
-					orange: '#FF7A59'
+					orange: '#F7B32B'
 				}
 			},
 			borderRadius: {
@@ -169,15 +166,15 @@ export default {
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-				'stripe-gradient': 'linear-gradient(135deg, #635BFF 0%, #7A73FF 100%)',
+				'stripe-gradient': 'linear-gradient(135deg, #0A2540 0%, #3D9CD2 100%)',
 				'stripe-dashboard': 'linear-gradient(180deg, #F6F9FC 0%, #FFFFFF 100%)',
-				'security-gradient': 'linear-gradient(135deg, #00A4EF 0%, #8BE9FD 100%)',
-				'stripe-hero-gradient': 'radial-gradient(circle at 60% 30%, #9E8CFF 0%, #7D6EFF 25%, #635BFF 50%, #4B40C7 75%), linear-gradient(135deg, #FF7A59 0%, #FF5C5C 50%, #FF3B3B 100%)',
-				'stripe-dark-gradient': 'linear-gradient(135deg, #0A2540 0%, #02192C 100%)',
-				'stripe-purple-to-blue': 'linear-gradient(135deg, #635BFF 0%, #00D4FF 100%)',
-				'stripe-orange-to-pink': 'linear-gradient(135deg, #FF7A59 0%, #FF3B8B 100%)',
-				'stripe-colorful': 'linear-gradient(to right, #635BFF, #FF7A59, #FFD33D, #24B47E, #00D4FF)',
-				'stripe-code-bg': 'linear-gradient(135deg, #0A2540 0%, #02192C 100%)'
+				'security-gradient': 'linear-gradient(135deg, #0A2540 0%, #3D9CD2 100%)',
+				'stripe-hero-gradient': 'linear-gradient(to bottom, #0A2540 0%, #1A3454 100%)',
+				'stripe-dark-gradient': 'linear-gradient(135deg, #0A2540 0%, #1A3454 100%)',
+				'stripe-blue-to-cyan': 'linear-gradient(135deg, #0A2540 0%, #00D4FF 100%)',
+				'stripe-orange-to-coral': 'linear-gradient(135deg, #F7B32B 0%, #ED5863 100%)',
+				'stripe-colorful': 'linear-gradient(to right, #0A2540, #3D9CD2, #F7B32B, #24B47E, #00D4FF)',
+				'stripe-code-bg': 'linear-gradient(135deg, #0A2540 0%, #1A3454 100%)'
 			},
 			boxShadow: {
 				'stripe': '0px 2px 5px rgba(0, 0, 0, 0.05)',

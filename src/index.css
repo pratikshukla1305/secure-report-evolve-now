@@ -5,7 +5,7 @@
 
 @layer base {
   :root {
-    --background: 210 50% 99%;
+    --background: 0 0% 100%;
     --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
@@ -14,7 +14,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 252 100% 68%;
+    --primary: 230 48% 23%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96.1%;
@@ -23,26 +23,26 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 243 75% 59%;
+    --accent: 217 91% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 252 100% 68%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 230 48% 23%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 229 17% 26%;
-    --sidebar-primary: 252 100% 68%;
+    --sidebar-primary: 230 48% 23%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 229 17% 21%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 243 75% 59%;
+    --sidebar-ring: 217 91% 60%;
   }
 
   .dark {
@@ -55,7 +55,7 @@
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 252 100% 68%;
+    --primary: 230 48% 23%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -64,7 +64,7 @@
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 243 75% 59%;
+    --accent: 217 91% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
@@ -72,16 +72,16 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 252 100% 68%;
+    --ring: 230 48% 23%;
     
     --sidebar-background: 229 47% 11%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 252 100% 68%;
+    --sidebar-primary: 230 48% 23%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 229 32% 17%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 229 32% 17%;
-    --sidebar-ring: 243 75% 59%;
+    --sidebar-ring: 217 91% 60%;
   }
 }
 
@@ -139,11 +139,11 @@
   }
   
   .stripe-button {
-    @apply bg-stripe-purple text-white rounded-full px-6 py-3 font-medium transition-all duration-300 hover:bg-stripe-purple-light transform hover:-translate-y-0.5 shadow-stripe-button hover:shadow-stripe-button-hover;
+    @apply bg-stripe-blue text-white rounded-md px-6 py-3 font-medium transition-all duration-300 hover:bg-stripe-blue-dark transform hover:-translate-y-0.5 shadow-stripe-button hover:shadow-stripe-button-hover;
   }
   
   .stripe-input {
-    @apply rounded-lg border-2 border-stripe-border px-4 py-3 focus:ring-2 focus:ring-stripe-purple focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md;
+    @apply rounded-md border border-stripe-border px-4 py-3 focus:ring-2 focus:ring-stripe-blue focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md;
   }
   
   .stripe-section {
@@ -164,7 +164,7 @@
 
   /* New Stripe-inspired UI components */
   .stripe-hero {
-    @apply bg-stripe-hero-gradient text-white py-24 px-6 md:py-32 relative overflow-hidden;
+    @apply bg-stripe-dark-gradient text-white py-24 px-6 md:py-32 relative overflow-hidden;
   }
 
   .stripe-hero-shape {
@@ -172,7 +172,7 @@
   }
 
   .stripe-feature-card {
-    @apply bg-white rounded-xl border border-stripe-border shadow-stripe p-6 transition-all duration-300 hover:shadow-stripe-hover hover:border-stripe-purple-light hover:-translate-y-1;
+    @apply bg-white rounded-xl border border-stripe-border shadow-stripe p-6 transition-all duration-300 hover:shadow-stripe-hover hover:border-stripe-blue-light hover:-translate-y-1;
   }
 
   .stripe-icon-box {
@@ -184,11 +184,11 @@
   }
 
   .stripe-badge {
-    @apply inline-flex items-center rounded-full bg-stripe-purple/10 px-2.5 py-0.5 text-xs font-medium text-stripe-purple;
+    @apply inline-flex items-center rounded-full bg-stripe-blue/10 px-2.5 py-0.5 text-xs font-medium text-stripe-blue;
   }
 
   .stripe-link {
-    @apply text-stripe-purple hover:text-stripe-purple-light transition-colors duration-200 font-medium;
+    @apply text-stripe-blue hover:text-stripe-blue-dark transition-colors duration-200 font-medium;
   }
 
   .stripe-code-block {
@@ -208,7 +208,7 @@
   }
 
   .stripe-nav-link {
-    @apply text-stripe-text-secondary hover:text-stripe-purple transition-colors duration-200 font-medium text-sm;
+    @apply text-stripe-text-secondary hover:text-stripe-blue transition-colors duration-200 font-medium text-sm;
   }
 
   .stripe-dropdown {
@@ -238,7 +238,7 @@
 
 /* Stripe-inspired custom styles */
 .stripe-gradient-bg {
-  background: linear-gradient(135deg, #635BFF 0%, #7A73FF 100%);
+  background: linear-gradient(135deg, #0A2540 0%, #1A3454 100%);
 }
 
 .security-gradient-bg {
@@ -293,7 +293,7 @@
 
 /* Stripe animated gradient background */
 .stripe-animated-gradient {
-  background: linear-gradient(-45deg, #635BFF, #00D4FF, #FF7A59, #FFD33D);
+  background: linear-gradient(-45deg, #0A2540, #32325D, #3D9CD2, #A4CDFC);
   background-size: 400% 400%;
   animation: gradient-flow 15s ease infinite;
 }
@@ -324,7 +324,7 @@
 }
 
 .stripe-select {
-  @apply appearance-none bg-white border-2 border-stripe-border rounded-lg py-3 px-4 w-full leading-tight focus:outline-none focus:ring-2 focus:ring-stripe-purple focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md;
+  @apply appearance-none bg-white border border-stripe-border rounded-md py-3 px-4 w-full leading-tight focus:outline-none focus:ring-2 focus:ring-stripe-blue focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md;
 }
 
 /* Advanced Stripe animations */
@@ -353,22 +353,22 @@
 /* Gradient text effect */
 .text-gradient {
   @apply bg-clip-text text-transparent;
-  background-image: linear-gradient(to right, #635BFF, #24B47E);
+  background-image: linear-gradient(to right, #0A2540, #3D9CD2);
 }
 
-.text-gradient-purple-blue {
+.text-gradient-blue {
   @apply bg-clip-text text-transparent;
-  background-image: linear-gradient(to right, #635BFF, #00D4FF);
+  background-image: linear-gradient(to right, #0A2540, #00D4FF);
 }
 
 /* Stripe code highlights */
 .stripe-code-highlight {
-  @apply bg-stripe-purple/10 text-stripe-purple px-1.5 py-0.5 rounded font-mono text-sm;
+  @apply bg-stripe-blue/10 text-stripe-blue px-1.5 py-0.5 rounded font-mono text-sm;
 }
 
 /* Hover effect for cards */
 .stripe-hover-border:hover {
-  border-color: #635BFF;
+  border-color: #3D9CD2;
 }
 
 /* Stripe button with arrow animations */
@@ -386,7 +386,7 @@
 
 /* Stripe dots pattern */
 .stripe-dots-pattern {
-  background-image: radial-gradient(#635BFF 1px, transparent 1px);
+  background-image: radial-gradient(#3D9CD2 1px, transparent 1px);
   background-size: 16px 16px;
 }
 
@@ -428,5 +428,5 @@
 
 /* Better form focus states */
 .stripe-form-focus {
-  @apply focus:ring-2 focus:ring-stripe-purple focus:border-transparent transition-all duration-200;
+  @apply focus:ring-2 focus:ring-stripe-blue focus:border-transparent transition-all duration-200;
 }
