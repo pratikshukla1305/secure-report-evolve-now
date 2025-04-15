@@ -230,8 +230,7 @@ export const getOfficerReportMaterials = async (reportId: string): Promise<any[]
     const { data, error } = await supabase
       .from('officer_report_materials')
       .select('*')
-      .eq('report_id', reportId)
-      .order('created_at', { ascending: false });
+      .eq('report_id', reportId);
       
     if (error) {
       console.error("Error fetching officer report materials:", error);
@@ -244,5 +243,3 @@ export const getOfficerReportMaterials = async (reportId: string): Promise<any[]
     return [];
   }
 };
-
-// Note: We've removed the applyShieldWatermark function since it was causing issues

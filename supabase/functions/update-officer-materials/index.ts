@@ -56,11 +56,12 @@ serve(async (req) => {
     // Get report info if not provided
     let title = reportTitle;
     let status = reportStatus;
+    let user_id = userId;
     
-    if (!title || !status) {
+    if (!title || !status || !user_id) {
       const { data: reportData, error: reportError } = await supabase
         .from('crime_reports')
-        .select('title, status')
+        .select('title, status, user_id')
         .eq('id', reportId)
         .single();
         
@@ -69,6 +70,7 @@ serve(async (req) => {
       } else if (reportData) {
         title = title || reportData.title;
         status = status || reportData.status;
+        user_id = user_id || reportData.user_id;
       }
     }
     
@@ -79,6 +81,46 @@ serve(async (req) => {
       p_pdf_url: pdfUrl,
       p_pdf_is_official: pdfIsOfficial
     });
+    
+    // Check for video evidence and sync with officer_report_materials
+    if (videoUrl === null && pdfId === null) {
+      // Try to get evidence from the report
+      const { data: evidenceData, error: evidenceError } = await supabase
+        .from('evidence')
+        .select('*')
+        .eq('report_id', reportId);
+        
+      if (evidenceError) {
+        console.error('Error fetching evidence:', evidenceError);
+      } else if (evidenceData && evidenceData.length > 0) {
+        // Add video evidence to officer materials
+        for (const evidence of evidenceData) {
+          if (evidence.storage_path && 
+              (evidence.storage_path.includes('.mp4') || 
+               evidence.storage_path.includes('.mov') || 
+               evidence.storage_path.includes('video'))) {
+            
+            // Insert video evidence into officer_report_materials
+            const { data: insertData, error: insertError } = await supabase
+              .from('officer_report_materials')
+              .upsert({
+                report_id: reportId,
+                video_url: evidence.storage_path,
+                video_name: evidence.title || 'Video Evidence',
+                report_title: title,
+                report_status: status,
+                user_id: user_id
+              });
+              
+            if (insertError) {
+              console.error('Error inserting video evidence:', insertError);
+            } else {
+              console.log('Successfully added video evidence to officer materials');
+            }
+          }
+        }
+      }
+    }
     
     // Call the update_officer_report_materials database function
     const { data, error } = await supabase.rpc(
@@ -96,7 +138,7 @@ serve(async (req) => {
         p_video_size: videoSize,
         p_report_title: title,
         p_report_status: status,
-        p_user_id: userId
+        p_user_id: user_id
       }
     );
     

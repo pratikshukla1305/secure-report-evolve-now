@@ -334,39 +334,51 @@ export type Database = {
       }
       criminal_tips: {
         Row: {
+          criminal_name: string | null
+          criminal_photo: string | null
           description: string
           email: string | null
           id: number
           image_url: string | null
           is_anonymous: boolean | null
           location: string | null
+          officer_action: string | null
           phone: string | null
+          result: string | null
           status: string | null
           subject: string
           submitter_name: string | null
           tip_date: string | null
         }
         Insert: {
+          criminal_name?: string | null
+          criminal_photo?: string | null
           description: string
           email?: string | null
           id?: number
           image_url?: string | null
           is_anonymous?: boolean | null
           location?: string | null
+          officer_action?: string | null
           phone?: string | null
+          result?: string | null
           status?: string | null
           subject: string
           submitter_name?: string | null
           tip_date?: string | null
         }
         Update: {
+          criminal_name?: string | null
+          criminal_photo?: string | null
           description?: string
           email?: string | null
           id?: number
           image_url?: string | null
           is_anonymous?: boolean | null
           location?: string | null
+          officer_action?: string | null
           phone?: string | null
+          result?: string | null
           status?: string | null
           subject?: string
           submitter_name?: string | null

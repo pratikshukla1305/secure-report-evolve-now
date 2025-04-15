@@ -6,7 +6,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Loader2, Eye, FileText, DownloadCloud, Check, X, AlertTriangle } from 'lucide-react';
+import { Loader2, Eye, FileText, DownloadCloud, Check, X, AlertTriangle, Video } from 'lucide-react';
 import { getOfficerReports, logPdfDownload } from '@/services/reportServices';
 import { getOfficerReportMaterials } from '@/services/reportPdfService';
 import { format } from 'date-fns';
@@ -35,6 +35,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
   const [newStatus, setNewStatus] = useState<string>('');
   const [officerNotes, setOfficerNotes] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const { officer } = useOfficerAuth();
   const navigate = useNavigate();
   
@@ -59,8 +60,13 @@ const ReportsList = ({ limit }: ReportListProps) => {
       const materialsMap: {[key: string]: any[]} = {};
       
       for (const report of fetchedReports.slice(0, limit || fetchedReports.length)) {
-        const materials = await getOfficerReportMaterials(report.id);
-        materialsMap[report.id] = materials;
+        try {
+          const materials = await getOfficerReportMaterials(report.id);
+          materialsMap[report.id] = materials;
+        } catch (error) {
+          console.error(`Error fetching materials for report ${report.id}:`, error);
+          materialsMap[report.id] = [];
+        }
       }
       
       setReportMaterials(materialsMap);
@@ -202,6 +208,18 @@ const ReportsList = ({ limit }: ReportListProps) => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const playVideo = (url: string) => {
+    setSelectedVideo(url);
+  };
+
+  // Helper to determine if a URL is a video
+  const isVideoUrl = (url: string): boolean => {
+    if (!url) return false;
+    const videoExtensions = ['.mp4', '.mov', '.avi', '.webm', '.mkv'];
+    const lowerUrl = url.toLowerCase();
+    return videoExtensions.some(ext => lowerUrl.includes(ext)) || lowerUrl.includes('video');
   };
 
   if (isLoading) {
@@ -347,6 +365,41 @@ const ReportsList = ({ limit }: ReportListProps) => {
         </DialogContent>
       </Dialog>
 
+      {/* Video Player Modal */}
+      {selectedVideo && (
+        <Dialog open={!!selectedVideo} onOpenChange={(open) => !open && setSelectedVideo(null)}>
+          <DialogContent className="sm:max-w-[800px] max-h-[80vh]">
+            <DialogHeader>
+              <DialogTitle>Video Evidence</DialogTitle>
+            </DialogHeader>
+            <div className="aspect-video w-full overflow-hidden rounded-md border">
+              <video 
+                src={selectedVideo}
+                controls
+                autoPlay
+                className="w-full h-full"
+                onError={(e) => {
+                  console.error("Video loading error:", e);
+                  toast.error("Failed to load video. The format may be unsupported or the URL is invalid.");
+                }}
+              >
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setSelectedVideo(null)}>
+                Close
+              </Button>
+              <Button asChild>
+                <a href={selectedVideo} download target="_blank" rel="noopener noreferrer">
+                  <DownloadCloud className="mr-2 h-4 w-4" /> Download
+                </a>
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
       {/* Report View Dialog */}
       {selectedReport && (
         <Dialog open={!!selectedReport} onOpenChange={(open) => !open && setSelectedReport(null)}>
@@ -388,21 +441,44 @@ const ReportsList = ({ limit }: ReportListProps) => {
                     {selectedReport.evidence.map((evidence: any, index: number) => (
                       <div key={index} className="border rounded-md p-2">
                         <div className="aspect-video bg-gray-100 rounded-md mb-2 relative overflow-hidden">
-                          {evidence.type === 'video' ? (
-                            <video 
-                              src={evidence.storage_path} 
-                              controls 
-                              className="w-full h-full object-cover"
-                            />
+                          {isVideoUrl(evidence.storage_path) ? (
+                            <div 
+                              className="w-full h-full bg-gray-200 flex items-center justify-center cursor-pointer"
+                              onClick={() => playVideo(evidence.storage_path)}
+                            >
+                              <Video className="h-10 w-10 text-gray-500" />
+                              <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                                <div className="bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+                                  Click to play
+                                </div>
+                              </div>
+                            </div>
                           ) : (
                             <img 
                               src={evidence.storage_path} 
                               alt={evidence.title || `Evidence ${index + 1}`}
                               className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.onerror = null;
+                                target.src = "https://placehold.co/400x300?text=Image+Not+Available";
+                              }}
                             />
                           )}
                         </div>
-                        <p className="text-xs font-medium truncate">{evidence.title || `Evidence ${index + 1}`}</p>
+                        <div className="flex justify-between items-center">
+                          <p className="text-xs font-medium truncate">{evidence.title || `Evidence ${index + 1}`}</p>
+                          {isVideoUrl(evidence.storage_path) && (
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-6 w-6 p-0"
+                              onClick={() => playVideo(evidence.storage_path)}
+                            >
+                              <Video className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -424,12 +500,12 @@ const ReportsList = ({ limit }: ReportListProps) => {
               <div>
                 <h3 className="text-sm font-medium text-gray-500 mb-1">Report PDFs</h3>
                 {(selectedReport.report_pdfs && selectedReport.report_pdfs.length > 0) || 
-                 (reportMaterials[selectedReport.id] && reportMaterials[selectedReport.id].some(m => m.pdf_url)) ? (
+                 (reportMaterials[selectedReport.id] && reportMaterials[selectedReport.id]?.some(m => m.pdf_url)) ? (
                   <div className="space-y-2">
                     {/* First check officer materials */}
                     {reportMaterials[selectedReport.id] && 
                      reportMaterials[selectedReport.id]
-                      .filter(m => m.pdf_url)
+                      ?.filter(m => m.pdf_url)
                       .map((material, index) => (
                         <div key={`material-${index}`} className="flex items-center justify-between border rounded p-2">
                           <div className="flex items-center">
