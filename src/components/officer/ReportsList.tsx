@@ -99,7 +99,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
     setSelectedReport(report);
   };
 
-  // Fixed: Extracted download PDF logic to separate function that returns void
+  // Modified to return nothing explicitly
   const handleDownloadPdf = async (report: any) => {
     console.log("Attempting to download PDF for report:", report.id);
     console.log("Available materials:", reportMaterials[report.id]);
@@ -246,7 +246,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
     return videoExtensions.some(ext => lowerUrl.includes(ext)) || lowerUrl.includes('video');
   };
 
-  // Fixed: Extracted download functions to separate functions that return void
+  // Fixed: Modified these functions to explicitly return nothing
   const downloadPdfMaterial = (material: any) => {
     const link = document.createElement('a');
     link.href = material.pdf_url;
@@ -255,6 +255,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    // No return statement needed
   };
 
   const downloadReportPdf = (pdf: any, reportId: string) => {
@@ -279,6 +280,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
         pdfIsOfficial: pdf.is_official || false
       }),
     }).catch(err => console.error("Failed to update officer materials:", err));
+    // No return statement needed
   };
 
   if (isLoading) {
@@ -345,7 +347,10 @@ const ReportsList = ({ limit }: ReportListProps) => {
                     variant="stripe-outline" 
                     size="sm"
                     title="Download PDF"
-                    onClick={() => handleDownloadPdf(report)}
+                    onClick={() => {
+                      handleDownloadPdf(report);
+                      return null; // Explicitly return null for React
+                    }}
                   >
                     <DownloadCloud className="h-4 w-4" />
                   </Button>
@@ -574,7 +579,10 @@ const ReportsList = ({ limit }: ReportListProps) => {
                           <Button 
                             variant="stripe-outline" 
                             size="sm" 
-                            onClick={() => downloadPdfMaterial(material)}
+                            onClick={() => {
+                              downloadPdfMaterial(material);
+                              return null; // Explicitly return null for React
+                            }}
                           >
                             <DownloadCloud className="h-4 w-4" />
                           </Button>
@@ -590,7 +598,10 @@ const ReportsList = ({ limit }: ReportListProps) => {
                           <Button 
                             variant="stripe-outline" 
                             size="sm" 
-                            onClick={() => downloadReportPdf(pdf, selectedReport.id)}
+                            onClick={() => {
+                              downloadReportPdf(pdf, selectedReport.id);
+                              return null; // Explicitly return null for React
+                            }}
                           >
                             <DownloadCloud className="h-4 w-4" />
                           </Button>
