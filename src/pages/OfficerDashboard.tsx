@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useOfficerAuth } from '@/contexts/OfficerAuthContext';
@@ -241,22 +240,22 @@ const OfficerDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen stripe-dashboard-bg">
       <OfficerNavbar />
       
       <div className="container mx-auto px-4 py-8 pt-24">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold">Officer Dashboard</h1>
-          <p className="text-gray-600">
+          <h1 className="text-3xl font-bold text-stripe-slate">Officer Dashboard</h1>
+          <p className="text-stripe-slate-light">
             Welcome back, Officer {officer?.full_name || ''}
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
+          <Card className="stripe-dashboard-card overflow-hidden">
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center">
-                <AlertTriangle className="mr-2 h-5 w-5 text-red-500" />
+              <CardTitle className="flex items-center text-stripe-slate">
+                <AlertTriangle className="mr-2 h-5 w-5 text-stripe-coral" />
                 Alerts
               </CardTitle>
               <CardDescription>
@@ -265,11 +264,11 @@ const OfficerDashboard = () => {
             </CardHeader>
             <CardContent>
               {isLoading ? (
-                <div className="animate-pulse h-8 bg-gray-200 rounded"></div>
+                <div className="animate-pulse h-8 bg-stripe-gray rounded"></div>
               ) : (
                 <>
-                  <p className="text-2xl font-bold">{alertsCount.total}</p>
-                  <p className="text-sm text-red-500">
+                  <p className="text-2xl font-bold text-stripe-slate">{alertsCount.total}</p>
+                  <p className="text-sm text-stripe-coral">
                     {alertsCount.highPriority > 0 ? `${alertsCount.highPriority} high priority` : 'No high priority alerts'}
                   </p>
                 </>
@@ -277,10 +276,10 @@ const OfficerDashboard = () => {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="stripe-dashboard-card overflow-hidden">
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center">
-                <FileText className="mr-2 h-5 w-5 text-blue-500" />
+              <CardTitle className="flex items-center text-stripe-slate">
+                <FileText className="mr-2 h-5 w-5 text-stripe-blue" />
                 Reports
               </CardTitle>
               <CardDescription>
@@ -289,11 +288,11 @@ const OfficerDashboard = () => {
             </CardHeader>
             <CardContent>
               {isLoading ? (
-                <div className="animate-pulse h-8 bg-gray-200 rounded"></div>
+                <div className="animate-pulse h-8 bg-stripe-gray rounded"></div>
               ) : (
                 <>
-                  <p className="text-2xl font-bold">{reportsCount.total}</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-2xl font-bold text-stripe-slate">{reportsCount.total}</p>
+                  <p className="text-sm text-stripe-slate-light">
                     {reportsCount.todaySubmissions > 0 ? `${reportsCount.todaySubmissions} submitted today` : 'No submissions today'}
                   </p>
                 </>
@@ -301,10 +300,10 @@ const OfficerDashboard = () => {
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="stripe-dashboard-card overflow-hidden">
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center">
-                <UserCheck className="mr-2 h-5 w-5 text-green-500" />
+              <CardTitle className="flex items-center text-stripe-slate">
+                <UserCheck className="mr-2 h-5 w-5 text-stripe-green" />
                 KYC Verifications
               </CardTitle>
               <CardDescription>
@@ -313,11 +312,11 @@ const OfficerDashboard = () => {
             </CardHeader>
             <CardContent>
               {isLoading ? (
-                <div className="animate-pulse h-8 bg-gray-200 rounded"></div>
+                <div className="animate-pulse h-8 bg-stripe-gray rounded"></div>
               ) : (
                 <>
-                  <p className="text-2xl font-bold">{kycCount.total}</p>
-                  <p className="text-sm text-gray-500">Last updated {kycCount.lastUpdated}</p>
+                  <p className="text-2xl font-bold text-stripe-slate">{kycCount.total}</p>
+                  <p className="text-sm text-stripe-slate-light">Last updated {kycCount.lastUpdated}</p>
                 </>
               )}
             </CardContent>
@@ -325,19 +324,19 @@ const OfficerDashboard = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={handleTabChange} className="mb-8">
-          <TabsList className="w-full max-w-md grid grid-cols-5">
-            <TabsTrigger value="alerts">SOS Alerts</TabsTrigger>
-            <TabsTrigger value="reports">Reports</TabsTrigger>
-            <TabsTrigger value="kyc">KYC</TabsTrigger>
-            <TabsTrigger value="criminals">Criminals</TabsTrigger>
-            <TabsTrigger value="map">Map</TabsTrigger>
+          <TabsList className="w-full max-w-md grid grid-cols-5 bg-stripe-gray rounded-full p-1">
+            <TabsTrigger value="alerts" className="rounded-full data-[state=active]:bg-white data-[state=active]:text-stripe-slate data-[state=active]:shadow-sm">SOS Alerts</TabsTrigger>
+            <TabsTrigger value="reports" className="rounded-full data-[state=active]:bg-white data-[state=active]:text-stripe-slate data-[state=active]:shadow-sm">Reports</TabsTrigger>
+            <TabsTrigger value="kyc" className="rounded-full data-[state=active]:bg-white data-[state=active]:text-stripe-slate data-[state=active]:shadow-sm">KYC</TabsTrigger>
+            <TabsTrigger value="criminals" className="rounded-full data-[state=active]:bg-white data-[state=active]:text-stripe-slate data-[state=active]:shadow-sm">Criminals</TabsTrigger>
+            <TabsTrigger value="map" className="rounded-full data-[state=active]:bg-white data-[state=active]:text-stripe-slate data-[state=active]:shadow-sm">Map</TabsTrigger>
           </TabsList>
           
-          <div className="pt-4">
+          <div className="pt-6">
             <TabsContent value="alerts">
-              <Card>
+              <Card className="stripe-dashboard-card border-0 shadow-stripe-card">
                 <CardHeader>
-                  <CardTitle>Recent SOS Alerts</CardTitle>
+                  <CardTitle className="text-stripe-slate">Recent SOS Alerts</CardTitle>
                   <CardDescription>
                     Manage and respond to emergency alerts from citizens
                   </CardDescription>
@@ -349,9 +348,9 @@ const OfficerDashboard = () => {
             </TabsContent>
             
             <TabsContent value="reports">
-              <Card>
+              <Card className="stripe-dashboard-card border-0 shadow-stripe-card">
                 <CardHeader>
-                  <CardTitle>Citizen Reports</CardTitle>
+                  <CardTitle className="text-stripe-slate">Citizen Reports</CardTitle>
                   <CardDescription>
                     Review and process reports submitted by citizens
                   </CardDescription>
@@ -363,9 +362,9 @@ const OfficerDashboard = () => {
             </TabsContent>
             
             <TabsContent value="kyc">
-              <Card>
+              <Card className="stripe-dashboard-card border-0 shadow-stripe-card">
                 <CardHeader>
-                  <CardTitle>KYC Verifications</CardTitle>
+                  <CardTitle className="text-stripe-slate">KYC Verifications</CardTitle>
                   <CardDescription>
                     Review and approve user identity verification requests
                   </CardDescription>
@@ -377,9 +376,9 @@ const OfficerDashboard = () => {
             </TabsContent>
             
             <TabsContent value="criminals">
-              <Card>
+              <Card className="stripe-dashboard-card border-0 shadow-stripe-card">
                 <CardHeader>
-                  <CardTitle>Criminal Profiles</CardTitle>
+                  <CardTitle className="text-stripe-slate">Criminal Profiles</CardTitle>
                   <CardDescription>
                     Manage wanted criminal profiles and tips
                   </CardDescription>
@@ -391,16 +390,16 @@ const OfficerDashboard = () => {
             </TabsContent>
             
             <TabsContent value="map">
-              <Card>
+              <Card className="stripe-dashboard-card border-0 shadow-stripe-card overflow-hidden">
                 <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                   <div>
-                    <CardTitle>Crime Map</CardTitle>
+                    <CardTitle className="text-stripe-slate">Crime Map</CardTitle>
                     <CardDescription>
                       View geographical distribution of crime reports
                     </CardDescription>
                   </div>
                   <Button 
-                    className="mt-2 sm:mt-0 bg-shield-blue hover:bg-blue-700"
+                    className="mt-2 sm:mt-0 bg-stripe-purple hover:bg-stripe-purple-light rounded-full"
                     onClick={() => setNewCaseDialogOpen(true)}
                   >
                     <PlusCircle className="mr-2 h-4 w-4" />
@@ -419,9 +418,9 @@ const OfficerDashboard = () => {
       </div>
       
       <Dialog open={newCaseDialogOpen} onOpenChange={setNewCaseDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] p-6 rounded-xl">
           <DialogHeader>
-            <DialogTitle>Add New Case to Crime Map</DialogTitle>
+            <DialogTitle className="text-stripe-slate text-xl">Add New Case to Crime Map</DialogTitle>
             <DialogDescription>
               Enter the details of the crime case to add it to the map.
             </DialogDescription>
@@ -437,6 +436,7 @@ const OfficerDashboard = () => {
                 onChange={handleNewCaseInputChange}
                 placeholder="Enter case title"
                 required
+                className="stripe-input"
               />
             </div>
             
@@ -448,7 +448,7 @@ const OfficerDashboard = () => {
                 value={newCase.description}
                 onChange={handleNewCaseInputChange}
                 placeholder="Enter case description"
-                className="min-h-[100px]"
+                className="min-h-[100px] rounded-lg border border-stripe-border px-4 py-3 focus:ring-2 focus:ring-stripe-purple focus:border-transparent transition-colors duration-200"
               />
             </div>
             
@@ -458,10 +458,10 @@ const OfficerDashboard = () => {
                 value={newCase.crime_type} 
                 onValueChange={handleCrimeTypeChange}
               >
-                <SelectTrigger>
+                <SelectTrigger className="h-11 rounded-lg border border-stripe-border">
                   <SelectValue placeholder="Select crime type" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="border border-stripe-border rounded-lg shadow-stripe-dropdown">
                   <SelectItem value="theft">Theft</SelectItem>
                   <SelectItem value="assault">Assault</SelectItem>
                   <SelectItem value="burglary">Burglary</SelectItem>
@@ -485,6 +485,7 @@ const OfficerDashboard = () => {
                   onChange={handleNewCaseInputChange}
                   placeholder="Enter latitude"
                   required
+                  className="stripe-input"
                 />
               </div>
               <div>
@@ -496,15 +497,17 @@ const OfficerDashboard = () => {
                   value={newCase.longitude}
                   placeholder="Enter longitude"
                   required
+                  className="stripe-input"
                 />
               </div>
             </div>
             
             <div className="flex justify-end">
               <Button 
-                variant="outline" 
+                variant="stripe-outline" 
                 onClick={getCurrentLocation}
                 type="button"
+                className="rounded-full"
               >
                 Get Current Location
               </Button>
@@ -518,16 +521,17 @@ const OfficerDashboard = () => {
                 value={newCase.address}
                 onChange={handleNewCaseInputChange}
                 placeholder="Enter address"
+                className="stripe-input"
               />
             </div>
           </div>
           
           <DialogFooter className="flex space-x-2 justify-end">
-            <Button variant="outline" onClick={() => setNewCaseDialogOpen(false)}>Cancel</Button>
+            <Button variant="stripe-outline" onClick={() => setNewCaseDialogOpen(false)} className="rounded-full">Cancel</Button>
             <Button 
               onClick={handleSubmitNewCase}
               disabled={isSubmittingCase}
-              className="bg-shield-blue hover:bg-blue-700"
+              className="bg-stripe-purple hover:bg-stripe-purple-light rounded-full"
             >
               {isSubmittingCase ? "Adding..." : "Add to Map"}
             </Button>

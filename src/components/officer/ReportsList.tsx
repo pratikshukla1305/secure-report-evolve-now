@@ -530,7 +530,7 @@ const ReportsList = ({ limit }: ReportListProps) => {
                       .map((material, index) => (
                         <div key={`material-${index}`} className="flex items-center justify-between border rounded p-2">
                           <div className="flex items-center">
-                            <FileText className="h-4 w-4 text-blue-500 mr-2" />
+                            <FileText className="h-4 w-4 text-stripe-blue mr-2" />
                             <span className="text-sm">{material.pdf_name || `Report PDF ${index + 1}`}</span>
                           </div>
                           <Button 
@@ -577,9 +577,9 @@ const ReportsList = ({ limit }: ReportListProps) => {
                       };
                       
                       return (
-                        <div key={`pdf-${index}`} className="flex items-center justify-between border rounded p-2">
+                        <div key={`pdf-${index}`} className="flex items-center justify-between border rounded p-2 stripe-card">
                           <div className="flex items-center">
-                            <FileText className="h-4 w-4 text-blue-500 mr-2" />
+                            <FileText className="h-4 w-4 text-stripe-blue mr-2" />
                             <span className="text-sm">{pdf.file_name || `Report PDF ${index + 1}`}</span>
                           </div>
                           <Button 
