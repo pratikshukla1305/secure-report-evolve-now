@@ -49,9 +49,9 @@ const Dashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-page-gradient-light flex items-center justify-center">
         <div className="flex flex-col items-center">
-          <Shield className="h-12 w-12 text-shield-blue animate-pulse" />
+          <Shield className="h-12 w-12 text-stripe-blue animate-pulse" />
           <p className="mt-4 text-gray-600">Loading...</p>
         </div>
       </div>
@@ -61,7 +61,7 @@ const Dashboard = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-page-dashboard">
       <Navbar />
       
       <main className="pt-20 pb-16">
@@ -74,24 +74,24 @@ const Dashboard = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <Card>
+            <Card className="border border-stripe-border shadow-stripe hover:shadow-stripe-hover transition-all duration-300">
               <CardHeader className="pb-3">
                 <CardTitle className="text-xl">Create New Report</CardTitle>
                 <CardDescription>Upload evidence and document incidents</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-12 flex items-center justify-center rounded-lg bg-shield-blue/10">
-                  <FilePlus className="h-6 w-6 text-shield-blue" />
+                <div className="h-12 flex items-center justify-center rounded-lg bg-stripe-blue/10">
+                  <FilePlus className="h-6 w-6 text-stripe-blue" />
                 </div>
               </CardContent>
               <CardFooter>
-                <Button asChild className="w-full">
+                <Button asChild className="w-full bg-stripe-blue hover:bg-stripe-blue-dark">
                   <Link to="/continue-report">Start New Report</Link>
                 </Button>
               </CardFooter>
             </Card>
             
-            <Card>
+            <Card className="border border-stripe-border shadow-stripe hover:shadow-stripe-hover transition-all duration-300">
               <CardHeader className="pb-3">
                 <CardTitle className="text-xl">My Reports</CardTitle>
                 <CardDescription>View and manage your submitted reports</CardDescription>
@@ -102,13 +102,13 @@ const Dashboard = () => {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button asChild variant="outline" className="w-full">
+                <Button asChild variant="stripe-outline" className="w-full">
                   <Link to="/my-reports">View All Reports</Link>
                 </Button>
               </CardFooter>
             </Card>
             
-            <Card>
+            <Card className="border border-stripe-border shadow-stripe hover:shadow-stripe-hover transition-all duration-300">
               <CardHeader className="pb-3">
                 <CardTitle className="text-xl">Profile & KYC</CardTitle>
                 <CardDescription>Update your profile and verify identity</CardDescription>
@@ -119,7 +119,7 @@ const Dashboard = () => {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button asChild variant="outline" className="w-full">
+                <Button asChild variant="stripe-outline" className="w-full">
                   <Link to="/profile">Manage Profile</Link>
                 </Button>
               </CardFooter>
@@ -129,12 +129,12 @@ const Dashboard = () => {
           <div className="mb-10">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">Recent Reports</h2>
-              <Link to="/my-reports" className="text-shield-blue hover:underline flex items-center">
+              <Link to="/my-reports" className="text-stripe-blue hover:underline flex items-center">
                 View all <ChevronRight className="h-4 w-4 ml-1" />
               </Link>
             </div>
             
-            <div className="bg-white rounded-xl shadow-sm">
+            <div className="bg-white rounded-xl shadow-stripe border border-stripe-border">
               {isLoadingReports ? (
                 <div className="p-8 text-center">
                   <Clock className="h-8 w-8 text-gray-400 mx-auto mb-4 animate-pulse" />
@@ -171,7 +171,7 @@ const Dashboard = () => {
                 <div className="p-8 text-center">
                   <FileText className="h-8 w-8 text-gray-400 mx-auto mb-4" />
                   <p className="text-gray-500">You haven't created any reports yet.</p>
-                  <Button asChild className="mt-4">
+                  <Button asChild className="mt-4 bg-stripe-blue hover:bg-stripe-blue-dark">
                     <Link to="/continue-report">Create Your First Report</Link>
                   </Button>
                 </div>

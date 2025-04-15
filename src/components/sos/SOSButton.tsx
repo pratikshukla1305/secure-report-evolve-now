@@ -33,7 +33,7 @@ const SOSButton = ({
     <Button
       onClick={onClick}
       className={cn(
-        "font-bold rounded-md shadow-lg flex items-center justify-center animate-pulse",
+        "font-bold rounded-md shadow-lg flex items-center justify-center animate-sos-pulse",
         sizeClasses[size],
         variantClasses[variant],
         className

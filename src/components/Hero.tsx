@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Shield, Video, FileText, ExternalLink, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -36,13 +37,13 @@ const Hero = () => {
   return (
     <div 
       ref={heroRef}
-      className="relative overflow-hidden min-h-screen flex items-center justify-center bg-stripe-gradient bg-gradient-to-br from-stripe-purple via-pink-500 to-orange-500 pt-16"
+      className="relative overflow-hidden min-h-screen flex items-center justify-center bg-stripe-blue-dark pt-16"
     >
       {/* Background gradient elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="parallax absolute -top-20 right-1/3 w-[600px] h-[600px] rounded-full bg-white opacity-10 blur-3xl" data-speed="0.3"></div>
         <div className="parallax absolute top-1/2 -left-20 w-[400px] h-[400px] rounded-full bg-stripe-blue opacity-20 blur-3xl" data-speed="0.5"></div>
-        <div className="parallax absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full bg-stripe-purple-light opacity-10 blur-3xl" data-speed="0.4"></div>
+        <div className="parallax absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full bg-cyan-500 opacity-10 blur-3xl" data-speed="0.4"></div>
       </div>
       
       <div className="container max-w-7xl px-4 sm:px-6 lg:px-8 z-10">
@@ -64,20 +65,24 @@ const Hero = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-up" style={{animationDelay: '0.3s'}}>
-              <Button size="stripe-lg" variant="stripe-dark" className="group">
-                Get Started
-                <ArrowRight className="ml-1 transition-transform group-hover:translate-x-0.5" />
+              <Button asChild size="stripe-lg" className="bg-white text-stripe-blue-dark hover:bg-white/90 group">
+                <Link to="/get-started">
+                  Get Started
+                  <ArrowRight className="ml-1 transition-transform group-hover:translate-x-0.5" />
+                </Link>
               </Button>
-              <Button size="stripe-lg" className="bg-white text-stripe-purple hover:bg-white/90">
-                Learn More
-                <ExternalLink className="ml-1 h-4 w-4" />
+              <Button asChild size="stripe-lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                <Link to="/learn-more">
+                  Learn More
+                  <ExternalLink className="ml-1 h-4 w-4" />
+                </Link>
               </Button>
             </div>
           </div>
           
           <div className="relative mx-auto lg:mx-0 animate-fade-in" style={{animationDelay: '0.4s'}}>
             <div className="relative w-full max-w-md mx-auto">
-              <div className="absolute inset-0 bg-stripe-purple rounded-3xl blur-3xl opacity-10 transform -rotate-6"></div>
+              <div className="absolute inset-0 bg-stripe-blue rounded-3xl blur-3xl opacity-10 transform -rotate-6"></div>
               <div className="parallax glass-card p-8 relative backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-xl" data-speed="0.8">
                 {/* Police handshake image */}
                 <div className="h-56 rounded-xl bg-stripe-gray overflow-hidden mb-6 shadow-inner">
@@ -105,9 +110,11 @@ const Hero = () => {
                   </div>
                   
                   <div className="flex justify-end">
-                    <Button size="sm" variant="stripe-dark" className="group">
-                      Join Our Effort
-                      <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                    <Button asChild size="sm" className="bg-white text-stripe-blue-dark hover:bg-gray-100 group">
+                      <Link to="/help-us">
+                        Join Our Effort
+                        <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                      </Link>
                     </Button>
                   </div>
                 </div>

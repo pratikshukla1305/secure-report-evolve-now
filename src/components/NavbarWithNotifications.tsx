@@ -11,22 +11,22 @@ const NavbarWithNotifications = () => {
   const { user } = useAuth();
 
   return (
-    <nav className="fixed w-full top-0 left-0 z-50 bg-white shadow-md">
+    <nav className="fixed w-full top-0 left-0 z-50 bg-stripe-blue-dark shadow-md">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/home" className="flex items-center">
-            <div className="bg-shield-blue rounded-full p-1.5 mr-2">
-              <ShieldCheck className="h-6 w-6 text-white" />
+            <div className="bg-white rounded-full p-1.5 mr-2">
+              <ShieldCheck className="h-6 w-6 text-stripe-blue-dark" />
             </div>
-            <span className="text-xl font-bold text-shield-blue">Shield</span>
+            <span className="text-xl font-bold text-white">Shield</span>
           </Link>
           
           <div className="hidden md:flex space-x-10">
-            <Link to="/police-stations" className="text-gray-500 hover:text-shield-blue transition-colors">Police Stations</Link>
-            <Link to="/advisories" className="text-gray-500 hover:text-shield-blue transition-colors">Advisories</Link>
-            <Link to="/help-us" className="text-gray-500 hover:text-shield-blue transition-colors">Help Us</Link>
-            <Link to="/about" className="text-gray-500 hover:text-shield-blue transition-colors">About</Link>
-            <Link to="/my-reports" className="text-gray-500 hover:text-shield-blue transition-colors">My Reports</Link>
+            <Link to="/police-stations" className="text-gray-300 hover:text-white transition-colors">Police Stations</Link>
+            <Link to="/advisories" className="text-gray-300 hover:text-white transition-colors">Advisories</Link>
+            <Link to="/help-us" className="text-gray-300 hover:text-white transition-colors">Help Us</Link>
+            <Link to="/about" className="text-gray-300 hover:text-white transition-colors">About</Link>
+            <Link to="/my-reports" className="text-gray-300 hover:text-white transition-colors">My Reports</Link>
           </div>
           
           <div className="flex items-center space-x-4">
@@ -36,7 +36,7 @@ const NavbarWithNotifications = () => {
             
             <div className="md:hidden">
               <Button variant="ghost" size="sm">
-                <Shield className="h-6 w-6" />
+                <Shield className="h-6 w-6 text-white" />
               </Button>
             </div>
           </div>

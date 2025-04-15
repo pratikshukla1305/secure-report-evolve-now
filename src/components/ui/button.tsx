@@ -24,7 +24,7 @@ const buttonVariants = cva(
         "stripe-outline": "border border-stripe-border bg-white text-stripe-slate hover:bg-stripe-border/50",
         "stripe-secondary": "bg-stripe-gray text-stripe-slate hover:bg-stripe-border/50",
         "stripe-success": "bg-stripe-green text-white hover:bg-stripe-green-light shadow-md",
-        "stripe-dark": "bg-stripe-slate-dark text-white hover:bg-stripe-slate shadow-md",
+        "stripe-dark": "bg-stripe-blue-dark text-white hover:bg-stripe-slate shadow-md",
         "stripe-gradient": "bg-stripe-gradient text-white hover:shadow-lg shadow-md",
         "stripe-blue": "bg-stripe-blue text-white hover:bg-blue-600 shadow-md",
         "stripe-cyan": "bg-stripe-cyan text-stripe-slate-dark hover:bg-opacity-90 shadow-md",

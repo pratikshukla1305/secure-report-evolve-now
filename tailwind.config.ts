@@ -70,7 +70,7 @@ export default {
 					gray: '#F2F2F7',
 					border: '#E5E5EA'
 				},
-				// Updated Stripe-inspired colors
+				// Updated Stripe-inspired colors - more blue-focused
 				stripe: {
 					blue: '#3D9CD2',
 					'blue-light': '#A4CDFC',
@@ -148,6 +148,10 @@ export default {
 				'pulse-soft': {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0.8' }
+				},
+				'sos-pulse': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.7' }
 				}
 			},
 			animation: {
@@ -162,7 +166,8 @@ export default {
 				'gradient-flow': 'gradient-flow 3s ease infinite',
 				'float': 'float 6s ease-in-out infinite',
 				'tilt': 'tilt 10s ease-in-out infinite',
-				'pulse-soft': 'pulse-soft 3s ease-in-out infinite'
+				'pulse-soft': 'pulse-soft 3s ease-in-out infinite',
+				'sos-pulse': 'sos-pulse 1s ease-in-out infinite'
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

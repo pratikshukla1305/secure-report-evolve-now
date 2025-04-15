@@ -92,30 +92,30 @@ const Navbar = () => {
   return (
     <header className={cn(
       'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out',
-      isScrolled ? 'bg-white/80 backdrop-blur-md border-b border-gray-100 py-2' : 'bg-transparent py-4'
+      isScrolled ? 'bg-stripe-blue-dark/95 backdrop-blur-md border-b border-stripe-blue/10 py-2' : 'bg-stripe-blue-dark py-4'
     )}>
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
-            <Shield className="h-8 w-8 text-shield-blue animate-fade-in" />
-            <span className="text-xl font-semibold bg-clip-text text-shield-dark">Midshield</span>
+            <Shield className="h-8 w-8 text-white animate-fade-in" />
+            <span className="text-xl font-semibold text-white">Midshield</span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <Link to="/home" className="text-sm font-medium text-gray-700 hover:text-shield-blue transition-colors">
+            <Link to="/home" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
               Home
             </Link>
-            <Link to="/features" className="text-sm font-medium text-gray-700 hover:text-shield-blue transition-colors">
+            <Link to="/features" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
               Features
             </Link>
-            <Link to="/how-it-works" className="text-sm font-medium text-gray-700 hover:text-shield-blue transition-colors">
+            <Link to="/how-it-works" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
               How it works
             </Link>
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm font-medium text-gray-700 hover:text-shield-blue transition-colors">
+                  <NavigationMenuTrigger className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                     <div className="flex items-center">
                       <MapPin className="mr-1 h-4 w-4" />
                       Locate
@@ -129,7 +129,7 @@ const Navbar = () => {
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <div className="bg-blue-100 p-2 rounded-full">
-                          <MapPin className="h-4 w-4 text-shield-blue" />
+                          <MapPin className="h-4 w-4 text-stripe-blue" />
                         </div>
                         <div>
                           <h4 className="text-sm font-medium">Nearby Police Stations</h4>
@@ -154,14 +154,14 @@ const Navbar = () => {
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
-            <Link to="/e-kyc" className="text-sm font-medium text-gray-700 hover:text-shield-blue transition-colors">
+            <Link to="/e-kyc" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
               e-KYC
             </Link>
             
             {/* Advisory Link */}
             <Link 
               to="/advisory" 
-              className="text-sm font-medium text-gray-700 hover:text-shield-blue transition-colors flex items-center"
+              className="text-sm font-medium text-gray-300 hover:text-white transition-colors flex items-center"
             >
               <Megaphone className="mr-1 h-4 w-4" />
               Advisory
@@ -170,7 +170,7 @@ const Navbar = () => {
             {/* Help Us Link */}
             <Link 
               to="/help-us" 
-              className="text-sm font-medium text-gray-700 hover:text-shield-blue transition-colors flex items-center"
+              className="text-sm font-medium text-gray-300 hover:text-white transition-colors flex items-center"
             >
               <AlertCircle className="mr-1 h-4 w-4" />
               Help Us
@@ -182,7 +182,7 @@ const Navbar = () => {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full text-white hover:bg-white/10">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.full_name || user.email} />
                       <AvatarFallback>{getUserInitials()}</AvatarFallback>
@@ -227,13 +227,13 @@ const Navbar = () => {
                 <Link to="/signin" className="text-sm font-medium">
                   <Button 
                     variant="outline" 
-                    className="border-shield-blue text-shield-blue hover:bg-shield-blue hover:text-white transition-all"
+                    className="border-white text-white hover:bg-white hover:text-stripe-blue-dark transition-all"
                   >
                     Sign In
                   </Button>
                 </Link>
                 <Link to="/get-started" className="text-sm font-medium">
-                  <Button className="bg-shield-blue text-white hover:bg-blue-600 transition-all">
+                  <Button className="bg-white text-stripe-blue-dark hover:bg-gray-100 transition-all">
                     Get Started
                   </Button>
                 </Link>
@@ -245,7 +245,7 @@ const Navbar = () => {
           <div className="md:hidden flex items-center space-x-3">
             <SOSButton onClick={handleSOSClick} className="scale-75" />
             <button
-              className="text-gray-700"
+              className="text-white"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? (
@@ -260,54 +260,54 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden glass absolute top-full left-0 right-0 border-t border-gray-100 animate-fade-in">
+        <div className="md:hidden glass absolute top-full left-0 right-0 border-t border-white/10 animate-fade-in bg-stripe-blue-dark/95 backdrop-blur-lg">
           <div className="px-4 py-5 space-y-4">
             {user && (
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-md mb-2">
+              <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-md mb-2">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.full_name || user.email} />
                   <AvatarFallback>{getUserInitials()}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-medium text-sm">{user.user_metadata?.full_name || 'User'}</p>
-                  <p className="text-xs text-gray-500 truncate max-w-[200px]">{user.email}</p>
+                  <p className="font-medium text-sm text-white">{user.user_metadata?.full_name || 'User'}</p>
+                  <p className="text-xs text-gray-300 truncate max-w-[200px]">{user.email}</p>
                 </div>
               </div>
             )}
             
             <Link 
               to="/home" 
-              className="block text-base font-medium text-gray-700 hover:text-shield-blue transition-colors"
+              className="block text-base font-medium text-gray-300 hover:text-white transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Home
             </Link>
             <Link 
               to="/features" 
-              className="block text-base font-medium text-gray-700 hover:text-shield-blue transition-colors"
+              className="block text-base font-medium text-gray-300 hover:text-white transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Features
             </Link>
             <Link 
               to="/how-it-works" 
-              className="block text-base font-medium text-gray-700 hover:text-shield-blue transition-colors"
+              className="block text-base font-medium text-gray-300 hover:text-white transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               How it works
             </Link>
-            <div className="border-t border-gray-100 pt-2">
-              <p className="text-base font-medium text-gray-700 mb-2">Locate</p>
+            <div className="border-t border-white/10 pt-2">
+              <p className="text-base font-medium text-gray-300 mb-2">Locate</p>
               <Link
                 to="/police-stations"
-                className="block ml-4 py-2 text-sm text-gray-600 hover:text-shield-blue"
+                className="block ml-4 py-2 text-sm text-gray-300 hover:text-white"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Nearby Police Stations
               </Link>
               <Link
                 to="/case-heatmap"
-                className="block ml-4 py-2 text-sm text-gray-600 hover:text-shield-blue"
+                className="block ml-4 py-2 text-sm text-gray-300 hover:text-white"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Case Density Map
@@ -315,7 +315,7 @@ const Navbar = () => {
             </div>
             <Link 
               to="/e-kyc" 
-              className="block text-base font-medium text-gray-700 hover:text-shield-blue transition-colors"
+              className="block text-base font-medium text-gray-300 hover:text-white transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               e-KYC
@@ -324,7 +324,7 @@ const Navbar = () => {
             {/* Advisory Mobile Link */}
             <Link 
               to="/advisory" 
-              className="block text-base font-medium text-gray-700 hover:text-shield-blue transition-colors flex items-center"
+              className="block text-base font-medium text-gray-300 hover:text-white transition-colors flex items-center"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               <Megaphone className="mr-1 h-4 w-4" />
@@ -334,7 +334,7 @@ const Navbar = () => {
             {/* Help Us Mobile Link */}
             <Link 
               to="/help-us" 
-              className="block text-base font-medium text-gray-700 hover:text-shield-blue transition-colors flex items-center"
+              className="block text-base font-medium text-gray-300 hover:text-white transition-colors flex items-center"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               <AlertCircle className="mr-1 h-4 w-4" />
@@ -342,24 +342,24 @@ const Navbar = () => {
             </Link>
             
             {user ? (
-              <div className="pt-4 space-y-3 border-t border-gray-100">
+              <div className="pt-4 space-y-3 border-t border-white/10">
                 <Link 
                   to="/dashboard" 
-                  className="block w-full text-base font-medium text-gray-700 hover:text-shield-blue transition-colors"
+                  className="block w-full text-base font-medium text-gray-300 hover:text-white transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Dashboard
                 </Link>
                 <Link 
                   to="/profile" 
-                  className="block w-full text-base font-medium text-gray-700 hover:text-shield-blue transition-colors"
+                  className="block w-full text-base font-medium text-gray-300 hover:text-white transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Profile
                 </Link>
                 <Link 
                   to="/my-reports" 
-                  className="block w-full text-base font-medium text-gray-700 hover:text-shield-blue transition-colors"
+                  className="block w-full text-base font-medium text-gray-300 hover:text-white transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   My Reports
@@ -369,7 +369,7 @@ const Navbar = () => {
                     handleSignOut();
                     setIsMobileMenuOpen(false);
                   }}
-                  className="flex items-center w-full py-2 text-base font-medium text-red-600 hover:text-red-700 transition-colors"
+                  className="flex items-center w-full py-2 text-base font-medium text-red-400 hover:text-red-300 transition-colors"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   Log out
@@ -380,14 +380,14 @@ const Navbar = () => {
                 <Link to="/signin" className="block w-full" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button
                     variant="outline"
-                    className="w-full justify-center border-shield-blue text-shield-blue hover:bg-shield-blue hover:text-white transition-all"
+                    className="w-full justify-center border-white text-white hover:bg-white hover:text-stripe-blue-dark transition-all"
                   >
                     Sign In
                   </Button>
                 </Link>
                 <Link to="/get-started" className="block w-full" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button 
-                    className="w-full justify-center bg-shield-blue text-white hover:bg-blue-600 transition-all"
+                    className="w-full justify-center bg-white text-stripe-blue-dark hover:bg-gray-100 transition-all"
                   >
                     Get Started
                   </Button>
