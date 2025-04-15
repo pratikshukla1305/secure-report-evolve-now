@@ -7,7 +7,7 @@ import { Link } from "react-router-dom"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:transform hover:translate-y-[-2px]",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:transform hover:translate-y-[-2px] shadow-sm",
   {
     variants: {
       variant: {
@@ -15,15 +15,17 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-md",
         outline:
-          "border-2 border-stripe-border bg-white text-stripe-slate hover:bg-accent hover:text-accent-foreground shadow-sm",
+          "border-2 border-stripe-border bg-white text-stripe-slate hover:bg-accent hover:text-accent-foreground",
         secondary:
-          "bg-stripe-gray text-stripe-slate hover:bg-stripe-gray/80 shadow-sm",
+          "bg-stripe-gray text-stripe-slate hover:bg-stripe-gray/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+        link: "text-stripe-purple underline-offset-4 hover:underline",
         stripe: "bg-stripe-purple text-white hover:bg-stripe-purple-light shadow-md",
-        "stripe-outline": "border-2 border-stripe-border bg-white text-stripe-slate hover:bg-stripe-border/50 shadow-sm",
-        "stripe-secondary": "bg-stripe-gray text-stripe-slate hover:bg-stripe-border/50 shadow-sm",
+        "stripe-outline": "border-2 border-stripe-border bg-white text-stripe-slate hover:bg-stripe-border/50",
+        "stripe-secondary": "bg-stripe-gray text-stripe-slate hover:bg-stripe-border/50",
         "stripe-success": "bg-stripe-green text-white hover:bg-stripe-green-light shadow-md",
+        "stripe-dark": "bg-stripe-slate-dark text-white hover:bg-stripe-slate shadow-md",
+        "stripe-gradient": "bg-stripe-gradient text-white hover:shadow-lg shadow-md",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -83,9 +83,16 @@ export default {
 					yellow: '#FFD33D',
 					slate: '#0A2540',
 					'slate-light': '#425466',
-					'slate-dark': '#0A192F',
+					'slate-dark': '#02192C',
 					gray: '#F6F9FC',
-					border: '#E6EBEF'
+					border: '#E6EBEF',
+					'border-light': '#F0F5FA',
+					'border-dark': '#CAD5E0',
+					'text-primary': '#0A2540',
+					'text-secondary': '#425466',
+					'text-muted': '#697386',
+					cyan: '#00D4FF',
+					orange: '#FF7A59'
 				}
 			},
 			borderRadius: {
@@ -126,6 +133,14 @@ export default {
 					'0%': { backgroundPosition: '0% 50%' },
 					'50%': { backgroundPosition: '100% 50%' },
 					'100%': { backgroundPosition: '0% 50%' }
+				},
+				'gradient-flow': {
+					'0%': { backgroundPosition: '0% 50%' },
+					'100%': { backgroundPosition: '100% 50%' }
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' }
 				}
 			},
 			animation: {
@@ -136,19 +151,27 @@ export default {
 				'scale-in': 'scale-in 0.2s ease-out',
 				'slide-in-right': 'slide-in-right 0.3s ease-out',
 				'shimmer': 'shimmer 2s infinite linear',
-				'gradient-shift': 'gradient-shift 10s ease infinite'
+				'gradient-shift': 'gradient-shift 10s ease infinite',
+				'gradient-flow': 'gradient-flow 3s ease infinite',
+				'float': 'float 6s ease-in-out infinite'
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
 				'stripe-gradient': 'linear-gradient(135deg, #635BFF 0%, #7A73FF 100%)',
 				'stripe-dashboard': 'linear-gradient(180deg, #F6F9FC 0%, #FFFFFF 100%)',
-				'security-gradient': 'linear-gradient(135deg, #00A4EF 0%, #8BE9FD 100%)'
+				'security-gradient': 'linear-gradient(135deg, #00A4EF 0%, #8BE9FD 100%)',
+				'stripe-hero-gradient': 'radial-gradient(circle at 60% 30%, #9E8CFF 0%, #7D6EFF 25%, #635BFF 50%, #4B40C7 75%), linear-gradient(135deg, #FF7A59 0%, #FF5C5C 50%, #FF3B3B 100%)',
+				'stripe-dark-gradient': 'linear-gradient(135deg, #0A2540 0%, #02192C 100%)',
+				'stripe-purple-to-blue': 'linear-gradient(135deg, #635BFF 0%, #00D4FF 100%)',
+				'stripe-orange-to-pink': 'linear-gradient(135deg, #FF7A59 0%, #FF3B8B 100%)'
 			},
 			boxShadow: {
 				'stripe': '0px 2px 5px rgba(0, 0, 0, 0.05)',
 				'stripe-hover': '0px 4px 10px rgba(0, 0, 0, 0.1)',
 				'stripe-card': '0px 8px 16px rgba(0, 0, 0, 0.05)',
-				'stripe-dropdown': '0px 4px 12px rgba(0, 0, 0, 0.1)'
+				'stripe-dropdown': '0px 4px 12px rgba(0, 0, 0, 0.1)',
+				'stripe-button': '0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)',
+				'stripe-button-hover': '0px 4px 6px rgba(0, 0, 0, 0.1), 0px 2px 4px rgba(0, 0, 0, 0.06)'
 			}
 		}
 	},
