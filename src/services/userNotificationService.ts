@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 export interface UserNotification {
   id: string;
   user_id: string;
-  report_id: string;
+  report_id: string | null;
   notification_type: string;
   message: string;
   is_read: boolean;
@@ -133,5 +133,68 @@ export const getUnreadNotificationsCount = async (): Promise<number> => {
   } catch (error) {
     console.error("Error in getUnreadNotificationsCount:", error);
     return 0;
+  }
+};
+
+/**
+ * Create a new notification for a user
+ * 
+ * @param userId User ID
+ * @param notificationType Type of notification (report_update, sos_update, kyc_update, criminal_sighting)
+ * @param message Notification message
+ * @param reportId Optional report ID
+ * @returns Success status
+ */
+export const createUserNotification = async (
+  userId: string,
+  notificationType: string,
+  message: string,
+  reportId?: string
+): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from('user_notifications')
+      .insert({
+        user_id: userId,
+        notification_type: notificationType,
+        message,
+        report_id: reportId || null,
+        is_read: false
+      });
+    
+    if (error) {
+      console.error("Error creating user notification:", error);
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error("Error in createUserNotification:", error);
+    return false;
+  }
+};
+
+/**
+ * Delete a notification
+ * 
+ * @param notificationId Notification ID
+ * @returns Success status
+ */
+export const deleteNotification = async (notificationId: string): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from('user_notifications')
+      .delete()
+      .eq('id', notificationId);
+    
+    if (error) {
+      console.error("Error deleting notification:", error);
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error("Error in deleteNotification:", error);
+    return false;
   }
 };

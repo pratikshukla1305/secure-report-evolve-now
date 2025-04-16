@@ -40,6 +40,7 @@ import OfficerSettings from "./pages/OfficerSettings";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import MyReports from "./pages/MyReports";
+import Notifications from "./pages/Notifications";
 
 const App = () => {
   // Create a new QueryClient instance inside the component function
@@ -98,6 +99,7 @@ const App = () => {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/my-reports" element={<MyReports />} />
+                <Route path="/notifications" element={<Notifications />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

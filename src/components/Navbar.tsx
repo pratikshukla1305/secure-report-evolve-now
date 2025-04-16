@@ -100,7 +100,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
             <Shield className="h-8 w-8 text-white animate-fade-in" />
-            <span className="text-xl font-semibold text-white">Midshield</span>
+            <span className="text-xl font-semibold text-white">Shield</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -213,6 +213,9 @@ const Navbar = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/my-reports">My Reports</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/notifications">Notifications</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
@@ -365,6 +368,13 @@ const Navbar = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   My Reports
+                </Link>
+                <Link 
+                  to="/notifications" 
+                  className="block w-full text-base font-medium text-gray-200 hover:text-white transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Notifications
                 </Link>
                 <button 
                   onClick={() => {
