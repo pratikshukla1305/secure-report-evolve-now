@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, Menu, X, MapPin, AlertCircle, Megaphone, LogOut, User as UserIcon } from 'lucide-react';
+import { Shield, Menu, X, MapPin, AlertCircle, Megaphone, LogOut, User as UserIcon, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import SOSButton from '@/components/sos/SOSButton';
@@ -26,12 +26,14 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
+import { getUnreadNotificationsCount } from '@/services/userNotificationService';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showSOSModal, setShowSOSModal] = useState(false);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -47,6 +49,23 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Fetch unread notification count when user changes
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      if (user) {
+        const count = await getUnreadNotificationsCount();
+        setUnreadNotifications(count);
+      }
+    };
+
+    fetchUnreadCount();
+    
+    // Set up polling for notifications (every 30 seconds)
+    const interval = setInterval(fetchUnreadCount, 30000);
+    
+    return () => clearInterval(interval);
+  }, [user]);
 
   const handleSOSClick = () => {
     // Get user location when SOS is clicked
@@ -186,7 +205,7 @@ const Navbar = () => {
               <Link to="/notifications" className="relative">
                 <Button variant="ghost" className="text-white hover:bg-white/10 p-2">
                   <Bell className="h-5 w-5" />
-                  {user.new_notifications > 0 && (
+                  {unreadNotifications > 0 && (
                     <span className="absolute top-0 right-0 h-2.5 w-2.5 rounded-full bg-red-500"></span>
                   )}
                 </Button>
@@ -264,7 +283,7 @@ const Navbar = () => {
               <Link to="/notifications" className="relative">
                 <Button variant="ghost" className="text-white hover:bg-white/10 p-1">
                   <Bell className="h-5 w-5" />
-                  {user.new_notifications > 0 && (
+                  {unreadNotifications > 0 && (
                     <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
                   )}
                 </Button>
