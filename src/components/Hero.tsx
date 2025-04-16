@@ -71,10 +71,19 @@ const Hero = () => {
                   <ArrowRight className="ml-1 transition-transform group-hover:translate-x-0.5" />
                 </Link>
               </Button>
-              <Button asChild size="stripe-lg" variant="outline" className="border-white text-white hover:bg-white/10">
+              <Button asChild size="stripe-lg" variant="outline" className="border-white/50 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20">
                 <Link to="/learn-more">
                   Learn More
                   <ExternalLink className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+            
+            <div className="mt-6 animate-fade-up" style={{animationDelay: '0.4s'}}>
+              <Button asChild variant="ghost" className="text-white/70 hover:text-white hover:bg-white/10 backdrop-blur-sm">
+                <Link to="/request-demo" className="flex items-center">
+                  <Video className="mr-2 h-4 w-4" />
+                  Request a Demo
                 </Link>
               </Button>
             </div>

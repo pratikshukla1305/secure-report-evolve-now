@@ -11,7 +11,7 @@ const NavbarWithNotifications = () => {
   const { user } = useAuth();
 
   return (
-    <nav className="fixed w-full top-0 left-0 z-50 bg-stripe-blue-dark shadow-md">
+    <nav className="fixed w-full top-0 left-0 z-50 bg-stripe-blue-dark/85 backdrop-blur-md shadow-md">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/home" className="flex items-center">
@@ -22,11 +22,11 @@ const NavbarWithNotifications = () => {
           </Link>
           
           <div className="hidden md:flex space-x-10">
-            <Link to="/police-stations" className="text-gray-300 hover:text-white transition-colors">Police Stations</Link>
-            <Link to="/advisories" className="text-gray-300 hover:text-white transition-colors">Advisories</Link>
-            <Link to="/help-us" className="text-gray-300 hover:text-white transition-colors">Help Us</Link>
-            <Link to="/about" className="text-gray-300 hover:text-white transition-colors">About</Link>
-            <Link to="/my-reports" className="text-gray-300 hover:text-white transition-colors">My Reports</Link>
+            <Link to="/police-stations" className="text-gray-200 hover:text-white transition-colors">Police Stations</Link>
+            <Link to="/advisories" className="text-gray-200 hover:text-white transition-colors">Advisories</Link>
+            <Link to="/help-us" className="text-gray-200 hover:text-white transition-colors">Help Us</Link>
+            <Link to="/about" className="text-gray-200 hover:text-white transition-colors">About</Link>
+            <Link to="/my-reports" className="text-gray-200 hover:text-white transition-colors">My Reports</Link>
           </div>
           
           <div className="flex items-center space-x-4">
