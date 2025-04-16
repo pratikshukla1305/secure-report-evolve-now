@@ -11,6 +11,17 @@ import DropZone from '@/components/upload/DropZone';
 import UploadProgressItem from '@/components/upload/UploadProgressItem';
 import { useFileUpload } from '@/hooks/useFileUpload';
 import { uploadFilesToSupabase, createDraftReport } from '@/utils/uploadUtils';
+import { getUserVerificationStatus } from '@/data/kycVerificationsData';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 type UploadCardProps = {
   className?: string;
@@ -28,6 +39,7 @@ const UploadCard = ({ className }: UploadCardProps) => {
     removeFile,
     setIsUploading 
   } = useFileUpload();
+  const [showKycDialog, setShowKycDialog] = React.useState(false);
   
   const handleContinueToReport = async () => {
     if (files.length === 0) {
@@ -38,6 +50,13 @@ const UploadCard = ({ className }: UploadCardProps) => {
     if (!user) {
       toast.error("You must be logged in to continue");
       navigate("/signin");
+      return;
+    }
+    
+    // Check if user has KYC verification
+    const kycStatus = getUserVerificationStatus(user.id);
+    if (kycStatus !== 'approved') {
+      setShowKycDialog(true);
       return;
     }
     
@@ -82,40 +101,60 @@ const UploadCard = ({ className }: UploadCardProps) => {
   };
 
   return (
-    <div className={cn('glass-card p-6', className)}>
-      <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-xl font-semibold">Upload Video Evidence</h3>
-        <Shield className="h-5 w-5 text-shield-blue" />
+    <>
+      <div className={cn('glass-card p-6', className)}>
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-xl font-semibold">Upload Video Evidence</h3>
+          <Shield className="h-5 w-5 text-shield-blue" />
+        </div>
+        
+        <DropZone onFilesAdded={addFiles} />
+        
+        <div className="space-y-4">
+          {files.length > 0 ? (
+            files.map((file, index) => (
+              <UploadProgressItem
+                key={index}
+                fileName={file.name}
+                preview={previews[index]}
+                progress={uploadProgress[file.name] || 0}
+                onRemove={() => removeFile(index)}
+              />
+            ))
+          ) : (
+            <p className="text-center text-gray-500">No videos uploaded yet</p>
+          )}
+        </div>
+        
+        <div className="mt-6 flex justify-end">
+          <Button 
+            onClick={handleContinueToReport}
+            className="bg-shield-blue text-white hover:bg-blue-600 transition-all"
+            disabled={isUploading || files.length === 0}
+          >
+            {isUploading ? "Processing..." : "Analyze Video Evidence"}
+          </Button>
+        </div>
       </div>
-      
-      <DropZone onFilesAdded={addFiles} />
-      
-      <div className="space-y-4">
-        {files.length > 0 ? (
-          files.map((file, index) => (
-            <UploadProgressItem
-              key={index}
-              fileName={file.name}
-              preview={previews[index]}
-              progress={uploadProgress[file.name] || 0}
-              onRemove={() => removeFile(index)}
-            />
-          ))
-        ) : (
-          <p className="text-center text-gray-500">No videos uploaded yet</p>
-        )}
-      </div>
-      
-      <div className="mt-6 flex justify-end">
-        <Button 
-          onClick={handleContinueToReport}
-          className="bg-shield-blue text-white hover:bg-blue-600 transition-all"
-          disabled={isUploading || files.length === 0}
-        >
-          {isUploading ? "Processing..." : "Analyze Video Evidence"}
-        </Button>
-      </div>
-    </div>
+
+      <AlertDialog open={showKycDialog} onOpenChange={setShowKycDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Verification Required</AlertDialogTitle>
+            <AlertDialogDescription>
+              You need to complete e-KYC verification before submitting reports. 
+              Would you like to complete your verification now?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => navigate('/e-kyc')}>
+              Complete Verification
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 

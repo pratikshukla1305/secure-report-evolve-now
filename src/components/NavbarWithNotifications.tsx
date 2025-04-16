@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import AuthButton from '@/components/AuthButton';
-import { ShieldCheck, Shield } from 'lucide-react';
+import { ShieldCheck, Shield, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import UserNotificationBell from '@/components/user/UserNotificationBell';
 import { useAuth } from '@/contexts/AuthContext';
@@ -27,7 +27,6 @@ const NavbarWithNotifications = () => {
             <Link to="/help-us" className="text-gray-200 hover:text-white transition-colors">Help Us</Link>
             <Link to="/about" className="text-gray-200 hover:text-white transition-colors">About</Link>
             <Link to="/my-reports" className="text-gray-200 hover:text-white transition-colors">My Reports</Link>
-            <Link to="/notifications" className="text-gray-200 hover:text-white transition-colors">Notifications</Link>
           </div>
           
           <div className="flex items-center space-x-4">
