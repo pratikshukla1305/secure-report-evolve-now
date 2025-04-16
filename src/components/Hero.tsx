@@ -61,7 +61,7 @@ const Hero = () => {
             </h1>
             
             <p className="text-lg text-white/80 mb-8 max-w-xl mx-auto lg:mx-0 animate-fade-up" style={{animationDelay: '0.2s'}}>
-              Midshield combines AI and blockchain technology to revolutionize crime reporting and evidence management, ensuring data integrity and sophisticated crime detection.
+              Shield combines AI and blockchain technology to revolutionize crime reporting and evidence management, ensuring data integrity and sophisticated crime detection.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-up" style={{animationDelay: '0.3s'}}>
@@ -72,7 +72,7 @@ const Hero = () => {
                 </Link>
               </Button>
               <Button asChild size="stripe-lg" variant="outline" className="border-white/50 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20">
-                <Link to="/learn-more">
+                <Link to="/how-it-works">
                   Learn More
                   <ExternalLink className="ml-1 h-4 w-4" />
                 </Link>
@@ -126,19 +126,6 @@ const Hero = () => {
                       </Link>
                     </Button>
                   </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="absolute -bottom-6 -right-6 md:bottom-8 md:right-8 parallax" data-speed="1.2">
-              <div className="glass-card p-4 shadow-lg transform rotate-6 backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-500">
-                      <path d="M20 6L9 17l-5-5"></path>
-                    </svg>
-                  </div>
-                  <span className="text-sm font-medium text-white">Verified on Blockchain</span>
                 </div>
               </div>
             </div>

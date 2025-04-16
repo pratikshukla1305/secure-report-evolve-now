@@ -47,7 +47,7 @@ const Index = () => {
             <div className="inline-flex items-center px-3 py-1 rounded-full border border-shield-border bg-white shadow-sm mb-4">
               <span className="text-xs font-medium">Simple Process</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">How <span className="text-shield-blue">Midshield</span> Works</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">How <span className="text-shield-blue">Shield</span> Works</h2>
             <p className="text-gray-600 text-lg">
               Our platform streamlines the entire process from video evidence collection to AI analysis, with blockchain security at every step.
             </p>
@@ -80,7 +80,7 @@ const Index = () => {
               <h2 className="text-3xl sm:text-4xl font-bold mb-6">Advanced <span className="text-shield-blue">Video Analysis</span><br />for Crime Detection</h2>
               
               <p className="text-lg text-gray-600 mb-6">
-                Midshield's AI technology analyzes video evidence to identify crime types, extract crucial details, and generate comprehensive reports automatically.
+                Shield's AI technology analyzes video evidence to identify crime types, extract crucial details, and generate comprehensive reports automatically.
               </p>
               
               <ul className="space-y-4 mb-8">
@@ -116,7 +116,7 @@ const Index = () => {
                   size="lg" 
                   variant="outline" 
                   className="border-shield-blue text-shield-blue hover:bg-shield-blue hover:text-white transition-all"
-                  to="/learn-more"
+                  to="/how-it-works"
                 >
                   Learn How It Works
                 </Button>
@@ -199,7 +199,7 @@ const Index = () => {
           <div className="text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">Ready to make a difference?</h2>
             <p className="text-blue-100 text-lg mb-10 max-w-2xl mx-auto">
-              Join Midshield today and become part of a community that's revolutionizing crime reporting with powerful AI detection technology.
+              Join Shield today and become part of a community that's revolutionizing crime reporting with powerful AI detection technology.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -213,7 +213,7 @@ const Index = () => {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-white text-white hover:bg-white/10 transition-all"
+                className="border-white text-white hover:bg-white/10 backdrop-blur-sm bg-white/10 transition-all"
                 to="/request-demo"
               >
                 Request a Demo
