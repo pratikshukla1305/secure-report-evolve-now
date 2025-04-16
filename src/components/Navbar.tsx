@@ -94,7 +94,7 @@ const Navbar = () => {
       'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out',
       isScrolled 
         ? 'bg-stripe-blue-dark/90 backdrop-blur-md border-b border-stripe-blue/10 py-2' 
-        : 'bg-stripe-blue-dark/85 backdrop-blur-md py-4' // Made translucent with backdrop blur
+        : 'bg-stripe-blue-dark/85 backdrop-blur-md py-4'
     )}>
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
@@ -181,13 +181,25 @@ const Navbar = () => {
             {/* SOS Button in Navbar */}
             <SOSButton onClick={handleSOSClick} className="scale-90" />
             
+            {/* Notification Bell */}
+            {user && (
+              <Link to="/notifications" className="relative">
+                <Button variant="ghost" className="text-white hover:bg-white/10 p-2">
+                  <Bell className="h-5 w-5" />
+                  {user.new_notifications > 0 && (
+                    <span className="absolute top-0 right-0 h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                  )}
+                </Button>
+              </Link>
+            )}
+            
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full text-white hover:bg-white/10">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.full_name || user.email} />
-                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                      <AvatarFallback className="bg-gray-100 text-gray-800">{getUserInitials()}</AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
@@ -248,6 +260,16 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center space-x-3">
+            {user && (
+              <Link to="/notifications" className="relative">
+                <Button variant="ghost" className="text-white hover:bg-white/10 p-1">
+                  <Bell className="h-5 w-5" />
+                  {user.new_notifications > 0 && (
+                    <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+                  )}
+                </Button>
+              </Link>
+            )}
             <SOSButton onClick={handleSOSClick} className="scale-75" />
             <button
               className="text-white"

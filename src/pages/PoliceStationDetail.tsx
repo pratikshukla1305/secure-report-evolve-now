@@ -1,11 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { MapPin, Phone, Video, Clock, ChevronLeft, Star, MessageSquare, AlertTriangle, Loader2 } from 'lucide-react';
-import MapComponent from '@/components/maps/MapComponent';
 import { policeStations } from '@/data/policeStations';
 import { toast } from '@/hooks/use-toast';
 import { calculateDistance, calculateTimeToReach } from '@/utils/locationUtils';
@@ -129,16 +127,16 @@ const PoliceStationDetail = () => {
             <div className="lg:col-span-2 space-y-6">
               <div className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="p-6">
-                  <h1 className="text-2xl font-bold text-shield-dark">{station.name}</h1>
+                  <h1 className="text-2xl font-bold text-shield-dark">{station?.name}</h1>
                   
                   <div className="flex items-start mt-4">
                     <MapPin className="h-5 w-5 text-gray-500 mt-0.5 mr-3 flex-shrink-0" />
-                    <p className="text-gray-700">{station.address}</p>
+                    <p className="text-gray-700">{station?.address}</p>
                   </div>
                   
                   <div className="flex items-center mt-4">
                     <Phone className="h-5 w-5 text-gray-500 mr-3 flex-shrink-0" />
-                    <p className="text-gray-700">{station.phone}</p>
+                    <p className="text-gray-700">{station?.phone}</p>
                   </div>
                   
                   {timeToReach && (
@@ -179,7 +177,7 @@ const PoliceStationDetail = () => {
                 
                 <div className="mt-4">
                   <a 
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${station.coordinates.lat},${station.coordinates.lng}`}
+                    href={station ? `https://www.google.com/maps/dir/?api=1&destination=${station.coordinates.lat},${station.coordinates.lng}` : "#"}
                     target="_blank"
                     rel="noreferrer"
                     className="text-shield-blue hover:underline flex items-center"
@@ -198,18 +196,18 @@ const PoliceStationDetail = () => {
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-sm font-medium text-gray-500">Jurisdiction</h3>
-                    <p className="mt-1">{station.jurisdiction || "Information not available"}</p>
+                    <p className="mt-1">{station?.jurisdiction || "Information not available"}</p>
                   </div>
                   
                   <div>
                     <h3 className="text-sm font-medium text-gray-500">Operating Hours</h3>
-                    <p className="mt-1">{station.hours || "24 hours / 7 days"}</p>
+                    <p className="mt-1">{station?.hours || "24 hours / 7 days"}</p>
                   </div>
                   
                   <div>
                     <h3 className="text-sm font-medium text-gray-500">Services</h3>
                     <ul className="mt-1 space-y-1">
-                      {(station.services || ["FIR Filing", "Emergency Response", "General Enquiries"]).map((service, idx) => (
+                      {(station?.services || ["FIR Filing", "Emergency Response", "General Enquiries"]).map((service, idx) => (
                         <li key={idx} className="flex items-center">
                           <div className="h-1.5 w-1.5 rounded-full bg-shield-blue mr-2"></div>
                           {service}
@@ -226,15 +224,15 @@ const PoliceStationDetail = () => {
                 <div className="flex items-center mb-4">
                   <div className="flex">
                     {[1, 2, 3, 4, 5].map(star => (
-                      <Star key={star} className={`h-5 w-5 ${star <= (station.rating || 4) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} />
+                      <Star key={star} className={`h-5 w-5 ${star <= (station?.rating || 4) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} />
                     ))}
                   </div>
-                  <span className="ml-2 text-gray-700">{station.rating || 4}/5</span>
-                  <span className="ml-2 text-gray-500">({station.reviewCount || 12} reviews)</span>
+                  <span className="ml-2 text-gray-700">{station?.rating || 4}/5</span>
+                  <span className="ml-2 text-gray-500">({station?.reviewCount || 12} reviews)</span>
                 </div>
                 
                 <div className="space-y-4">
-                  {(station.reviews || [
+                  {(station?.reviews || [
                     { name: "Rahul Singh", text: "Quick response time when I reported an incident. Professional staff.", date: "2 months ago" },
                     { name: "Priya Patel", text: "Clean facility and helpful officers. They assisted me promptly with my documentation.", date: "4 months ago" }
                   ]).map((review, idx) => (

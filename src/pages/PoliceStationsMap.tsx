@@ -7,7 +7,7 @@ import { MapPin, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
-import MapComponent from '@/components/maps/MapComponent';
+import StaticMap from '@/components/maps/StaticMap';
 import PoliceStationCard from '@/components/maps/PoliceStationCard';
 import SOSButton from '@/components/sos/SOSButton';
 import SOSModal from '@/components/sos/SOSModal';
@@ -140,10 +140,12 @@ const PoliceStationsMap = () => {
               <div className="lg:col-span-2 h-[600px] rounded-lg overflow-hidden bg-gray-100 border relative">
                 {userLocation && (
                   <>
-                    <MapComponent 
-                      userLocation={userLocation} 
-                      policeStations={filteredStations}
-                      onStationClick={handleStationClick}
+                    <StaticMap 
+                      altText="Police Stations Map"
+                      redirectPath={`https://www.google.com/maps/search/police+stations/@${userLocation.lat},${userLocation.lng},12z`}
+                      buttonText="View on Google Maps"
+                      description="Click to open in Google Maps"
+                      className="h-full"
                     />
                     <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10">
                       <SOSButton onClick={handleSOSClick} />
