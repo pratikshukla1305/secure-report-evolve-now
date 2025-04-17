@@ -49,7 +49,7 @@ const Index = () => {
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">How <span className="text-shield-blue">Shield</span> Works</h2>
             <p className="text-gray-600 text-lg">
-              Our platform streamlines the entire process from video evidence collection to AI analysis, with blockchain security at every step.
+              Our platform streamlines the entire process from video evidence collection to AI analysis, with advanced security at every step.
             </p>
           </div>
           
@@ -88,7 +88,7 @@ const Index = () => {
                   'Instant crime type identification',
                   'Detailed scene description generation',
                   'Object and person detection',
-                  'Secure blockchain verification',
+                  'Secure data verification',
                   'Cooperative law enforcement tools'
                 ].map((item, index) => (
                   <li key={index} className="flex items-start">
@@ -127,16 +127,12 @@ const Index = () => {
               <div className="relative mx-auto max-w-md">
                 <div className="absolute inset-0 bg-shield-blue rounded-3xl blur-3xl opacity-5 transform rotate-6"></div>
                 <div className="glass-card p-8 relative">
-                  {/* Replace with crime detection image */}
+                  {/* Modern AI crime detection visualization */}
                   <div className="h-56 rounded-xl bg-gray-100 overflow-hidden mb-6">
                     <img 
-                      src="/ai-crime-detection.jpg" 
+                      src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" 
                       alt="AI crime detection visualization" 
                       className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80';
-                      }}
                     />
                   </div>
                   
