@@ -18,7 +18,6 @@ const SignIn = () => {
   
   console.log("SignIn page loaded, user state:", user ? "Logged in" : "Not logged in");
   
-  // Redirect if user is already logged in
   useEffect(() => {
     if (user) {
       console.log("User already logged in, redirecting to dashboard");
@@ -47,7 +46,6 @@ const SignIn = () => {
       } else {
         console.log("Sign in successful, redirecting to dashboard");
         toast.success("Sign in successful!");
-        // Add small delay to allow state to update
         setTimeout(() => navigate('/dashboard'), 500);
       }
     } catch (err: any) {
@@ -78,7 +76,7 @@ const SignIn = () => {
                   
                   <div className="space-y-6">
                     <img 
-                      src="https://images.unsplash.com/photo-1586473219010-2ffc57b0d282?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+                      src="https://images.unsplash.com/photo-1557597774-9d273605dfa9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
                       alt="Security professionals" 
                       className="w-full h-64 object-cover rounded-xl"
                     />

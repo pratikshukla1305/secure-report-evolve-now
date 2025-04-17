@@ -19,7 +19,6 @@ const GetStarted = () => {
   
   console.log("GetStarted page loaded, user state:", user ? "Logged in" : "Not logged in");
   
-  // Redirect if user is already logged in
   useEffect(() => {
     if (user) {
       console.log("User already logged in, redirecting to dashboard");
@@ -58,7 +57,6 @@ const GetStarted = () => {
       } else {
         console.log("Sign up successful, redirecting to sign in");
         toast.success("Account created successfully! Please verify your email (if required) and sign in.");
-        // Add small delay to allow state to update
         setTimeout(() => navigate('/signin'), 500);
       }
     } catch (err: any) {
@@ -211,8 +209,8 @@ const GetStarted = () => {
                 <div className="absolute inset-0 bg-shield-blue rounded-3xl blur-3xl opacity-5 transform rotate-6"></div>
                 <div className="glass-card p-8 relative">
                   <img 
-                    src="https://images.unsplash.com/photo-1625178551411-62eea1351c87?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
-                    alt="Shield protection" 
+                    src="https://images.unsplash.com/photo-1605806616949-59450e59f5cd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+                    alt="Police officers working" 
                     className="w-full h-64 object-cover rounded-xl mb-6"
                   />
                   <h3 className="text-xl font-semibold mb-6">Why Join Shield?</h3>

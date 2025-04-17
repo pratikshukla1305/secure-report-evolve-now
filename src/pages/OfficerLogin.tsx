@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -55,7 +56,7 @@ const OfficerLogin = () => {
                   </p>
                   
                   <img 
-                    src="https://images.unsplash.com/photo-1526385768295-a375c4e8aa5b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+                    src="https://images.unsplash.com/photo-1517427677506-ade074eb1432?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
                     alt="Police officer working" 
                     className="w-full h-48 object-cover rounded-xl mb-6"
                   />

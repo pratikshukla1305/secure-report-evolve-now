@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Shield } from 'lucide-react';
@@ -47,8 +48,8 @@ const Footer = () => {
               <li><Link to="/" className="text-gray-600 hover:text-shield-blue transition-colors">Features</Link></li>
               <li><Link to="/" className="text-gray-600 hover:text-shield-blue transition-colors">Pricing</Link></li>
               <li><Link to="/" className="text-gray-600 hover:text-shield-blue transition-colors">Security</Link></li>
-              <li><Link to="/" className="text-gray-600 hover:text-shield-blue transition-colors">Blockchain</Link></li>
-              <li><Link to="/" className="text-gray-600 hover:text-shield-blue transition-colors">AI Technology</Link></li>
+              <li><Link to="/" className="text-gray-600 hover:text-shield-blue transition-colors">AI Analysis</Link></li>
+              <li><Link to="/" className="text-gray-600 hover:text-shield-blue transition-colors">Evidence Management</Link></li>
             </ul>
           </div>
           
