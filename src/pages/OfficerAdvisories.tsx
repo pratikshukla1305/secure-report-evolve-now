@@ -1,7 +1,7 @@
 
 import React from 'react';
 import OfficerNavbar from '@/components/officer/OfficerNavbar';
-import { OfficerAdvisoryPanel } from '@/components/officer/OfficerAdvisoryPanel';
+import OfficerAdvisoryPanel from '@/components/officer/OfficerAdvisoryPanel';
 
 const OfficerAdvisories = () => {
   return (

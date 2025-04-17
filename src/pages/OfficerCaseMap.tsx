@@ -1,7 +1,7 @@
 
 import React from 'react';
 import OfficerNavbar from '@/components/officer/OfficerNavbar';
-import { OfficerCaseMap as CaseMapComponent } from '@/components/officer/OfficerCaseMap';
+import OfficerCaseMapComponent from '@/components/officer/OfficerCaseMap';
 
 const OfficerCaseMap = () => {
   return (
@@ -17,7 +17,7 @@ const OfficerCaseMap = () => {
         </div>
         
         <div className="bg-white rounded-lg shadow-sm border p-6">
-          <CaseMapComponent />
+          <OfficerCaseMapComponent />
         </div>
       </div>
     </div>

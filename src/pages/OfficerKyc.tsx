@@ -1,7 +1,7 @@
 
 import React from 'react';
 import OfficerNavbar from '@/components/officer/OfficerNavbar';
-import { KycVerificationList } from '@/components/officer/KycVerificationList';
+import KycVerificationList from '@/components/officer/KycVerificationList';
 
 const OfficerKyc = () => {
   return (
