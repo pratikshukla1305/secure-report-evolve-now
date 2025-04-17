@@ -41,6 +41,11 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import MyReports from "./pages/MyReports";
 import Notifications from "./pages/Notifications";
+import OfficerUserProfiles from "./pages/OfficerUserProfiles";
+import OfficerReports from "./pages/OfficerReports";
+import OfficerKyc from "./pages/OfficerKyc";
+import OfficerAdvisories from "./pages/OfficerAdvisories";
+import OfficerCaseMap from "./pages/OfficerCaseMap";
 
 const App = () => {
   // Create a new QueryClient instance inside the component function
@@ -81,6 +86,8 @@ const App = () => {
                 <Route path="/advisory" element={<AdvisoryPage />} />
                 <Route path="/officer-login" element={<OfficerLogin />} />
                 <Route path="/officer-registration" element={<OfficerRegistration />} />
+                
+                {/* Officer Portal Routes */}
                 <Route path="/officer-dashboard" element={
                   <ProtectedOfficerRoute>
                     <OfficerDashboard />
@@ -96,6 +103,32 @@ const App = () => {
                     <OfficerSettings />
                   </ProtectedOfficerRoute>
                 } />
+                <Route path="/officer-user-profiles" element={
+                  <ProtectedOfficerRoute>
+                    <OfficerUserProfiles />
+                  </ProtectedOfficerRoute>
+                } />
+                <Route path="/officer-reports" element={
+                  <ProtectedOfficerRoute>
+                    <OfficerReports />
+                  </ProtectedOfficerRoute>
+                } />
+                <Route path="/officer-kyc" element={
+                  <ProtectedOfficerRoute>
+                    <OfficerKyc />
+                  </ProtectedOfficerRoute>
+                } />
+                <Route path="/officer-advisories" element={
+                  <ProtectedOfficerRoute>
+                    <OfficerAdvisories />
+                  </ProtectedOfficerRoute>
+                } />
+                <Route path="/officer-case-map" element={
+                  <ProtectedOfficerRoute>
+                    <OfficerCaseMap />
+                  </ProtectedOfficerRoute>
+                } />
+                
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/my-reports" element={<MyReports />} />
