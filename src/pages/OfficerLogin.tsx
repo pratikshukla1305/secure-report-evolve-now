@@ -38,7 +38,7 @@ const OfficerLogin = () => {
     <div className="min-h-screen bg-white">
       <Navbar />
       
-      <section className="section-padding bg-white flex items-center justify-center pt-16">
+      <section className="section-padding bg-white flex items-center justify-center pt-28">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="hidden lg:block">
@@ -49,10 +49,16 @@ const OfficerLogin = () => {
                     <UserCog className="h-8 w-8 text-shield-blue" />
                   </div>
                   
-                  <h2 className="text-2xl font-bold mb-4">Midshield Officer Portal</h2>
+                  <h2 className="text-2xl font-bold mb-4">Shield Officer Portal</h2>
                   <p className="text-gray-600 mb-6">
                     As a law enforcement officer, you have access to specialized tools to:
                   </p>
+                  
+                  <img 
+                    src="https://images.unsplash.com/photo-1526385768295-a375c4e8aa5b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+                    alt="Police officer working" 
+                    className="w-full h-48 object-cover rounded-xl mb-6"
+                  />
                   
                   <ul className="space-y-3">
                     <li className="flex items-start">

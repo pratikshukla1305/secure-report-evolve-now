@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -63,7 +62,7 @@ const SignIn = () => {
     <div className="min-h-screen bg-white">
       <Navbar />
       
-      <section className="section-padding bg-white flex items-center justify-center pt-16">
+      <section className="section-padding bg-white flex items-center justify-center pt-28">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="hidden lg:block">
@@ -73,16 +72,20 @@ const SignIn = () => {
                   <div className="flex justify-between items-center mb-8">
                     <div className="flex items-center">
                       <Shield className="h-8 w-8 text-shield-blue mr-2" />
-                      <span className="text-xl font-semibold">Midshield</span>
+                      <span className="text-xl font-semibold">Shield</span>
                     </div>
                   </div>
                   
                   <div className="space-y-6">
-                    <div className="h-64 rounded-xl bg-gray-100 shimmer"></div>
+                    <img 
+                      src="https://images.unsplash.com/photo-1586473219010-2ffc57b0d282?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+                      alt="Security professionals" 
+                      className="w-full h-64 object-cover rounded-xl"
+                    />
                     
                     <div className="space-y-2">
-                      <div className="h-4 w-3/4 rounded bg-gray-100 shimmer"></div>
-                      <div className="h-4 w-1/2 rounded bg-gray-100 shimmer"></div>
+                      <h3 className="text-lg font-semibold">Secure your community</h3>
+                      <p className="text-gray-600">Join the network of vigilant citizens protecting neighborhoods through advanced reporting tools.</p>
                     </div>
                   </div>
                 </div>
@@ -95,7 +98,7 @@ const SignIn = () => {
                   <User className="h-4 w-4 text-shield-blue mr-2" />
                   <span className="text-xs font-medium">Secure Access</span>
                 </div>
-                <h2 className="text-3xl sm:text-4xl font-bold mb-4">Sign in to <span className="text-shield-blue">Midshield</span></h2>
+                <h2 className="text-3xl sm:text-4xl font-bold mb-4">Sign in to <span className="text-shield-blue">Shield</span></h2>
                 <p className="text-gray-600">Access your account to manage evidence, reports, and rewards.</p>
               </div>
               

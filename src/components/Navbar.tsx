@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Shield, Menu, X, MapPin, AlertCircle, Megaphone, LogOut, User as UserIcon, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -36,6 +36,10 @@ const Navbar = () => {
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Check if we're on signin or get-started pages to apply special styling
+  const isAuthPage = location.pathname === '/signin' || location.pathname === '/get-started';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -111,6 +115,7 @@ const Navbar = () => {
   return (
     <header className={cn(
       'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out',
+      isAuthPage ? 'relative' : 'fixed', // Use relative positioning on auth pages
       isScrolled 
         ? 'bg-stripe-blue-dark/90 backdrop-blur-md border-b border-stripe-blue/10 py-2' 
         : 'bg-stripe-blue-dark/85 backdrop-blur-md py-4'

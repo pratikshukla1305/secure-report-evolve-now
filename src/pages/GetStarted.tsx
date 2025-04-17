@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -74,7 +73,7 @@ const GetStarted = () => {
     <div className="min-h-screen bg-white">
       <Navbar />
       
-      <section className="section-padding bg-white flex items-center justify-center pt-16">
+      <section className="section-padding bg-white flex items-center justify-center pt-28">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -83,7 +82,7 @@ const GetStarted = () => {
                   <UserPlus className="h-4 w-4 text-shield-blue mr-2" />
                   <span className="text-xs font-medium">Join Us</span>
                 </div>
-                <h2 className="text-3xl sm:text-4xl font-bold mb-4">Get Started with <span className="text-shield-blue">Midshield</span></h2>
+                <h2 className="text-3xl sm:text-4xl font-bold mb-4">Get Started with <span className="text-shield-blue">Shield</span></h2>
                 <p className="text-gray-600">Create your account to start reporting crimes, securing evidence, and earning rewards.</p>
               </div>
               
@@ -211,7 +210,12 @@ const GetStarted = () => {
               <div className="relative">
                 <div className="absolute inset-0 bg-shield-blue rounded-3xl blur-3xl opacity-5 transform rotate-6"></div>
                 <div className="glass-card p-8 relative">
-                  <h3 className="text-xl font-semibold mb-6">Why Join Midshield?</h3>
+                  <img 
+                    src="https://images.unsplash.com/photo-1625178551411-62eea1351c87?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" 
+                    alt="Shield protection" 
+                    className="w-full h-64 object-cover rounded-xl mb-6"
+                  />
+                  <h3 className="text-xl font-semibold mb-6">Why Join Shield?</h3>
                   
                   <div className="space-y-6">
                     <div className="flex items-start">
@@ -220,7 +224,7 @@ const GetStarted = () => {
                       </div>
                       <div className="ml-3">
                         <h4 className="text-base font-medium">Secure Evidence Storage</h4>
-                        <p className="text-sm text-gray-600">All evidence is securely stored on blockchain, ensuring data integrity.</p>
+                        <p className="text-sm text-gray-600">All evidence is securely stored with advanced encryption.</p>
                       </div>
                     </div>
                     
@@ -229,8 +233,8 @@ const GetStarted = () => {
                         <CheckCircle className="h-5 w-5 text-green-500" />
                       </div>
                       <div className="ml-3">
-                        <h4 className="text-base font-medium">Earn Crypto Rewards</h4>
-                        <p className="text-sm text-gray-600">Get rewarded with cryptocurrency for contributing to public safety.</p>
+                        <h4 className="text-base font-medium">Earn Rewards</h4>
+                        <p className="text-sm text-gray-600">Get rewarded for contributing to public safety.</p>
                       </div>
                     </div>
                     

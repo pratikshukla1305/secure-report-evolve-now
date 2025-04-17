@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Shield } from 'lucide-react';
@@ -11,10 +10,10 @@ const Footer = () => {
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center space-x-2 mb-4">
               <Shield className="h-6 w-6 text-shield-blue" />
-              <span className="text-xl font-semibold">Midshield</span>
+              <span className="text-xl font-semibold">Shield</span>
             </Link>
             <p className="text-gray-600 mb-6 max-w-md">
-              Combining blockchain security and AI analysis to revolutionize crime reporting and evidence management.
+              Revolutionizing crime reporting and evidence management with advanced AI analysis and secure data protection.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="w-8 h-8 rounded-full bg-white border border-shield-border flex items-center justify-center hover:border-shield-blue transition-all">
@@ -78,7 +77,7 @@ const Footer = () => {
         
         <div className="mt-12 pt-8 border-t border-shield-border flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-600 text-sm mb-4 md:mb-0">
-            &copy; {new Date().getFullYear()} Midshield. All rights reserved.
+            &copy; {new Date().getFullYear()} Shield. All rights reserved.
           </p>
           <div className="flex space-x-6">
             <Link to="/" className="text-sm text-gray-600 hover:text-shield-blue transition-colors">Privacy Policy</Link>

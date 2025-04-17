@@ -1,13 +1,13 @@
 
 import React from 'react';
-import NavbarWithNotifications from '@/components/NavbarWithNotifications';
+import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 
 const Home = () => {
   return (
     <div className="min-h-screen bg-white">
-      <NavbarWithNotifications />
+      <Navbar />
       <Hero />
       <Footer />
     </div>
