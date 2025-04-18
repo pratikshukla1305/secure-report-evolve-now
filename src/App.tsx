@@ -8,6 +8,7 @@ import { useState } from "react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { OfficerAuthProvider } from "@/contexts/OfficerAuthContext";
 import ProtectedOfficerRoute from "@/components/officer/ProtectedOfficerRoute";
+import VoiceChatBot from "@/components/chatbot/VoiceChatBot";
 import Index from "./pages/Index";
 import Home from "./pages/Home";
 import FeaturesPage from "./pages/Features";
@@ -59,6 +60,9 @@ const App = () => {
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              {/* Voice Chat Bot available across all routes */}
+              <VoiceChatBot />
+              
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/home" element={<Home />} />
