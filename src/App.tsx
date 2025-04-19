@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -135,11 +136,12 @@ const App = () => {
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              {/* Add the VoiceChatbot component within the BrowserRouter context */}
+              <VoiceChatbot />
             </BrowserRouter>
           </TooltipProvider>
         </OfficerAuthProvider>
       </AuthProvider>
-      <VoiceChatbot />
     </QueryClientProvider>
   );
 };
