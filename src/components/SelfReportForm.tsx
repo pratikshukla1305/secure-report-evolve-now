@@ -71,7 +71,7 @@ const SelfReportForm = () => {
       const pdfUrl = URL.createObjectURL(pdfBlob);
       setPdfUrl(pdfUrl);
 
-      // Create a new report in the database
+      // Create a new report in the database - excluding age, gender since those fields don't exist in the table
       const { data: reportData, error } = await supabase
         .from('crime_reports')
         .insert([
@@ -79,9 +79,6 @@ const SelfReportForm = () => {
             user_id: user?.id,
             title: 'Self Report',
             description: description,
-            name: isAnonymous ? null : name,
-            age: isAnonymous ? null : age,
-            gender: isAnonymous ? null : gender,
             location: isAnonymous ? null : location,
             is_anonymous: isAnonymous,
             status: 'draft',
@@ -135,8 +132,8 @@ const SelfReportForm = () => {
 
   return (
     <Card className="w-full bg-white shadow-lg border-none">
-      <CardHeader className="bg-shield-blue/5 rounded-t-lg">
-        <CardTitle className="flex items-center gap-2 text-shield-blue">
+      <CardHeader className="bg-[#9b87f5]/5 rounded-t-lg">
+        <CardTitle className="flex items-center gap-2 text-[#9b87f5]">
           <Shield className="h-5 w-5" />
           Self Report Form
         </CardTitle>
@@ -239,7 +236,7 @@ const SelfReportForm = () => {
           <div className="flex gap-4">
             <Button 
               type="submit" 
-              className="flex-1 bg-shield-blue hover:bg-shield-blue/90"
+              className="flex-1 bg-[#9b87f5] hover:bg-[#9b87f5]/90"
               disabled={isSubmitting || isSuccess}
             >
               {isSubmitting ? (
@@ -255,7 +252,7 @@ const SelfReportForm = () => {
               <Button 
                 type="button"
                 onClick={handleDownloadPdf}
-                className="bg-shield-blue/10 text-shield-blue hover:bg-shield-blue/20"
+                className="bg-[#9b87f5]/10 text-[#9b87f5] hover:bg-[#9b87f5]/20"
               >
                 <Download className="mr-2 h-4 w-4" />
                 Download PDF

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Shield, Upload, FileText, Search, Award, Image, UserCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -20,8 +21,8 @@ const FeatureCard = ({
       className="glass-card p-6 animate-fade-up" 
       style={{ animationDelay: `${delay}s` }}
     >
-      <div className="rounded-full w-12 h-12 bg-shield-blue/10 flex items-center justify-center mb-4">
-        <Icon className="h-6 w-6 text-shield-blue" />
+      <div className="rounded-full w-12 h-12 bg-[#9b87f5]/10 flex items-center justify-center mb-4">
+        <Icon className="h-6 w-6 text-[#9b87f5]" />
       </div>
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
       <p className="text-gray-600">{description}</p>
@@ -42,7 +43,7 @@ const Features = () => {
           <div className="inline-flex items-center px-3 py-1 rounded-full border border-shield-border bg-white shadow-sm mb-4">
             <span className="text-xs font-medium">Unique Features</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">Advanced Technology, <span className="text-shield-blue">Simple Experience</span></h2>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4">Advanced Technology, <span className="text-[#9b87f5]">Simple Experience</span></h2>
           <p className="text-gray-600 text-lg">
             Midshield combines powerful AI analysis tools with user-friendly reporting options to create a seamless evidence management system.
           </p>

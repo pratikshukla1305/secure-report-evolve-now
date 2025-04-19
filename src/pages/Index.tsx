@@ -47,7 +47,7 @@ const Index = () => {
             <div className="inline-flex items-center px-3 py-1 rounded-full border border-shield-border bg-white shadow-sm mb-4">
               <span className="text-xs font-medium">Simple Process</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">How <span className="text-shield-blue">Shield</span> Works</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">How <span className="text-[#9b87f5]">Shield</span> Works</h2>
             <p className="text-gray-600 text-lg">
               Our platform streamlines the entire process from video evidence collection to AI analysis, with advanced security at every step.
             </p>
@@ -55,12 +55,12 @@ const Index = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
             <div className="relative animate-fade-up" style={{ animationDelay: '0.1s' }}>
-              <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-shield-blue flex items-center justify-center text-white font-bold text-lg shadow-lg">1</div>
+              <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-[#9b87f5] flex items-center justify-center text-white font-bold text-lg shadow-lg">1</div>
               <UploadCard className="h-full" />
             </div>
             
             <div className="relative animate-fade-up" style={{ animationDelay: '0.2s' }}>
-              <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-shield-blue flex items-center justify-center text-white font-bold text-lg shadow-lg">2</div>
+              <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-[#9b87f5] flex items-center justify-center text-white font-bold text-lg shadow-lg">2</div>
               <ReportCard className="h-full" />
             </div>
             
@@ -69,17 +69,17 @@ const Index = () => {
         </div>
       </section>
       
-      {/* AI Crime Detection Section (Replaced Rewards) */}
+      {/* AI Crime Detection Section */}
       <section className="section-padding bg-white" id="ai-detection">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1 animate-fade-up">
               <div className="inline-flex items-center px-3 py-1 rounded-full border border-shield-border bg-white shadow-sm mb-4">
-                <Shield className="h-4 w-4 text-shield-blue mr-2" />
+                <Shield className="h-4 w-4 text-[#9b87f5] mr-2" />
                 <span className="text-xs font-medium">AI-Powered Analysis</span>
               </div>
               
-              <h2 className="text-3xl sm:text-4xl font-bold mb-6">Advanced <span className="text-shield-blue">Video Analysis</span><br />for Crime Detection</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-6">Advanced <span className="text-[#9b87f5]">Video Analysis</span><br />for Crime Detection</h2>
               
               <p className="text-lg text-gray-600 mb-6">
                 Shield's AI technology analyzes video evidence to identify crime types, extract crucial details, and generate comprehensive reports automatically.
@@ -109,7 +109,7 @@ const Index = () => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
                   size="lg" 
-                  className="bg-shield-blue text-white hover:bg-blue-600 transition-all"
+                  className="bg-[#9b87f5] text-white hover:bg-[#9b87f5]/90 transition-all"
                   to="/get-started"
                 >
                   Get Started
@@ -117,7 +117,7 @@ const Index = () => {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="border-shield-blue text-shield-blue hover:bg-shield-blue hover:text-white transition-all"
+                  className="border-[#9b87f5] text-[#9b87f5] hover:bg-[#9b87f5] hover:text-white transition-all"
                   to="/how-it-works"
                 >
                   Learn How It Works
@@ -127,7 +127,7 @@ const Index = () => {
             
             <div className="order-1 lg:order-2 relative animate-fade-in">
               <div className="relative mx-auto max-w-md">
-                <div className="absolute inset-0 bg-shield-blue rounded-3xl blur-3xl opacity-5 transform rotate-6"></div>
+                <div className="absolute inset-0 bg-[#9b87f5] rounded-3xl blur-3xl opacity-5 transform rotate-6"></div>
                 <div className="glass-card p-8 relative">
                   {/* Modern AI crime detection visualization */}
                   <div className="h-56 rounded-xl bg-gray-100 overflow-hidden mb-6">
@@ -140,7 +140,7 @@ const Index = () => {
                   
                   <div className="flex justify-between items-center mb-6">
                     <div className="flex items-center">
-                      <Search className="h-6 w-6 text-shield-blue mr-2" />
+                      <Search className="h-6 w-6 text-[#9b87f5] mr-2" />
                       <span className="text-xl font-semibold">AI Analysis Center</span>
                     </div>
                     <AuthButton />
@@ -171,7 +171,7 @@ const Index = () => {
                     
                     <div className="flex justify-center">
                       <Button 
-                        className="w-full bg-shield-blue text-white hover:bg-blue-600 transition-all"
+                        className="w-full bg-[#9b87f5] text-white hover:bg-[#9b87f5]/90 transition-all"
                         to="/get-started"
                       >
                         Try Video Analysis
@@ -186,7 +186,7 @@ const Index = () => {
       </section>
       
       {/* CTA Section */}
-      <section className="py-20 bg-shield-blue relative overflow-hidden">
+      <section className="py-20 bg-[#9b87f5] relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-blue-400 opacity-20"></div>
           <div className="absolute top-1/3 -left-32 w-72 h-72 rounded-full bg-blue-300 opacity-10"></div>
@@ -203,7 +203,7 @@ const Index = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 size="lg" 
-                className="bg-white text-shield-blue hover:bg-blue-50 transition-all"
+                className="bg-white text-[#9b87f5] hover:bg-blue-50 transition-all"
                 to="/get-started"
               >
                 Get Started Now
