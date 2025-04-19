@@ -46,7 +46,6 @@ import OfficerReports from "./pages/OfficerReports";
 import OfficerKyc from "./pages/OfficerKyc";
 import OfficerAdvisories from "./pages/OfficerAdvisories";
 import OfficerCaseMap from "./pages/OfficerCaseMap";
-import VoiceChatbot from '@/components/VoiceChatbot';
 
 const App = () => {
   // Create a new QueryClient instance inside the component function
@@ -136,8 +135,6 @@ const App = () => {
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
-              {/* Add the VoiceChatbot component within the BrowserRouter context */}
-              <VoiceChatbot />
             </BrowserRouter>
           </TooltipProvider>
         </OfficerAuthProvider>
