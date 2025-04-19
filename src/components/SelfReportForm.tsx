@@ -4,8 +4,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { Check, FileText, Send, Shield } from 'lucide-react';
+import { Check, FileText, Send, Shield, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { submitReportToOfficer } from '@/services/reportServices';
 import { saveReportPdf } from '@/services/reportPdfService';
@@ -15,10 +16,42 @@ import jsPDF from 'jspdf';
 const SelfReportForm = () => {
   const { user } = useAuth();
   const [description, setDescription] = useState('');
+  const [name, setName] = useState('');
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('');
+  const [location, setLocation] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isConfidential, setIsConfidential] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState('');
+
+  const generatePdfReport = async () => {
+    const pdf = new jsPDF();
+    const dateFormatted = new Date().toLocaleString();
+
+    pdf.setFontSize(20);
+    pdf.text('Self Report', 105, 20, { align: 'center' });
+    
+    pdf.setFontSize(12);
+    if (!isAnonymous) {
+      pdf.text(`Name: ${name}`, 20, 40);
+      pdf.text(`Age: ${age}`, 20, 50);
+      pdf.text(`Gender: ${gender}`, 20, 60);
+      pdf.text(`Location: ${location}`, 20, 70);
+    }
+    pdf.text(`Date: ${dateFormatted}`, 20, 80);
+    pdf.text(`Confidential: ${isConfidential ? 'Yes' : 'No'}`, 20, 90);
+    
+    pdf.setFontSize(14);
+    pdf.text('Description:', 20, 110);
+    
+    const textLines = pdf.splitTextToSize(description, 170);
+    pdf.setFontSize(11);
+    pdf.text(textLines, 20, 120);
+    
+    return pdf;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,6 +64,13 @@ const SelfReportForm = () => {
     setIsSubmitting(true);
 
     try {
+      const pdf = await generatePdfReport();
+      const pdfBlob = pdf.output('blob');
+      
+      // Create a URL for local download
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      setPdfUrl(pdfUrl);
+
       // Create a new report in the database
       const { data: reportData, error } = await supabase
         .from('crime_reports')
@@ -39,9 +79,12 @@ const SelfReportForm = () => {
             user_id: user?.id,
             title: 'Self Report',
             description: description,
+            name: isAnonymous ? null : name,
+            age: isAnonymous ? null : age,
+            gender: isAnonymous ? null : gender,
+            location: isAnonymous ? null : location,
             is_anonymous: isAnonymous,
             status: 'draft',
-            // Add a tag for confidential reports
             officer_notes: isConfidential ? 'CONFIDENTIAL: Keep private' : '',
           },
         ])
@@ -50,22 +93,14 @@ const SelfReportForm = () => {
 
       if (error) throw error;
 
-      // Generate PDF report
-      await generatePdfReport(reportData);
-
+      // Save PDF to storage
+      await saveReportPdf(reportData.id, pdfBlob, `self_report_${new Date().getTime()}.pdf`, true);
+      
       // Submit report to officer
       await submitReportToOfficer(reportData.id);
 
       toast.success('Your report has been submitted successfully');
       setIsSuccess(true);
-      
-      // Reset form after success
-      setTimeout(() => {
-        setDescription('');
-        setIsAnonymous(false);
-        setIsConfidential(false);
-        setIsSuccess(false);
-      }, 3000);
     } catch (error) {
       console.error('Error submitting report:', error);
       toast.error('Failed to submit report. Please try again.');
@@ -74,45 +109,15 @@ const SelfReportForm = () => {
     }
   };
 
-  const generatePdfReport = async (reportData) => {
-    const pdf = new jsPDF();
-    const dateFormatted = new Date().toLocaleString();
-
-    // Add title
-    pdf.setFontSize(20);
-    pdf.text('Self Report', 105, 20, { align: 'center' });
-    
-    // Add report metadata
-    pdf.setFontSize(12);
-    pdf.text(`Report ID: ${reportData.id}`, 20, 40);
-    pdf.text(`Date: ${dateFormatted}`, 20, 50);
-    pdf.text(`Anonymous: ${isAnonymous ? 'Yes' : 'No'}`, 20, 60);
-    pdf.text(`Confidential: ${isConfidential ? 'Yes' : 'No'}`, 20, 70);
-    
-    // Add report description
-    pdf.setFontSize(14);
-    pdf.text('Description:', 20, 90);
-    
-    // Handle text wrapping for description
-    const textLines = pdf.splitTextToSize(description, 170);
-    pdf.setFontSize(11);
-    pdf.text(textLines, 20, 100);
-    
-    // Add watermark/footer
-    pdf.setFontSize(10);
-    pdf.setTextColor(150, 150, 150);
-    pdf.text('Generated by Shield App', 105, 280, { align: 'center' });
-    
-    // Save PDF to blob
-    const pdfBlob = pdf.output('blob');
-    
-    // Upload PDF to Supabase
-    await saveReportPdf(
-      reportData.id,
-      pdfBlob,
-      `self_report_${new Date().getTime()}.pdf`,
-      true
-    );
+  const handleDownloadPdf = () => {
+    if (pdfUrl) {
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.download = `self_report_${new Date().getTime()}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   if (!user) {
@@ -141,6 +146,52 @@ const SelfReportForm = () => {
       </CardHeader>
       <CardContent className="pt-6">
         <form onSubmit={handleSubmit} className="space-y-6">
+          {!isAnonymous && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="name" className="text-sm font-medium">Full Name</label>
+                <Input
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="mt-1"
+                  disabled={isSubmitting || isSuccess}
+                />
+              </div>
+              <div>
+                <label htmlFor="age" className="text-sm font-medium">Age</label>
+                <Input
+                  id="age"
+                  type="number"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  className="mt-1"
+                  disabled={isSubmitting || isSuccess}
+                />
+              </div>
+              <div>
+                <label htmlFor="gender" className="text-sm font-medium">Gender</label>
+                <Input
+                  id="gender"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="mt-1"
+                  disabled={isSubmitting || isSuccess}
+                />
+              </div>
+              <div>
+                <label htmlFor="location" className="text-sm font-medium">Location</label>
+                <Input
+                  id="location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  className="mt-1"
+                  disabled={isSubmitting || isSuccess}
+                />
+              </div>
+            </div>
+          )}
+          
           <div className="space-y-2">
             <label htmlFor="report-description" className="text-sm font-medium">
               Please describe what happened
@@ -185,19 +236,32 @@ const SelfReportForm = () => {
             </div>
           </div>
           
-          <Button 
-            type="submit" 
-            className="w-full bg-shield-blue hover:bg-shield-blue/90"
-            disabled={isSubmitting || isSuccess}
-          >
-            {isSubmitting ? (
-              <>Processing...</>
-            ) : isSuccess ? (
-              <><Check className="mr-2 h-4 w-4" /> Submitted Successfully</>
-            ) : (
-              <><Send className="mr-2 h-4 w-4" /> Submit Report</>
+          <div className="flex gap-4">
+            <Button 
+              type="submit" 
+              className="flex-1 bg-shield-blue hover:bg-shield-blue/90"
+              disabled={isSubmitting || isSuccess}
+            >
+              {isSubmitting ? (
+                <>Processing...</>
+              ) : isSuccess ? (
+                <><Check className="mr-2 h-4 w-4" /> Submitted Successfully</>
+              ) : (
+                <><Send className="mr-2 h-4 w-4" /> Submit Report</>
+              )}
+            </Button>
+            
+            {pdfUrl && (
+              <Button 
+                type="button"
+                onClick={handleDownloadPdf}
+                className="bg-shield-blue/10 text-shield-blue hover:bg-shield-blue/20"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Download PDF
+              </Button>
             )}
-          </Button>
+          </div>
         </form>
       </CardContent>
     </Card>

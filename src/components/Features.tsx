@@ -8,24 +8,33 @@ const FeatureCard = ({
   icon: Icon, 
   title, 
   description, 
-  delay = 0 
+  delay = 0,
+  link
 }: { 
   icon: React.ElementType; 
   title: string; 
   description: string; 
   delay?: number;
-}) => (
-  <div 
-    className="glass-card p-6 animate-fade-up" 
-    style={{ animationDelay: `${delay}s` }}
-  >
-    <div className="rounded-full w-12 h-12 bg-shield-blue/10 flex items-center justify-center mb-4">
-      <Icon className="h-6 w-6 text-shield-blue" />
+  link?: string;
+}) => {
+  const CardContent = (
+    <div 
+      className="glass-card p-6 animate-fade-up" 
+      style={{ animationDelay: `${delay}s` }}
+    >
+      <div className="rounded-full w-12 h-12 bg-shield-blue/10 flex items-center justify-center mb-4">
+        <Icon className="h-6 w-6 text-shield-blue" />
+      </div>
+      <h3 className="text-xl font-semibold mb-2">{title}</h3>
+      <p className="text-gray-600">{description}</p>
     </div>
-    <h3 className="text-xl font-semibold mb-2">{title}</h3>
-    <p className="text-gray-600">{description}</p>
-  </div>
-);
+  );
+
+  if (link) {
+    return <Link to={link}>{CardContent}</Link>;
+  }
+  return CardContent;
+};
 
 const Features = () => {
   return (
@@ -43,10 +52,11 @@ const Features = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <FeatureCard 
-            icon={Shield} 
-            title="Blockchain Security" 
-            description="All evidence is securely stored on blockchain, ensuring it cannot be tampered with and maintains complete data integrity."
+            icon={UserCircle} 
+            title="Self Reporting" 
+            description="Submit detailed reports without photos or videos. Option for anonymous and confidential reporting with full user privacy."
             delay={0.1}
+            link="/how-it-works#self-report"
           />
           <FeatureCard 
             icon={Upload} 
@@ -77,12 +87,6 @@ const Features = () => {
             title="Image Hashing" 
             description="Verify that images have not been altered using our sophisticated image hashing technology."
             delay={0.6}
-          />
-          <FeatureCard 
-            icon={UserCircle} 
-            title="Self Reporting" 
-            description="Submit reports without photos or videos by providing detailed text descriptions, with options for anonymity and confidentiality."
-            delay={0.7}
           />
         </div>
 
