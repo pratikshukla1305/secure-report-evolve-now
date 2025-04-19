@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import ThreadList from '@/components/forum/ThreadList';
@@ -13,14 +13,16 @@ const DiscussionForum = () => {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background">
       <Navbar />
-      <div className="container max-w-7xl mx-auto px-4 py-8 mt-16">
+      <div className="container max-w-4xl mx-auto px-4 py-8 mt-16">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold">Discussion Forum</h1>
-            <p className="text-muted-foreground mt-2">
-              Join the conversation and share your thoughts with the community
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              Discussion Forum
+            </h1>
+            <p className="text-foreground/60 mt-2">
+              Join the conversation and share your thoughts
             </p>
           </div>
           <Button 
@@ -31,7 +33,7 @@ const DiscussionForum = () => {
               }
               setIsCreateThreadOpen(true);
             }}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white"
           >
             <MessageSquare className="h-4 w-4" />
             New Thread

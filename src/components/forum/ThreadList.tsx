@@ -92,7 +92,7 @@ const ThreadList = () => {
     return (
       <div className="space-y-4">
         {[1, 2, 3].map((n) => (
-          <Card key={n}>
+          <Card key={n} className="bg-background/50 backdrop-blur-sm border-none shadow-lg">
             <CardHeader>
               <Skeleton className="h-4 w-3/4" />
             </CardHeader>
@@ -109,22 +109,27 @@ const ThreadList = () => {
     <>
       <div className="space-y-6">
         {threads.map((thread) => (
-          <Card key={thread.id} className="hover:shadow-lg transition-shadow duration-300 bg-card">
+          <Card 
+            key={thread.id} 
+            className="hover:shadow-lg transition-all duration-300 bg-background/50 backdrop-blur-sm border-none shadow-md hover:scale-[1.02]"
+          >
             <CardHeader className="space-y-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl font-bold text-foreground hover:text-primary transition-colors">
+                <CardTitle className="text-xl font-semibold text-foreground hover:text-primary transition-colors">
                   {thread.title}
                 </CardTitle>
                 {thread.is_anonymous ? (
-                  <Badge variant="secondary" className="text-sm">Anonymous</Badge>
+                  <Badge variant="secondary" className="text-sm bg-primary/10 text-primary">
+                    Anonymous
+                  </Badge>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-primary/10 text-primary">
+                    <Avatar className="h-8 w-8 ring-2 ring-primary/20">
+                      <AvatarFallback className="bg-primary/10 text-primary font-medium">
                         {thread.profiles?.full_name?.[0] || 'U'}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-sm text-muted-foreground font-medium">
+                    <span className="text-sm text-foreground/70 font-medium">
                       {thread.profiles?.full_name || 'Unknown User'}
                     </span>
                   </div>
@@ -132,21 +137,21 @@ const ThreadList = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-foreground/90 line-clamp-3">{thread.content}</p>
+              <p className="text-foreground/80 line-clamp-3">{thread.content}</p>
               
               {thread.media_urls && thread.media_urls.length > 0 && (
                 <div className="grid grid-cols-2 gap-4 mt-4">
                   {thread.media_urls.slice(0, 4).map((url, index) => (
-                    <div key={index} className="relative aspect-video">
+                    <div key={index} className="relative aspect-video rounded-xl overflow-hidden">
                       {url.toLowerCase().includes('.mp4') ? (
-                        <div className="w-full h-full bg-muted rounded-lg flex items-center justify-center">
+                        <div className="w-full h-full bg-muted rounded-xl flex items-center justify-center">
                           <FileVideo className="w-8 h-8 text-muted-foreground" />
                         </div>
                       ) : (
                         <img 
                           src={url} 
                           alt={`Thread media ${index + 1}`}
-                          className="w-full h-full object-cover rounded-lg"
+                          className="w-full h-full object-cover"
                         />
                       )}
                     </div>
@@ -159,15 +164,17 @@ const ThreadList = () => {
                 </div>
               )}
             </CardContent>
-            <CardFooter className="flex justify-between border-t pt-4">
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <CardFooter className="flex justify-between border-t border-border/50 pt-4">
+              <div className="flex items-center gap-4 text-sm text-foreground/60">
                 <span>{format(new Date(thread.created_at), 'PPp')}</span>
-                <span>{thread.reply_count} replies</span>
+                <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20">
+                  {thread.reply_count} replies
+                </Badge>
               </div>
               <Button 
                 variant="ghost" 
                 onClick={() => setSelectedThread(thread)}
-                className="hover:bg-primary/10 hover:text-primary transition-colors"
+                className="hover:bg-primary/10 hover:text-primary transition-all"
               >
                 View Discussion
               </Button>
