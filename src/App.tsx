@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -46,6 +45,7 @@ import OfficerReports from "./pages/OfficerReports";
 import OfficerKyc from "./pages/OfficerKyc";
 import OfficerAdvisories from "./pages/OfficerAdvisories";
 import OfficerCaseMap from "./pages/OfficerCaseMap";
+import VoiceChatbot from '@/components/VoiceChatbot';
 
 const App = () => {
   // Create a new QueryClient instance inside the component function
@@ -139,6 +139,7 @@ const App = () => {
           </TooltipProvider>
         </OfficerAuthProvider>
       </AuthProvider>
+      <VoiceChatbot />
     </QueryClientProvider>
   );
 };
