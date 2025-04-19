@@ -6,7 +6,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Loader2, Eye, FileText, DownloadCloud, Check, X, AlertTriangle, Video } from 'lucide-react';
-import { getOfficerReports, logPdfDownload } from '@/services/reportServices';
+import { getOfficerReports, logPdfDownload, updateReportStatus } from '@/services/reportServices';
 import { getOfficerReportMaterials } from '@/services/reportPdfService';
 import { format } from 'date-fns';
 import { useOfficerAuth } from '@/contexts/OfficerAuthContext';
@@ -206,27 +206,15 @@ const ReportsList = ({ limit }: ReportListProps) => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/reports/${selectedReport.id}/status`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          status: newStatus,
-          officerNotes: officerNotes,
-          officerId: officer?.id
-        }),
-      });
+      const result = await updateReportStatus(selectedReport.id, newStatus, officerNotes);
 
-      if (!response.ok) {
+      if (result) {
+        toast.success(`Report status updated to ${newStatus}`);
+        setStatusDialogOpen(false);
+        fetchReports();
+      } else {
         throw new Error('Failed to update status');
       }
-
-      toast.success(`Report status updated to ${newStatus}`);
-      setStatusDialogOpen(false);
-      
-      fetchReports();
-      
     } catch (error) {
       console.error("Error updating status:", error);
       toast.error("Failed to update report status");
