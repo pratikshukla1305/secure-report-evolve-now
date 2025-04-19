@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import ThreadDialog from './ThreadDialog';
+import { FileVideo } from 'lucide-react';
 
 const ThreadList = () => {
   const [threads, setThreads] = useState([]);

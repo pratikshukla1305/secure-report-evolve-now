@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -11,7 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { FileVideo, X } from 'lucide-react';
-import { ForumFileUpload } from '@/components/ForumFileUpload';
+import ForumFileUpload from './ForumFileUpload';
 
 interface ThreadDialogProps {
   thread: any;
@@ -143,6 +144,35 @@ const ThreadDialog: React.FC<ThreadDialogProps> = ({
 
   const handleAnonymousChange = (checked: boolean) => {
     setIsAnonymous(checked);
+  };
+
+  // Add handleDelete function
+  const handleDelete = async (id: string, type: 'thread' | 'reply') => {
+    try {
+      if (type === 'thread') {
+        const { error } = await supabase
+          .from('forum_threads')
+          .delete()
+          .eq('id', id);
+          
+        if (error) throw error;
+        
+        onOpenChange(false);
+        toast.success('Thread deleted successfully');
+      } else {
+        const { error } = await supabase
+          .from('forum_replies')
+          .delete()
+          .eq('id', id);
+          
+        if (error) throw error;
+        
+        toast.success('Reply deleted successfully');
+      }
+    } catch (error) {
+      console.error(`Error deleting ${type}:`, error);
+      toast.error(`Failed to delete ${type}`);
+    }
   };
 
   if (!thread) return null;
@@ -318,7 +348,7 @@ const ThreadDialog: React.FC<ThreadDialogProps> = ({
                   <Checkbox
                     id="replyAnonymous"
                     checked={isAnonymous}
-                    onCheckedChange={(checked: boolean) => setIsAnonymous(checked)}
+                    onCheckedChange={handleAnonymousChange}
                     disabled={!user}
                   />
                   <Label htmlFor="replyAnonymous">Reply anonymously</Label>
