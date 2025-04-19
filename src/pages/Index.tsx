@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
@@ -11,7 +10,6 @@ import { Shield, Video, FileText, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Index = () => {
-  // Smooth scroll for anchor links
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -53,7 +51,7 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
             <div className="relative animate-fade-up" style={{ animationDelay: '0.1s' }}>
               <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-shield-blue flex items-center justify-center text-white font-bold text-lg shadow-lg">1</div>
               <UploadCard className="h-full" />
@@ -63,6 +61,8 @@ const Index = () => {
               <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-shield-blue flex items-center justify-center text-white font-bold text-lg shadow-lg">2</div>
               <ReportCard className="h-full" />
             </div>
+            
+            <SelfReportSection />
           </div>
         </div>
       </section>

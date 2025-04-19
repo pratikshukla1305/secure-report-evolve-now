@@ -1,3 +1,4 @@
+
 import { v4 as uuidv4 } from 'uuid';
 
 const mockEvidence = [
@@ -19,7 +20,7 @@ const generateMockEvidence = () => {
 
 export const addMockEvidenceToReports = (reports) => {
   return reports.map(report => {
-    // Only add mock evidence if there's no evidence and it's not a self-report
+    // Only add mock evidence if there's no evidence and it's NOT a self-report
     if (report.evidence.length === 0 && !report.is_anonymous) {
       return {
         ...report,

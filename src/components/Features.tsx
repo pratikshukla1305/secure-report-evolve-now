@@ -1,8 +1,6 @@
-
 import React from 'react';
 import { Shield, Upload, FileText, Search, Award, Image, UserCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 
 const FeatureCard = ({ 
   icon: Icon, 
@@ -46,7 +44,7 @@ const Features = () => {
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">Advanced Technology, <span className="text-shield-blue">Simple Experience</span></h2>
           <p className="text-gray-600 text-lg">
-            Midshield combines cutting-edge blockchain security with powerful AI analysis tools to create a seamless evidence management system.
+            Midshield combines powerful AI analysis tools with user-friendly reporting options to create a seamless evidence management system.
           </p>
         </div>
         
@@ -56,7 +54,6 @@ const Features = () => {
             title="Self Reporting" 
             description="Submit detailed reports without photos or videos. Option for anonymous and confidential reporting with full user privacy."
             delay={0.1}
-            link="/how-it-works#self-report"
           />
           <FeatureCard 
             icon={Upload} 
@@ -88,14 +85,6 @@ const Features = () => {
             description="Verify that images have not been altered using our sophisticated image hashing technology."
             delay={0.6}
           />
-        </div>
-
-        <div className="mt-12 text-center">
-          <Link to="/how-it-works#self-report">
-            <Button className="bg-shield-blue hover:bg-shield-blue/90">
-              Try Self Reporting
-            </Button>
-          </Link>
         </div>
       </div>
     </section>
