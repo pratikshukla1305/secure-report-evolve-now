@@ -106,37 +106,68 @@ const ThreadList = () => {
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="space-y-6">
         {threads.map((thread) => (
-          <Card key={thread.id} className="hover:shadow-md transition-shadow">
-            <CardHeader>
+          <Card key={thread.id} className="hover:shadow-lg transition-shadow duration-300 bg-card">
+            <CardHeader className="space-y-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xl">{thread.title}</CardTitle>
+                <CardTitle className="text-2xl font-bold text-foreground hover:text-primary transition-colors">
+                  {thread.title}
+                </CardTitle>
                 {thread.is_anonymous ? (
-                  <Badge variant="secondary">Anonymous</Badge>
+                  <Badge variant="secondary" className="text-sm">Anonymous</Badge>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <Avatar className="h-6 w-6">
-                      <AvatarFallback>
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-primary/10 text-primary">
                         {thread.profiles?.full_name?.[0] || 'U'}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm text-muted-foreground font-medium">
                       {thread.profiles?.full_name || 'Unknown User'}
                     </span>
                   </div>
                 )}
               </div>
             </CardHeader>
-            <CardContent>
-              <p className="line-clamp-2">{thread.content}</p>
+            <CardContent className="space-y-4">
+              <p className="text-foreground/90 line-clamp-3">{thread.content}</p>
+              
+              {thread.media_urls && thread.media_urls.length > 0 && (
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  {thread.media_urls.slice(0, 4).map((url, index) => (
+                    <div key={index} className="relative aspect-video">
+                      {url.toLowerCase().includes('.mp4') ? (
+                        <div className="w-full h-full bg-muted rounded-lg flex items-center justify-center">
+                          <FileVideo className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                      ) : (
+                        <img 
+                          src={url} 
+                          alt={`Thread media ${index + 1}`}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      )}
+                    </div>
+                  ))}
+                  {thread.media_urls.length > 4 && (
+                    <div className="absolute bottom-2 right-2">
+                      <Badge variant="secondary">+{thread.media_urls.length - 4} more</Badge>
+                    </div>
+                  )}
+                </div>
+              )}
             </CardContent>
-            <CardFooter className="flex justify-between">
+            <CardFooter className="flex justify-between border-t pt-4">
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <span>{format(new Date(thread.created_at), 'PPp')}</span>
                 <span>{thread.reply_count} replies</span>
               </div>
-              <Button variant="ghost" onClick={() => setSelectedThread(thread)}>
+              <Button 
+                variant="ghost" 
+                onClick={() => setSelectedThread(thread)}
+                className="hover:bg-primary/10 hover:text-primary transition-colors"
+              >
                 View Discussion
               </Button>
             </CardFooter>

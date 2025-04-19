@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -11,6 +10,8 @@ import { format } from 'date-fns';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { FileVideo, X } from 'lucide-react';
+import { ForumFileUpload } from '@/components/ForumFileUpload';
 
 interface ThreadDialogProps {
   thread: any;
@@ -27,6 +28,7 @@ const ThreadDialog: React.FC<ThreadDialogProps> = ({
   const [newReply, setNewReply] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [replyMediaUrls, setReplyMediaUrls] = useState<string[]>([]);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -113,13 +115,15 @@ const ThreadDialog: React.FC<ThreadDialogProps> = ({
           thread_id: thread.id,
           content: newReply,
           user_id: user.id,
-          is_anonymous: isAnonymous
+          is_anonymous: isAnonymous,
+          media_urls: replyMediaUrls
         });
 
       if (error) throw error;
 
       setNewReply('');
       setIsAnonymous(false);
+      setReplyMediaUrls([]);
       toast.success('Reply added successfully!');
     } catch (error) {
       console.error('Error adding reply:', error);
@@ -129,77 +133,90 @@ const ThreadDialog: React.FC<ThreadDialogProps> = ({
     }
   };
 
-  const handleDelete = async (id: string, type: 'thread' | 'reply') => {
-    try {
-      const { error } = await supabase
-        .from(type === 'thread' ? 'forum_threads' : 'forum_replies')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      if (type === 'thread') {
-        onOpenChange(false);
-      }
-      toast.success(`${type === 'thread' ? 'Thread' : 'Reply'} deleted successfully`);
-    } catch (error) {
-      console.error('Error deleting:', error);
-      toast.error('Failed to delete');
-    }
+  const handleReplyMediaUpload = (urls: string[]) => {
+    setReplyMediaUrls(prev => [...prev, ...urls]);
   };
 
-  if (!thread) return null;
+  const removeReplyMedia = (index: number) => {
+    setReplyMediaUrls(prev => prev.filter((_, i) => i !== index));
+  };
 
-  // Correct way to handle checkbox state changes
   const handleAnonymousChange = (checked: boolean) => {
     setIsAnonymous(checked);
   };
 
+  if (!thread) return null;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle>{thread.title}</DialogTitle>
-            {user?.id === thread.user_id && (
+            <DialogTitle className="text-2xl font-bold">{thread?.title}</DialogTitle>
+            {user?.id === thread?.user_id && (
               <Button 
                 variant="destructive" 
                 onClick={() => handleDelete(thread.id, 'thread')}
+                size="sm"
               >
                 Delete Thread
               </Button>
             )}
           </div>
-          <div className="flex items-center justify-between mt-2">
-            {thread.is_anonymous ? (
+          <div className="flex items-center justify-between mt-4">
+            {thread?.is_anonymous ? (
               <Badge variant="secondary">Anonymous</Badge>
             ) : (
               <div className="flex items-center gap-2">
-                <Avatar className="h-6 w-6">
+                <Avatar className="h-8 w-8">
                   <AvatarFallback>
-                    {thread.profiles?.full_name?.[0] || 'U'}
+                    {thread?.profiles?.full_name?.[0] || 'U'}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-sm text-muted-foreground">
-                  {thread.profiles?.full_name || 'Unknown User'}
+                <span className="text-sm text-muted-foreground font-medium">
+                  {thread?.profiles?.full_name || 'Unknown User'}
                 </span>
               </div>
             )}
             <span className="text-sm text-muted-foreground">
-              {format(new Date(thread.created_at), 'PPp')}
+              {thread && format(new Date(thread.created_at), 'PPp')}
             </span>
           </div>
         </DialogHeader>
 
-        <div className="mt-4 space-y-4">
-          <p className="text-lg">{thread.content}</p>
+        <div className="mt-6 space-y-6">
+          <div className="prose prose-sm max-w-none">
+            <p>{thread?.content}</p>
+          </div>
 
-          <div className="space-y-4 mt-8">
-            <h3 className="font-semibold">Replies</h3>
+          {thread?.media_urls && thread.media_urls.length > 0 && (
+            <div className="grid grid-cols-2 gap-4">
+              {thread.media_urls.map((url, index) => (
+                <div key={index} className="relative aspect-video">
+                  {url.toLowerCase().includes('.mp4') ? (
+                    <video 
+                      src={url} 
+                      controls 
+                      className="w-full h-full rounded-lg"
+                    />
+                  ) : (
+                    <img 
+                      src={url} 
+                      alt={`Thread media ${index + 1}`}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="space-y-6 mt-8">
+            <h3 className="font-semibold text-lg">Replies</h3>
             {replies.map((reply) => (
               <div 
                 key={reply.id} 
-                className="bg-muted p-4 rounded-lg space-y-2"
+                className="bg-muted p-6 rounded-lg space-y-4"
               >
                 <div className="flex items-center justify-between">
                   {reply.is_anonymous ? (
@@ -211,7 +228,7 @@ const ThreadDialog: React.FC<ThreadDialogProps> = ({
                           {reply.profiles?.full_name?.[0] || 'U'}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="text-sm">
+                      <span className="text-sm font-medium">
                         {reply.profiles?.full_name || 'Unknown User'}
                       </span>
                     </div>
@@ -232,6 +249,28 @@ const ThreadDialog: React.FC<ThreadDialogProps> = ({
                   </div>
                 </div>
                 <p>{reply.content}</p>
+
+                {reply.media_urls && reply.media_urls.length > 0 && (
+                  <div className="grid grid-cols-2 gap-4">
+                    {reply.media_urls.map((url, index) => (
+                      <div key={index} className="relative aspect-video">
+                        {url.toLowerCase().includes('.mp4') ? (
+                          <video 
+                            src={url} 
+                            controls 
+                            className="w-full h-full rounded-lg"
+                          />
+                        ) : (
+                          <img 
+                            src={url} 
+                            alt={`Reply media ${index + 1}`}
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
 
@@ -242,13 +281,44 @@ const ThreadDialog: React.FC<ThreadDialogProps> = ({
                 placeholder={user ? "Write a reply..." : "Sign in to reply"}
                 disabled={!user || isSubmitting}
                 rows={3}
+                className="resize-none"
               />
+
+              <ForumFileUpload onUploadComplete={handleReplyMediaUpload} />
+
+              {replyMediaUrls.length > 0 && (
+                <div className="grid grid-cols-2 gap-4">
+                  {replyMediaUrls.map((url, index) => (
+                    <div key={index} className="relative group">
+                      {url.toLowerCase().includes('.mp4') ? (
+                        <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+                          <FileVideo className="w-8 h-8 text-muted-foreground" />
+                        </div>
+                      ) : (
+                        <img 
+                          src={url} 
+                          alt={`Upload ${index + 1}`}
+                          className="w-full aspect-video object-cover rounded-lg"
+                        />
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => removeReplyMedia(index)}
+                        className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="replyAnonymous"
                     checked={isAnonymous}
-                    onCheckedChange={handleAnonymousChange}
+                    onCheckedChange={(checked: boolean) => setIsAnonymous(checked)}
                     disabled={!user}
                   />
                   <Label htmlFor="replyAnonymous">Reply anonymously</Label>
