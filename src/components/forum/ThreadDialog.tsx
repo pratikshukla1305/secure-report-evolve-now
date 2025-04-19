@@ -60,20 +60,34 @@ const ThreadDialog: React.FC<ThreadDialogProps> = ({
     if (!thread?.id) return;
 
     try {
+      // Get replies first
       const { data, error } = await supabase
         .from('forum_replies')
-        .select(`
-          *,
-          profiles (
-            full_name,
-            avatar_url
-          )
-        `)
+        .select('*')
         .eq('thread_id', thread.id)
         .order('created_at', { ascending: true });
 
       if (error) throw error;
-      setReplies(data);
+      
+      // Fetch user profiles for non-anonymous replies
+      const repliesWithProfiles = await Promise.all(
+        data.map(async (reply) => {
+          if (!reply.is_anonymous && reply.user_id) {
+            const { data: profileData, error: profileError } = await supabase
+              .from('profiles')
+              .select('full_name, avatar_url')
+              .eq('id', reply.user_id)
+              .single();
+              
+            if (!profileError) {
+              return { ...reply, profiles: profileData };
+            }
+          }
+          return reply;
+        })
+      );
+      
+      setReplies(repliesWithProfiles);
     } catch (error) {
       console.error('Error fetching replies:', error);
     }

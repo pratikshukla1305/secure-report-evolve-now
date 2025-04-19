@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import NavbarWithNotifications from '@/components/NavbarWithNotifications';
+import Navbar from '@/components/Navbar';
 import ThreadList from '@/components/forum/ThreadList';
 import CreateThreadDialog from '@/components/forum/CreateThreadDialog';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ const DiscussionForum = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <NavbarWithNotifications />
+      <Navbar />
       <div className="container max-w-7xl mx-auto px-4 py-8 mt-16">
         <div className="flex items-center justify-between mb-8">
           <div>

@@ -37,7 +37,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Check if we're on signin or get-started pages to apply special styling
   const isAuthPage = location.pathname === '/signin' || location.pathname === '/get-started';
 
   useEffect(() => {
@@ -53,7 +52,6 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Fetch unread notification count when user changes
   useEffect(() => {
     const fetchUnreadCount = async () => {
       if (user) {
@@ -64,14 +62,12 @@ const Navbar = () => {
 
     fetchUnreadCount();
     
-    // Set up polling for notifications (every 30 seconds)
     const interval = setInterval(fetchUnreadCount, 30000);
     
     return () => clearInterval(interval);
   }, [user]);
 
   const handleSOSClick = () => {
-    // Get user location when SOS is clicked
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -83,7 +79,6 @@ const Navbar = () => {
         },
         (error) => {
           console.error("Error getting location:", error);
-          // Show modal anyway but without location
           setUserLocation(null);
           setShowSOSModal(true);
         }
@@ -114,7 +109,7 @@ const Navbar = () => {
   return (
     <header className={cn(
       'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out',
-      isAuthPage ? 'relative' : 'fixed', // Use relative positioning on auth pages
+      isAuthPage ? 'relative' : 'fixed',
       isScrolled 
         ? 'bg-stripe-blue-dark/90 backdrop-blur-md border-b border-stripe-blue/10 py-2' 
         : 'bg-stripe-blue-dark/85 backdrop-blur-md py-4'
@@ -126,7 +121,6 @@ const Navbar = () => {
             <span className="text-xl font-semibold text-white">Shield</span>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
             <Link to="/home" className="text-sm font-medium text-gray-200 hover:text-white transition-colors">
               Home
@@ -183,7 +177,6 @@ const Navbar = () => {
               e-KYC
             </Link>
             
-            {/* Advisory Link */}
             <Link 
               to="/advisory" 
               className="text-sm font-medium text-gray-200 hover:text-white transition-colors flex items-center"
@@ -192,7 +185,6 @@ const Navbar = () => {
               Advisory
             </Link>
             
-            {/* Help Us Link */}
             <Link 
               to="/help-us" 
               className="text-sm font-medium text-gray-200 hover:text-white transition-colors flex items-center"
@@ -201,10 +193,8 @@ const Navbar = () => {
               Help Us
             </Link>
             
-            {/* SOS Button in Navbar */}
             <SOSButton onClick={handleSOSClick} className="scale-90" />
             
-            {/* Notification Bell */}
             {user && (
               <Link to="/notifications" className="relative">
                 <Button variant="ghost" className="text-white hover:bg-white/10 p-2">
@@ -280,7 +270,6 @@ const Navbar = () => {
               </>
             )}
             
-            {/* Forum Link */}
             <Link 
               to="/forum" 
               className="text-sm font-medium text-gray-200 hover:text-white transition-colors flex items-center"
@@ -290,7 +279,6 @@ const Navbar = () => {
             </Link>
           </nav>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center space-x-3">
             {user && (
               <Link to="/notifications" className="relative">
@@ -317,7 +305,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden glass absolute top-full left-0 right-0 border-t border-white/10 animate-fade-in bg-stripe-blue-dark/95 backdrop-blur-lg">
           <div className="px-4 py-5 space-y-4">
@@ -380,7 +367,6 @@ const Navbar = () => {
               e-KYC
             </Link>
             
-            {/* Advisory Mobile Link */}
             <Link 
               to="/advisory" 
               className="block text-base font-medium text-gray-200 hover:text-white transition-colors flex items-center"
@@ -390,7 +376,6 @@ const Navbar = () => {
               Advisory
             </Link>
             
-            {/* Help Us Mobile Link */}
             <Link 
               to="/help-us" 
               className="block text-base font-medium text-gray-200 hover:text-white transition-colors flex items-center"
@@ -473,7 +458,6 @@ const Navbar = () => {
         </div>
       )}
 
-      {/* SOS Modal */}
       <SOSModal 
         open={showSOSModal} 
         onOpenChange={setShowSOSModal} 
