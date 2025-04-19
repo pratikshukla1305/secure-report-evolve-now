@@ -136,6 +136,11 @@ const ThreadDialog: React.FC<ThreadDialogProps> = ({
 
   if (!thread) return null;
 
+  // Correct way to handle checkbox state changes
+  const handleAnonymousChange = (checked: boolean) => {
+    setIsAnonymous(checked);
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
@@ -229,7 +234,7 @@ const ThreadDialog: React.FC<ThreadDialogProps> = ({
                   <Checkbox
                     id="replyAnonymous"
                     checked={isAnonymous}
-                    onCheckedChange={setIsAnonymous}
+                    onCheckedChange={handleAnonymousChange}
                     disabled={!user}
                   />
                   <Label htmlFor="replyAnonymous">Reply anonymously</Label>
