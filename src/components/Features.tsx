@@ -1,39 +1,29 @@
 
 import React from 'react';
-import { Shield, Upload, FileText, Search, Award, Image, UserCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Shield, Upload, FileText, Search, Award, Image } from 'lucide-react';
 
 const FeatureCard = ({ 
   icon: Icon, 
   title, 
   description, 
-  delay = 0,
-  link
+  delay = 0 
 }: { 
   icon: React.ElementType; 
   title: string; 
   description: string; 
   delay?: number;
-  link?: string;
-}) => {
-  const CardContent = (
-    <div 
-      className="glass-card p-6 animate-fade-up" 
-      style={{ animationDelay: `${delay}s` }}
-    >
-      <div className="rounded-full w-12 h-12 bg-[#9b87f5]/10 flex items-center justify-center mb-4">
-        <Icon className="h-6 w-6 text-[#9b87f5]" />
-      </div>
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-gray-600">{description}</p>
+}) => (
+  <div 
+    className="glass-card p-6 animate-fade-up" 
+    style={{ animationDelay: `${delay}s` }}
+  >
+    <div className="rounded-full w-12 h-12 bg-shield-blue/10 flex items-center justify-center mb-4">
+      <Icon className="h-6 w-6 text-shield-blue" />
     </div>
-  );
-
-  if (link) {
-    return <Link to={link}>{CardContent}</Link>;
-  }
-  return CardContent;
-};
+    <h3 className="text-xl font-semibold mb-2">{title}</h3>
+    <p className="text-gray-600">{description}</p>
+  </div>
+);
 
 const Features = () => {
   return (
@@ -43,17 +33,17 @@ const Features = () => {
           <div className="inline-flex items-center px-3 py-1 rounded-full border border-shield-border bg-white shadow-sm mb-4">
             <span className="text-xs font-medium">Unique Features</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">Advanced Technology, <span className="text-[#9b87f5]">Simple Experience</span></h2>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4">Advanced Technology, <span className="text-shield-blue">Simple Experience</span></h2>
           <p className="text-gray-600 text-lg">
-            Midshield combines powerful AI analysis tools with user-friendly reporting options to create a seamless evidence management system.
+            Midshield combines cutting-edge blockchain security with powerful AI analysis tools to create a seamless evidence management system.
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <FeatureCard 
-            icon={UserCircle} 
-            title="Self Reporting" 
-            description="Submit detailed reports without photos or videos. Option for anonymous and confidential reporting with full user privacy."
+            icon={Shield} 
+            title="Blockchain Security" 
+            description="All evidence is securely stored on blockchain, ensuring it cannot be tampered with and maintains complete data integrity."
             delay={0.1}
           />
           <FeatureCard 

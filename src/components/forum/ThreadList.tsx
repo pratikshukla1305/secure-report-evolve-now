@@ -115,17 +115,17 @@ const ThreadList = () => {
           >
             <CardHeader className="space-y-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xl font-semibold text-foreground hover:text-shield-blue transition-colors">
+                <CardTitle className="text-xl font-semibold text-foreground hover:text-primary transition-colors">
                   {thread.title}
                 </CardTitle>
                 {thread.is_anonymous ? (
-                  <Badge variant="secondary" className="text-sm bg-shield-blue/10 text-shield-blue">
+                  <Badge variant="secondary" className="text-sm bg-primary/10 text-primary">
                     Anonymous
                   </Badge>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8 ring-2 ring-shield-blue/20">
-                      <AvatarFallback className="bg-shield-blue/10 text-shield-blue font-medium">
+                    <Avatar className="h-8 w-8 ring-2 ring-primary/20">
+                      <AvatarFallback className="bg-primary/10 text-primary font-medium">
                         {thread.profiles?.full_name?.[0] || 'U'}
                       </AvatarFallback>
                     </Avatar>
@@ -167,14 +167,14 @@ const ThreadList = () => {
             <CardFooter className="flex justify-between border-t border-border/50 pt-4">
               <div className="flex items-center gap-4 text-sm text-foreground/60">
                 <span>{format(new Date(thread.created_at), 'PPp')}</span>
-                <Badge variant="secondary" className="bg-shield-blue/10 text-shield-blue hover:bg-shield-blue/20">
+                <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20">
                   {thread.reply_count} replies
                 </Badge>
               </div>
               <Button 
                 variant="ghost" 
                 onClick={() => setSelectedThread(thread)}
-                className="hover:bg-shield-blue/10 hover:text-shield-blue transition-all"
+                className="hover:bg-primary/10 hover:text-primary transition-all"
               >
                 View Discussion
               </Button>

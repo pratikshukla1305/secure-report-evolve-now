@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OfficerNavbar from '@/components/officer/OfficerNavbar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -9,64 +9,74 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Search, Filter, User, FileCheck, FileX, AlertCircle, Shield } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+
+// Mock data for demonstration
+const userProfiles = [
+  {
+    id: 1,
+    full_name: 'John Smith',
+    email: 'john.smith@example.com',
+    kyc_verified: true,
+    reports_submitted: 8,
+    reports_approved: 6,
+    reports_rejected: 2,
+    alerts_submitted: 3,
+    alerts_confirmed: 2,
+    profile_image: '',
+    last_active: '2025-04-16T10:30:00',
+  },
+  {
+    id: 2,
+    full_name: 'Sarah Johnson',
+    email: 'sarah.j@example.com',
+    kyc_verified: true,
+    reports_submitted: 12,
+    reports_approved: 10,
+    reports_rejected: 2,
+    alerts_submitted: 5,
+    alerts_confirmed: 4,
+    profile_image: '',
+    last_active: '2025-04-17T08:15:00',
+  },
+  {
+    id: 3,
+    full_name: 'Michael Rodriguez',
+    email: 'mrodriguez@example.com',
+    kyc_verified: false,
+    reports_submitted: 3,
+    reports_approved: 1,
+    reports_rejected: 2,
+    alerts_submitted: 1,
+    alerts_confirmed: 0,
+    profile_image: '',
+    last_active: '2025-04-16T15:45:00',
+  },
+  {
+    id: 4,
+    full_name: 'Emily Chen',
+    email: 'emily.chen@example.com',
+    kyc_verified: true,
+    reports_submitted: 5,
+    reports_approved: 5,
+    reports_rejected: 0,
+    alerts_submitted: 2,
+    alerts_confirmed: 2,
+    profile_image: '',
+    last_active: '2025-04-17T11:20:00',
+  },
+];
 
 const OfficerUserProfiles = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [userProfiles, setUserProfiles] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const navigate = useNavigate();
-
-  // Fetch actual user profiles from the database
-  useEffect(() => {
-    const fetchUserProfiles = async () => {
-      try {
-        setLoading(true);
-        
-        // Get profiles and join with associated reports
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*');
-          
-        if (error) {
-          throw error;
-        }
-        
-        // Transform data to include report counts (initialize with zero)
-        const profilesWithStats = data.map(profile => ({
-          ...profile,
-          id: profile.id,
-          full_name: profile.full_name || 'Anonymous User',
-          email: profile.email || '',
-          kyc_verified: false, // Default until we check KYC
-          reports_submitted: 0,
-          reports_approved: 0,
-          reports_rejected: 0,
-          alerts_submitted: 0,
-          alerts_confirmed: 0,
-          last_active: profile.updated_at || profile.created_at,
-        }));
-        
-        setUserProfiles(profilesWithStats);
-      } catch (error) {
-        console.error('Error fetching user profiles:', error);
-        toast.error('Failed to load user profiles');
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchUserProfiles();
-  }, []);
 
   const selectedUser = userProfiles.find(user => user.id === selectedUserId);
 
   // Filter users based on search term
   const filteredUsers = userProfiles.filter(user => 
-    (user.full_name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) || 
-    (user.email?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+    user.full_name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -105,60 +115,48 @@ const OfficerUserProfiles = () => {
               </div>
             </CardHeader>
             <CardContent className="p-0 max-h-[calc(100vh-300px)] overflow-y-auto">
-              {loading ? (
-                <div className="p-8 text-center">
-                  <div className="animate-spin h-6 w-6 border-2 border-[#9b87f5] border-t-transparent rounded-full mx-auto mb-2"></div>
-                  <p className="text-sm text-gray-500">Loading users...</p>
-                </div>
-              ) : filteredUsers.length === 0 ? (
-                <div className="p-8 text-center">
-                  <User className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-                  <p className="text-sm text-gray-500">No users found</p>
-                </div>
-              ) : (
-                <div className="divide-y divide-gray-100">
-                  {filteredUsers.map(user => (
-                    <div 
-                      key={user.id} 
-                      className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${selectedUserId === user.id ? 'bg-gray-50' : ''}`}
-                      onClick={() => setSelectedUserId(user.id)}
-                    >
-                      <div className="flex items-start gap-3">
-                        <Avatar className="h-10 w-10 border">
-                          <AvatarFallback className="bg-[#9b87f5] text-white">
-                            {user.full_name?.split(' ').map(name => name[0]).join('') || '?'}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm font-medium text-gray-900 truncate">{user.full_name || 'Anonymous User'}</p>
-                            {user.kyc_verified ? (
-                              <Badge className="ml-2 bg-green-500">Verified</Badge>
-                            ) : (
-                              <Badge className="ml-2 bg-[#FEF7CD] text-amber-700">Pending</Badge>
-                            )}
-                          </div>
-                          <p className="text-xs text-gray-500 truncate">{user.email}</p>
-                          <div className="flex items-center mt-1 gap-3">
-                            <span className="flex items-center text-xs text-gray-500">
-                              <FileCheck className="h-3 w-3 mr-1 text-green-500" />
-                              {user.reports_approved}
-                            </span>
-                            <span className="flex items-center text-xs text-gray-500">
-                              <FileX className="h-3 w-3 mr-1 text-[#ea384c]" />
-                              {user.reports_rejected}
-                            </span>
-                            <span className="flex items-center text-xs text-gray-500">
-                              <AlertCircle className="h-3 w-3 mr-1 text-amber-500" />
-                              {user.alerts_submitted}
-                            </span>
-                          </div>
+              <div className="divide-y divide-gray-100">
+                {filteredUsers.map(user => (
+                  <div 
+                    key={user.id} 
+                    className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${selectedUserId === user.id ? 'bg-gray-50' : ''}`}
+                    onClick={() => setSelectedUserId(user.id)}
+                  >
+                    <div className="flex items-start gap-3">
+                      <Avatar className="h-10 w-10 border">
+                        <AvatarFallback className="bg-stripe-blue-dark text-white">
+                          {user.full_name.split(' ').map(name => name[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-medium text-gray-900 truncate">{user.full_name}</p>
+                          {user.kyc_verified ? (
+                            <Badge variant="success" className="ml-2">Verified</Badge>
+                          ) : (
+                            <Badge variant="warning" className="ml-2">Pending</Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                        <div className="flex items-center mt-1 gap-3">
+                          <span className="flex items-center text-xs text-gray-500">
+                            <FileCheck className="h-3 w-3 mr-1 text-green-500" />
+                            {user.reports_approved}
+                          </span>
+                          <span className="flex items-center text-xs text-gray-500">
+                            <FileX className="h-3 w-3 mr-1 text-red-500" />
+                            {user.reports_rejected}
+                          </span>
+                          <span className="flex items-center text-xs text-gray-500">
+                            <AlertCircle className="h-3 w-3 mr-1 text-amber-500" />
+                            {user.alerts_submitted}
+                          </span>
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
           
@@ -168,18 +166,18 @@ const OfficerUserProfiles = () => {
               <CardHeader className="pb-3">
                 <div className="flex items-start gap-4">
                   <Avatar className="h-16 w-16 border">
-                    <AvatarFallback className="bg-[#9b87f5] text-white text-xl">
-                      {selectedUser.full_name?.split(' ').map(name => name[0]).join('') || '?'}
+                    <AvatarFallback className="bg-stripe-blue-dark text-white text-xl">
+                      {selectedUser.full_name.split(' ').map(name => name[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle>{selectedUser.full_name || 'Anonymous User'}</CardTitle>
+                    <CardTitle>{selectedUser.full_name}</CardTitle>
                     <CardDescription>{selectedUser.email}</CardDescription>
                     <div className="flex gap-2 mt-2">
                       {selectedUser.kyc_verified ? (
-                        <Badge className="bg-green-500">KYC Verified</Badge>
+                        <Badge variant="success">KYC Verified</Badge>
                       ) : (
-                        <Badge className="bg-[#FEF7CD] text-amber-700">KYC Pending</Badge>
+                        <Badge variant="warning">KYC Pending</Badge>
                       )}
                       <Badge variant="secondary">
                         Last active: {new Date(selectedUser.last_active).toLocaleDateString()}
@@ -243,52 +241,37 @@ const OfficerUserProfiles = () => {
                         <CardTitle className="text-base">Recent Activity</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        {selectedUser.reports_submitted === 0 && selectedUser.alerts_submitted === 0 ? (
-                          <div className="text-center py-6">
-                            <div className="rounded-full w-12 h-12 bg-gray-100 flex items-center justify-center mx-auto mb-3">
-                              <User className="h-6 w-6 text-gray-400" />
+                        <div className="space-y-4">
+                          <div className="flex gap-3">
+                            <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                              <FileCheck className="h-4 w-4 text-blue-600" />
                             </div>
-                            <p className="text-sm text-gray-500">No activity to display</p>
+                            <div>
+                              <p className="text-sm font-medium">Submitted a new report</p>
+                              <p className="text-xs text-gray-500">Today at 10:30 AM</p>
+                            </div>
                           </div>
-                        ) : (
-                          <div className="space-y-4">
-                            {selectedUser.reports_submitted > 0 && (
-                              <div className="flex gap-3">
-                                <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                  <FileCheck className="h-4 w-4 text-blue-600" />
-                                </div>
-                                <div>
-                                  <p className="text-sm font-medium">Submitted a report</p>
-                                  <p className="text-xs text-gray-500">Recently</p>
-                                </div>
-                              </div>
-                            )}
-                            
-                            {selectedUser.kyc_verified && (
-                              <div className="flex gap-3">
-                                <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                                  <Shield className="h-4 w-4 text-green-600" />
-                                </div>
-                                <div>
-                                  <p className="text-sm font-medium">Completed KYC verification</p>
-                                  <p className="text-xs text-gray-500">Recently</p>
-                                </div>
-                              </div>
-                            )}
-                            
-                            {selectedUser.alerts_submitted > 0 && (
-                              <div className="flex gap-3">
-                                <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center">
-                                  <AlertCircle className="h-4 w-4 text-amber-600" />
-                                </div>
-                                <div>
-                                  <p className="text-sm font-medium">Submitted an alert</p>
-                                  <p className="text-xs text-gray-500">Recently</p>
-                                </div>
-                              </div>
-                            )}
+                          
+                          <div className="flex gap-3">
+                            <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                              <Shield className="h-4 w-4 text-green-600" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium">Completed KYC verification</p>
+                              <p className="text-xs text-gray-500">Yesterday at 2:15 PM</p>
+                            </div>
                           </div>
-                        )}
+                          
+                          <div className="flex gap-3">
+                            <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center">
+                              <AlertCircle className="h-4 w-4 text-amber-600" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium">Submitted an alert</p>
+                              <p className="text-xs text-gray-500">Apr 15, 2025 at 9:20 AM</p>
+                            </div>
+                          </div>
+                        </div>
                       </CardContent>
                     </Card>
                   </TabsContent>
@@ -300,19 +283,32 @@ const OfficerUserProfiles = () => {
                         <Badge variant="outline">{selectedUser.reports_submitted} Total</Badge>
                       </div>
                       
-                      {selectedUser.reports_submitted === 0 ? (
-                        <div className="border rounded-md p-8 text-center">
-                          <FileText className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-                          <p className="text-sm text-gray-500">No reports submitted yet</p>
-                        </div>
-                      ) : (
-                        <div className="border rounded-md divide-y">
-                          {/* We would fetch and map real reports here */}
-                          <div className="p-8 text-center">
-                            <p className="text-sm text-gray-500">Report details would be shown here</p>
+                      <div className="border rounded-md divide-y">
+                        {[...Array(3)].map((_, i) => (
+                          <div key={i} className="p-4 hover:bg-gray-50">
+                            <div className="flex justify-between mb-1">
+                              <span className="text-sm font-medium">Report #{selectedUser.id * 100 + i + 1}</span>
+                              {i === 0 ? (
+                                <Badge variant="success">Approved</Badge>
+                              ) : i === 1 ? (
+                                <Badge variant="destructive">Rejected</Badge>
+                              ) : (
+                                <Badge variant="info">Under Review</Badge>
+                              )}
+                            </div>
+                            <p className="text-xs text-gray-500 mb-2">Submitted on April {15 - i}, 2025</p>
+                            <p className="text-sm">
+                              {i === 0 ? 'Theft incident reported with video evidence' : 
+                               i === 1 ? 'Suspicious activity near downtown area' :
+                               'Traffic violation on Main Street'}
+                            </p>
+                            <div className="flex gap-2 mt-2">
+                              <Button size="sm" variant="outline">View Details</Button>
+                              {i === 2 && <Button size="sm">Review</Button>}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        ))}
+                      </div>
                     </div>
                   </TabsContent>
                   
@@ -323,19 +319,29 @@ const OfficerUserProfiles = () => {
                         <Badge variant="outline">{selectedUser.alerts_submitted} Total</Badge>
                       </div>
                       
-                      {selectedUser.alerts_submitted === 0 ? (
-                        <div className="border rounded-md p-8 text-center">
-                          <AlertCircle className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-                          <p className="text-sm text-gray-500">No alerts submitted yet</p>
-                        </div>
-                      ) : (
-                        <div className="border rounded-md divide-y">
-                          {/* We would fetch and map real alerts here */}
-                          <div className="p-8 text-center">
-                            <p className="text-sm text-gray-500">Alert details would be shown here</p>
+                      <div className="border rounded-md divide-y">
+                        {[...Array(Math.min(2, selectedUser.alerts_submitted))].map((_, i) => (
+                          <div key={i} className="p-4 hover:bg-gray-50">
+                            <div className="flex justify-between mb-1">
+                              <span className="text-sm font-medium">Alert #{selectedUser.id * 10 + i + 1}</span>
+                              {i === 0 ? (
+                                <Badge variant="success">Confirmed</Badge>
+                              ) : (
+                                <Badge variant="warning">Pending</Badge>
+                              )}
+                            </div>
+                            <p className="text-xs text-gray-500 mb-2">Submitted on April {16 - i}, 2025</p>
+                            <p className="text-sm">
+                              {i === 0 ? 'Emergency SOS call from downtown location' : 
+                               'Reported suspicious person in residential area'}
+                            </p>
+                            <div className="flex gap-2 mt-2">
+                              <Button size="sm" variant="outline">View Details</Button>
+                              {i === 1 && <Button size="sm">Review</Button>}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        ))}
+                      </div>
                     </div>
                   </TabsContent>
                   
@@ -344,35 +350,61 @@ const OfficerUserProfiles = () => {
                       <div className="flex justify-between items-center">
                         <h3 className="text-base font-medium">KYC Verification</h3>
                         {selectedUser.kyc_verified ? (
-                          <Badge className="bg-green-500">Verified</Badge>
+                          <Badge variant="success">Verified</Badge>
                         ) : (
-                          <Badge className="bg-[#FEF7CD] text-amber-700">Pending</Badge>
+                          <Badge variant="warning">Pending</Badge>
                         )}
                       </div>
                       
-                      {selectedUser.kyc_verified ? (
-                        <Card>
-                          <CardContent className="pt-6">
-                            <div className="space-y-4">
+                      <Card>
+                        <CardContent className="pt-6">
+                          <div className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <p className="text-sm font-medium">Full Name</p>
+                                <p className="text-sm text-gray-600">{selectedUser.full_name}</p>
+                              </div>
+                              <div className="space-y-2">
+                                <p className="text-sm font-medium">Email</p>
+                                <p className="text-sm text-gray-600">{selectedUser.email}</p>
+                              </div>
+                              <div className="space-y-2">
+                                <p className="text-sm font-medium">ID Type</p>
+                                <p className="text-sm text-gray-600">National ID Card</p>
+                              </div>
+                              <div className="space-y-2">
+                                <p className="text-sm font-medium">Phone Number</p>
+                                <p className="text-sm text-gray-600">+1 (555) 123-4567</p>
+                              </div>
+                            </div>
+                            
+                            <div className="pt-2">
+                              <p className="text-sm font-medium mb-2">ID Documents</p>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                  <p className="text-sm font-medium">Full Name</p>
-                                  <p className="text-sm text-gray-600">{selectedUser.full_name}</p>
+                                <div className="border rounded-md p-4">
+                                  <p className="text-xs text-gray-500 mb-2">Front of ID</p>
+                                  <div className="bg-gray-100 h-32 rounded-md flex items-center justify-center">
+                                    <User className="h-8 w-8 text-gray-400" />
+                                  </div>
                                 </div>
-                                <div className="space-y-2">
-                                  <p className="text-sm font-medium">Email</p>
-                                  <p className="text-sm text-gray-600">{selectedUser.email}</p>
+                                <div className="border rounded-md p-4">
+                                  <p className="text-xs text-gray-500 mb-2">Back of ID</p>
+                                  <div className="bg-gray-100 h-32 rounded-md flex items-center justify-center">
+                                    <User className="h-8 w-8 text-gray-400" />
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </CardContent>
-                        </Card>
-                      ) : (
-                        <div className="border rounded-md p-8 text-center">
-                          <Shield className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-                          <p className="text-sm text-gray-500">User has not completed KYC verification</p>
-                        </div>
-                      )}
+                            
+                            {!selectedUser.kyc_verified && (
+                              <div className="pt-4 flex gap-2">
+                                <Button>Verify User</Button>
+                                <Button variant="outline">Request Additional Info</Button>
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
                     </div>
                   </TabsContent>
                 </Tabs>
