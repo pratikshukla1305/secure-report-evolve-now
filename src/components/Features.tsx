@@ -1,6 +1,8 @@
 
 import React from 'react';
-import { Shield, Upload, FileText, Search, Award, Image } from 'lucide-react';
+import { Shield, Upload, FileText, Search, Award, Image, UserCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 const FeatureCard = ({ 
   icon: Icon, 
@@ -76,6 +78,20 @@ const Features = () => {
             description="Verify that images have not been altered using our sophisticated image hashing technology."
             delay={0.6}
           />
+          <FeatureCard 
+            icon={UserCircle} 
+            title="Self Reporting" 
+            description="Submit reports without photos or videos by providing detailed text descriptions, with options for anonymity and confidentiality."
+            delay={0.7}
+          />
+        </div>
+
+        <div className="mt-12 text-center">
+          <Link to="/how-it-works#self-report">
+            <Button className="bg-shield-blue hover:bg-shield-blue/90">
+              Try Self Reporting
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
