@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -46,9 +45,9 @@ import OfficerReports from "./pages/OfficerReports";
 import OfficerKyc from "./pages/OfficerKyc";
 import OfficerAdvisories from "./pages/OfficerAdvisories";
 import OfficerCaseMap from "./pages/OfficerCaseMap";
+import DiscussionForum from "./pages/DiscussionForum";
 
 const App = () => {
-  // Create a new QueryClient instance inside the component function
   const [queryClient] = useState(() => new QueryClient());
 
   return (
@@ -87,7 +86,6 @@ const App = () => {
                 <Route path="/officer-login" element={<OfficerLogin />} />
                 <Route path="/officer-registration" element={<OfficerRegistration />} />
                 
-                {/* Officer Portal Routes */}
                 <Route path="/officer-dashboard" element={
                   <ProtectedOfficerRoute>
                     <OfficerDashboard />
@@ -133,6 +131,7 @@ const App = () => {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/my-reports" element={<MyReports />} />
                 <Route path="/notifications" element={<Notifications />} />
+                <Route path="/forum" element={<DiscussionForum />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

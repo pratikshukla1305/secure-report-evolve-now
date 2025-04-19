@@ -466,6 +466,80 @@ export type Database = {
           },
         ]
       }
+      forum_replies: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_anonymous: boolean | null
+          media_urls: string[] | null
+          thread_id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean | null
+          media_urls?: string[] | null
+          thread_id: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean | null
+          media_urls?: string[] | null
+          thread_id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_replies_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "forum_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_threads: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_anonymous: boolean | null
+          media_urls: string[] | null
+          title: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean | null
+          media_urls?: string[] | null
+          title: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_anonymous?: boolean | null
+          media_urls?: string[] | null
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       kyc_document_extractions: {
         Row: {
           created_at: string | null

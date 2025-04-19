@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Shield, Menu, X, MapPin, AlertCircle, Megaphone, LogOut, User as UserIcon, Bell } from 'lucide-react';
+import { Shield, Menu, X, MapPin, AlertCircle, Megaphone, LogOut, User as UserIcon, Bell, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import SOSButton from '@/components/sos/SOSButton';
@@ -390,6 +389,15 @@ const Navbar = () => {
             >
               <AlertCircle className="mr-1 h-4 w-4" />
               Help Us
+            </Link>
+            
+            <Link 
+              to="/forum" 
+              className="block text-base font-medium text-gray-200 hover:text-white transition-colors flex items-center"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <MessageSquare className="mr-1 h-4 w-4" />
+              Forum
             </Link>
             
             {user ? (
