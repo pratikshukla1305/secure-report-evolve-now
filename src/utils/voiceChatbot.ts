@@ -2,6 +2,12 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
+// Add type definitions for the Web Speech API
+interface Window {
+  SpeechRecognition: any;
+  webkitSpeechRecognition: any;
+}
+
 export const useVoiceChatbot = () => {
   const [isListening, setIsListening] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -9,9 +15,13 @@ export const useVoiceChatbot = () => {
 
   const startListening = useCallback(() => {
     setIsListening(true);
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    
+    // Using the proper SpeechRecognition with TypeScript compatibility
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    
     recognition.lang = 'en-US';
-    recognition.onresult = async (event) => {
+    recognition.onresult = async (event: any) => {
       const transcript = event.results[0][0].transcript;
       setIsProcessing(true);
 

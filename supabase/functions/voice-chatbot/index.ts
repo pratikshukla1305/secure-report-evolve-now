@@ -1,6 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import OpenAI from "https://deno.land/x/openai@v1.0.0/mod.ts";
+import { OpenAI } from "https://deno.land/x/openai@1.3.0/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,11 +16,10 @@ serve(async (req) => {
   try {
     const { query } = await req.json();
 
-    const openai = new OpenAI({
-      apiKey: Deno.env.get('OPENAI_API_KEY')
-    });
+    const openai = new OpenAI(Deno.env.get('OPENAI_API_KEY'));
 
-    const chatCompletion = await openai.chat.completions.create({
+    const chatCompletion = await openai.createChatCompletion({
+      model: 'gpt-4o-mini',
       messages: [
         { 
           role: 'system', 
@@ -28,7 +27,6 @@ serve(async (req) => {
         },
         { role: 'user', content: query }
       ],
-      model: 'gpt-4o-mini',
       max_tokens: 150
     });
 
@@ -44,6 +42,7 @@ serve(async (req) => {
       }
     );
   } catch (error) {
+    console.error('Error in voice-chatbot function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
