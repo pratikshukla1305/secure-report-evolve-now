@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
@@ -6,6 +7,7 @@ import Footer from '@/components/Footer';
 import UploadCard from '@/components/UploadCard';
 import ReportCard from '@/components/ReportCard';
 import AuthButton from '@/components/AuthButton';
+import SelfReportSection from '@/components/home/SelfReportSection';
 import { Shield, Video, FileText, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
