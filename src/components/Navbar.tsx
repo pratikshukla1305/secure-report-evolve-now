@@ -279,6 +279,15 @@ const Navbar = () => {
                 </Link>
               </>
             )}
+            
+            {/* Forum Link */}
+            <Link 
+              to="/forum" 
+              className="text-sm font-medium text-gray-200 hover:text-white transition-colors flex items-center"
+            >
+              <MessageSquare className="mr-1 h-4 w-4" />
+              Forum
+            </Link>
           </nav>
 
           {/* Mobile Menu Button */}
